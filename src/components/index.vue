@@ -16,7 +16,7 @@
                   <p>{{msg}}</p>
                   <ul class="clearfix">
                       <li><i class="iconfont icon-wode"></i><span>1616</span><i class="s"></i></li>
-                      <li><i></i><span>1616</span><i class="s"></i></li>
+                      <li><i class="iconfont icon-pinglun"></i><span>1616</span><i class="s"></i></li>
                       <li style="background:#fdd545;border-bottom-right-radius: 10px;"><i></i><span>倒计时</span><span>12:59</span></li>
                   </ul>
               </div>
@@ -26,9 +26,9 @@
                   <img src="" alt="" class="loading">
                   <p>有哪些道理，大家不说但心里都明白？</p>
                   <ul class="clearfix">
-                      <li><i></i><span>1616</span><i class="s"></i></li>
-                      <li><i></i><span>1616</span><i class="s"></i></li>
-                      <li><i></i><span>1616</span></li>
+                      <li><i class="iconfont icon-paihangbang"></i><span>1616</span><i class="s"></i></li>
+                      <li><i class="iconfont icon-wode"></i><span>1616</span><i class="s"></i></li>
+                      <li><i class="iconfont icon-xiaoxi"></i><span>1616</span></li>
                   </ul>
               </div>
           </li>
@@ -37,9 +37,9 @@
                   <img src="" alt=""  class="loading">
                   <p>哪一瞬间让你发现贫穷限制了你的想象力？</p>
                   <ul class="clearfix">
-                      <li><i></i><span>1616</span><i class="s"></i></li>
-                      <li><i></i><span>1616</span><i class="s"></i></li>
-                      <li><i></i><span>1616</span></li>
+                      <li><i class="iconfont icon-paihangbang"></i><span>1616</span><i class="s"></i></li>
+                      <li><i class="iconfont icon-wode"></i><span>1616</span><i class="s"></i></li>
+                      <li><i class="iconfont icon-xiaoxi"></i><span>1616</span></li>
                   </ul>
               </div>
           </li>
@@ -48,9 +48,9 @@
                   <img src="" alt="" class="loading">
                   <p>你在酒店做过最丧心病狂的事是什么？</p>
                   <ul class="clearfix">
-                      <li><i></i><span>1616</span><i class="s"></i></li>
-                      <li><i></i><span>1616</span><i class="s"></i></li>
-                      <li><i></i><span>1616</span></li>
+                      <li><i class="iconfont icon-paihangbang"></i><span>1616</span><i class="s"></i></li>
+                      <li><i class="iconfont icon-wode"></i><span>1616</span><i class="s"></i></li>
+                      <li><i class="iconfont icon-xiaoxi"></i><span>1616</span></li>
                   </ul>
               </div>
           </li>
@@ -77,6 +77,9 @@ export default {
     }
     .btn_t1>.height_light{background: #FDD545;}
    ul{padding: 0;}
+   .box{
+       width: 100%;height: 100%;
+   }
     .nav{
         width: 345rem/$x;height: 35rem/$x;margin:0 auto;border-radius: 100rem/$x;border: 1px solid #FDD545;
 
