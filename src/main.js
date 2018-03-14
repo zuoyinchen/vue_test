@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import libFlexible from 'lib-flexible/flexible.js'
+import alIcon from './assets/img/font_565417_dumdd6p9hgmbo6r/iconfont'
 
 Vue.config.productionTip = false
 
