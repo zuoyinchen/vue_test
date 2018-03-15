@@ -2,19 +2,30 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import index from '@/components/index'
+import User from '@/components/user'
+import Userproject from '@/components/userproject'
+import Usercollect from '@/components/usercollect'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/.',
-      name: 'HelloWorld',
-      component: HelloWorld
-    },
-    {path: '/',
-    name: 'index',
-    component: index
-  }
+      path: '/',
+      name: 'index',
+      component: index
+    },{
+      path: '/user',
+      name: 'user',
+      component:User
+    },{
+      path: '/userproject',
+      name: 'userproject',
+      component:Userproject
+    },{
+      path: '/usercollect',
+      name: '/usercollect',
+      component:Usercollect
+    }
   ]
 })
