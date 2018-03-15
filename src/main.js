@@ -4,6 +4,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import libFlexible from 'lib-flexible/flexible.js'
+<<<<<<< HEAD
+import axios from 'axios'
+Vue.prototype.$http = axios
+
+// import alIcon from './assets/img/font_565417_dumdd6p9hgmbo6r/iconfont'
+import tabnav from './components/tabnav'
+
+=======
 import $ from 'jquery'
 import axios from 'axios'
 
@@ -14,6 +22,7 @@ import tabnav from './components/tabnav'
 //将全局变量挂载到vue实例上
 Vue.prototype.GLOBAL = global_data
 
+>>>>>>> master
 Vue.config.productionTip = false
 
 Vue.prototype.$axios = axios;
