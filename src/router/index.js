@@ -30,10 +30,10 @@ export default new Router({
       component:Usercollect,
       children: [
         {
-          path: '/usercomp',
+          path: '/usercollect/usercomp',
           component: Usercomp
         },{
-          path: '/answer',
+          path: '/usercollect/answer',
           component: Answer
         }
       ]

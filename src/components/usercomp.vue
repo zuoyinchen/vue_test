@@ -21,8 +21,28 @@
 	</ul>
 </template>
 <script type="text/javascript">
+	const prolist =[
+		{
+			type:'0',
+			status:'已结束',
+			title: '有哪些道理，大家不说但心里都明白？',
+			seenum:1616,
+			cnum:1616
+		},{
+			type:'1',
+			status:'进行中',
+			title: '有哪些道理，大家不说你都明白？',
+			seenum:160,
+			cnum:120
+		}
+	]
 	export default{
-		name: 'usecomp'
+		name: 'usecomp',
+		data(){
+			return {
+				prolist:prolist
+			}
+		}
 	}
 </script>
 <style scoped lang="scss">
