@@ -25,7 +25,25 @@
 	</div>
 </template>
 <script type="text/javascript">
-	
+const openid= 'o6_bmjrPTlm6_2sgVt7hMZOPfL2M';
+const nickname= 'tomcat';
+const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0';
+	export default{
+		name:'user',
+		mounted:function(){
+			const user_data = {
+				"openid":openid,
+				"nickName":nickname,
+				"avtarUrl":headimgurl
+			};
+			this.$axios.post('http://192.168.1.148:1337/wxuserinfo',user_data).then(function(res){
+				console.log(res);
+
+			}).catch(function(error){
+				console.log(error);
+			})
+		}
+	}
 </script>
 <style scoped lang='scss'>
 	html,body,div,ul,li,p{

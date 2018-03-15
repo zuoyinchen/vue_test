@@ -10,7 +10,16 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+        '/api':{
+            target:'https://open.weixin.qq.com',
+            changOrigin: true,
+            secure:false,
+            pathRewrite: {
+                '^/api': 'https://open.weixin.qq.com'
+            }
+        }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
