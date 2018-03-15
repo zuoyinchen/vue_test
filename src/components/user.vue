@@ -23,7 +23,6 @@
 
 		<tabnav></tabnav> 
 	</div>
-
 </template>
 <script type="text/javascript">
 	
@@ -35,7 +34,6 @@
 	}
 	html,body{
 		height:100%;
-		margin:0;
 	}
 	$unit:37.5;
 	.userbody{
@@ -98,5 +96,6 @@
 		letter-spacing: 0.18px;
 	}
 	
+
 	
 </style>
