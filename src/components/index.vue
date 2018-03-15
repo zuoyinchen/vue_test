@@ -12,7 +12,13 @@
       <ul class="btn">
           <li v-for="item in msg" :key="item.id">
               <div class="btn_t1">
-                  <img src="" alt="" class="loading">
+                  <!--<img src="" alt="" class="loading"> -->
+                  <div class="loading" v-if="item.status==1">
+                      <p>进行中</p>
+                  </div>
+                  <div class="end" v-else>
+                      <p>已结束</p>
+                  </div>
                   <p>{{item.title}}</p>
                   <ul class="clearfix">
                       <li v-if="item.status==1"><i class="iconfont icon-xianshimima"></i><span>{{item.readNum}}</span><i class="s"></i></li>
@@ -59,6 +65,7 @@
           </li>
           -->
       </ul>
+     
   </div>
 </template>
 <script>
@@ -125,12 +132,32 @@ export default {
     }
     .btn>li{
         width: 345rem/$x;height: 105rem/$x;border: 10rem/$x;box-shadow: 0 2px 6px 0 #dddddd;
-        margin: 20rem/$x auto;border-radius: 10rem/$x;
+        margin: 20rem/$x auto;border-radius: 10rem/$x;overflow: hidden;
     }
     .btn_t1{
         width: 345rem/$x;height: 105rem/$x;position: relative;overflow: hidden;
     }
-    .loading{position: absolute;left: 0;top: 0;}
+    .loading{position: absolute;left: 0;top: 0;width: 0;
+    height: 0;
+    border-top: 50px solid #FDD545;
+    border-right: 50px solid transparent;}
+    .end{position: absolute;left: 0;top: 0;width: 0;
+    height: 0;
+    border-top: 50px solid #666;
+    border-right: 50px solid transparent;}
+    .loading>p{width: 50rem/$x;
+        transform: rotate(-45deg);
+    font-family: STHeitiSC-Medium;
+    font-size: 12rem/$x;
+    color: #333;
+    letter-spacing: -0.29px;text-align: left;position: absolute;left: 0;top:-55rem/$x;}
+    .end>p{width: 50rem/$x;
+        transform: rotate(-45deg);
+    font-family: STHeitiSC-Medium;
+    font-size: 12rem/$x;
+    color: #fff;
+    letter-spacing: -0.29px;text-align: left;position: absolute;left: 0;top:-55rem/$x;}
+
     .btn_t1>p{font-size: 18rem/$x;color: #333333;height: 60rem/$x;width: 256rem/$x;margin: 0 auto;margin-top: 10rem/$x;
    text-align: left;
     }
@@ -143,5 +170,6 @@ export default {
     .btn_t1>ul>li>span{
         margin-left: 10rem/$x;
     }
+    
 </style>
 
