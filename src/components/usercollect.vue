@@ -1,10 +1,10 @@
 <template>
 	<div class="box">
 		<ul class="typelist">
-			<router-link class="active" tag="li" to="/usercollect/usercomp">
+			<router-link class="active" tag="li" to="/usercollect/answer">
 				问题
 			</router-link>
-			<router-link tag="li" to="/usercollect/answer">
+			<router-link tag="li" to="/usercollect/usercomp">
 				评论
 			</router-link>
 		</ul>
@@ -31,6 +31,7 @@
 			margin:0 auto;
 			list-style: none;
 			padding:15rem/$unit 0 15rem/$unit;
+			
 			li{
 				width:80rem/$unit;
 				height:40rem/$unit;
@@ -44,7 +45,7 @@
 				border-left:none;
 				border-radius: 0 20.5px 20.5px 0;
 			}
-			li.active{
+			li.router-link-exact-active{
 				background: #FDD545;
 			}
 		}
