@@ -10,7 +10,7 @@ import Userproject from '@/components/userproject'
 import Usercollect from '@/components/usercollect'
 import Usercomp from '@/components/usercomp'
 import Answer from '@/components/answer'
-
+import paihang from '@/components/paihang'
 
 Vue.use(Router)
 
@@ -19,6 +19,11 @@ export default new Router({
     {path: '/',
     name: 'index',
     component: index
+    },
+    {
+      path:'/paihang',
+      name:'paihang',
+      component:paihang
     },
     {
       path:'/answerDetail',

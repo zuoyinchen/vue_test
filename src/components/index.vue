@@ -30,40 +30,6 @@
                   </ul>
               </div>
           </li>
-       <!--   <li>
-              <div class="btn_t1">
-                  <img src="" alt="" class="loading">
-                  <p>有哪些道理，大家不说但心里都明白？</p>
-                  <ul class="clearfix">
-                      <li><i class="iconfont icon-paihangbang"></i><span>1616</span><i class="s"></i></li>
-                      <li><i class="iconfont icon-wode"></i><span>1616</span><i class="s"></i></li>
-                      <li><i class="iconfont icon-xiaoxi"></i><span>1616</span></li>
-                  </ul>
-              </div>
-          </li>
-          <li>
-              <div class="btn_t1">
-                  <img src="" alt=""  class="loading">
-                  <p>哪一瞬间让你发现贫穷限制了你的想象力？</p>
-                  <ul class="clearfix">
-                      <li><i class="iconfont icon-paihangbang"></i><span>1616</span><i class="s"></i></li>
-                      <li><i class="iconfont icon-wode"></i><span>1616</span><i class="s"></i></li>
-                      <li><i class="iconfont icon-xiaoxi"></i><span>1616</span></li>
-                  </ul>
-              </div>
-          </li>
-          <li>
-              <div class="btn_t1">
-                  <img src="" alt="" class="loading">
-                  <p>你在酒店做过最丧心病狂的事是什么？</p>
-                  <ul class="clearfix">
-                      <li><i class="iconfont icon-paihangbang"></i><span>1616</span><i class="s"></i></li>
-                      <li><i class="iconfont icon-wode"></i><span>1616</span><i class="s"></i></li>
-                      <li><i class="iconfont icon-xiaoxi"></i><span>1616</span></li>
-                  </ul>
-              </div>
-          </li>
-          -->
       </ul>
        <tabnav></tabnav> 
   </div>
@@ -83,7 +49,7 @@ export default {
   created(){
            this.$http.get('//192.168.1.148:1337/topic').then(res=>{
                 this.msg = res.data
-                console.log(res.data);
+               // console.log(res.data);
          });
         }
 }

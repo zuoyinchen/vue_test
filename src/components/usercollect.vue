@@ -1,10 +1,10 @@
 <template>
 	<div class="box">
 		<ul class="typelist">
-			<router-link class="active" tag="li" to="">
+			<router-link class="active" tag="li" to="/usercollect/answer">
 				问题
 			</router-link>
-			<router-link tag="li" to="">
+			<router-link tag="li" to="/usercollect/usercomp">
 				评论
 			</router-link>
 		</ul>
@@ -14,34 +14,10 @@
 	</div>
 </template>
 <script type="text/javascript">
-	const prolist =[
-		{
-			type:'0',
-			status:'已结束',
-			title: '有哪些道理，大家不说但心里都明白？',
-			seenum:1616,
-			cnum:1616
-		},{
-			type:'1',
-			status:'进行中',
-			title: '有哪些道理，大家不说你都明白？',
-			seenum:160,
-			cnum:120
-		},{
-			type: '2',
-			status:'未开始',
-			title: '有哪些道理，大家不说但心里都明白？',
-			seenum:161,
-			cnum:161
-		}
-	]
+	
 	export default{
-		name: 'usercollect',
-		data(){
-			return {
-				prolist:prolist
-			}
-		}
+		name: 'usercollect'
+		
 	}
 </script>
 <style scoped lang="scss">
@@ -55,6 +31,7 @@
 			margin:0 auto;
 			list-style: none;
 			padding:15rem/$unit 0 15rem/$unit;
+			
 			li{
 				width:80rem/$unit;
 				height:40rem/$unit;
@@ -68,7 +45,7 @@
 				border-left:none;
 				border-radius: 0 20.5px 20.5px 0;
 			}
-			li.active{
+			li.router-link-exact-active{
 				background: #FDD545;
 			}
 		}

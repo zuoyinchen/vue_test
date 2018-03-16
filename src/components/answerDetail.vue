@@ -72,7 +72,14 @@ export default {
         return {
             msg:""
         }
+    },
+    beforeCreate(){
+        this.$http.get('//192.168.1.148:1337/topic').then(res=>{
+                this.msg = res.data
+               // console.log(res.data);
+         });
     }
+    
 }
 </script>
 <style lang="scss" scoped>
