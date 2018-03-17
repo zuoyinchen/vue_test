@@ -30,7 +30,7 @@
   		}
 	}
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 	$unit:37.5;
 	.nav-wrap{
 		width:100%;

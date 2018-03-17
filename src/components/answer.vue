@@ -25,7 +25,6 @@
         </ul>
     </div>
 </template>
-
 <script>
     const prolist =[
         {
