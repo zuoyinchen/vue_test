@@ -2,15 +2,15 @@
 	<div class="nav-wrap" v-if="barshow">
 		<ul class="tabnav">
 			<router-link tag="li" to="/">
-				<i class="iconfont	icon-wode"></i>
+				<i class="iconfont icon-pan_icon"></i>
 				<span>首页</span>
 			</router-link>
 			<router-link tag="li" to="/paihang">
-				<i class="iconfont	icon-wode"></i>
+				<i class="iconfont icon-jiangbei"></i>
 				<span>排行榜</span>
 			</router-link>
 			<router-link tag="li" to="/user">
-				<i class="iconfont icon-wode"></i>
+				<i class="iconfont icon-tubiaolunkuo-"></i>
 				<span>我的</span>
 			</router-link>
 
@@ -38,7 +38,8 @@
 		position: fixed;
 		left:0;
 		bottom:0;
-		background:#fff;
+		background: #FFFFFF;
+		box-shadow: 0 2px 6px 0 #DDDDDD;
 	}
 	.tabnav{
 		width:375rem/$unit;

@@ -12,6 +12,7 @@ import Usercomp from '@/components/usercomp'
 import Answer from '@/components/answer'
 import paihang from '@/components/paihang'
 
+
 Vue.use(Router)
 
 export default new Router({
@@ -43,10 +44,10 @@ export default new Router({
       component:Usercollect,
       children: [
         {
-          path: '/usercomp',
+          path: '/usercollect/usercomp',
           component: Usercomp
         },{
-          path: '/answer',
+          path: '/usercollect/answer',
           component: Answer
         }
       ]

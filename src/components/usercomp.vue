@@ -52,7 +52,7 @@
 
 		li{
 			width:100%;
-		    height:105rem/$unit;
+		    min-height:105rem/$unit;
 		    background: #FFFFFF;
 			box-shadow: 0 2px 6px 0 #DDDDDD;
 			border-radius: 10px;
