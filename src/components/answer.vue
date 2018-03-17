@@ -7,7 +7,7 @@
                     <span class="status-bac status-bac-yellow" v-else-if="item.type==='1'"></span>
                     <span class="status-bac status-bac-white" v-else></span>
                     <span class="status">{{item.status}}</span>
-                    <div class="title">{{item.title}}</div>
+                    <p class="title">{{item.title}}</p>
                     <div class="title-infor">
                         <span>
                             <i class="iconfont icon-wode"></i>
@@ -33,6 +33,60 @@
             title: '有哪些道理，大家不说你都明白？',
             seenum:160,
             cnum:120
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
+        },{
+            type: '2',
+            status:'未开始',
+            title: '有哪些道理，大家不说但心里都明白？',
+            seenum:161,
+            cnum:161
         },{
             type: '2',
             status:'未开始',
@@ -116,15 +170,21 @@
     $unit:37.5;
     .container{
         width:100%;
-        height:auto;
-        overflow: hidden;
+        height:100%;
         margin:0 auto;
         list-style: none;
-        padding-top:15rem/$unit;
+        padding-top:70rem/$unit;
+        box-sizing:border-box;
     }
-
+    ul{
+        height:100%;
+        padding:0 15rem/$unit;
+        box-sizing:border-box;
+        overflow-x:hidden;
+        overflow-y: scroll;
+    }
     .list-item{
-        width:345rem/$unit;
+        width:100%;
         height:105rem/$unit;
         margin:0 auto;
         position: relative;
@@ -140,13 +200,9 @@
     }
     
     .list-box{
-        // padding: 0.2rem;
         background: #fff;
-        // display: flex;
-        // align-items: left;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        // justify-content: flex-end;
         position: absolute;
         top: 0;
         right: 0;
@@ -192,20 +248,31 @@
                 top:0;
             }
             .title{
-                width:256rem/$unit;
-                height:44rem/$unit;
+                width:100%;
+                max-height:52rem/$unit;
                 font-family: STHeitiSC-Medium;
                 line-height: 19rem/$unit;
                 font-size: 18px;
                 color: #333333;
                 letter-spacing: 0.22px;
-                margin:15rem/$unit auto 19rem/$unit;
+                padding-left:45rem/$unit;
+                padding-right:20rem/$unit;
+                padding-top:15rem/$unit;
                 text-align:left;
+                box-sizing:border-box;
+                overflow:hidden;
+                text-overflow:ellipsis;
+                display:-webkit-box;
+                -webkit-line-clamp:2;
+                -webkit-box-orient:vertical;
             }
             .title-infor{
-                width:100%;
-                padding-left:15rem/$unit;
+                width:auto;
                 height:auto;
+                overflow: hidden;
+                position: absolute;
+                left:15rem/$unit;
+                bottom:21rem/$unit;
 
             }
             .title-infor>span{
@@ -227,7 +294,7 @@
         line-height: 32rem/$unit;
         position: absolute;
         top:50%;
-        right: -120em/$unit;
+        left: 106%;
         margin-top: -16rem/$unit;
     }
 </style>
