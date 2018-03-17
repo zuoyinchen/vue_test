@@ -30,7 +30,7 @@
                   </ul>
               </div>
           </li>
-       <!--   <li>
+         <li>
               <div class="btn_t1">
                   <img src="" alt="" class="loading">
                   <p>有哪些道理，大家不说但心里都明白？</p>
@@ -63,7 +63,7 @@
                   </ul>
               </div>
           </li>
-          -->
+         
       </ul>
        <tabnav></tabnav> 
   </div>
@@ -81,10 +81,10 @@ export default {
       
   },
   created(){
-           this.$http.get('//192.168.1.148:1337/topic').then(res=>{
-                this.msg = res.data
-                console.log(res.data);
-         });
+         //   this.$http.get('//192.168.1.148:1337/topic').then(res=>{
+         //        this.msg = res.data
+         //        console.log(res.data);
+         // });
         }
 }
 </script>
@@ -136,6 +136,7 @@ export default {
     }
     .btn_t1{
         width: 345rem/$x;height: 105rem/$x;position: relative;overflow: hidden;
+        background: #fff;
     }
     .loading{position: absolute;left: 0;top: 0;width: 0;
     height: 0;

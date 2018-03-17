@@ -7,7 +7,7 @@
 				<span>我参与的场</span>
 				<i class="iconlist-right iconfont icon-youjiantou"></i>
 			</router-link>
-			<router-link tag="li" to="/usercollect">
+			<router-link tag="li" to="/usercollect/answer">
 				<i class="iconlist-left iconstar iconfont icon-shoucang"></i>
 				<span>我的收藏</span>
 				<i class="iconlist-right iconfont icon-youjiantou"></i>
@@ -36,12 +36,12 @@ const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56
 				"nickName":nickname,
 				"avtarUrl":headimgurl
 			};
-			this.$axios.post('http://192.168.1.148:1337/wxuserinfo',user_data).then(function(res){
-				console.log(res);
+			// this.$axios.post('http://192.168.1.148:1337/wxuserinfo',user_data).then(function(res){
+			// 	console.log(res);
 
-			}).catch(function(error){
-				console.log(error);
-			})
+			// }).catch(function(error){
+			// 	console.log(error);
+			// })
 		}
 	}
 </script>
