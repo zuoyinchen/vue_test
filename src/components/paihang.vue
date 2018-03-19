@@ -70,7 +70,9 @@
               <span>12</span>
           </div>
       </div>
+      <tabnav></tabnav>
   </div>
+  
 </template>
 <script>
 export default {
@@ -140,8 +142,8 @@ export default {
     .ctn_r>i{color: #FDD545;}
     
     .my_list{
-        width: 345rem/$x;height: 100%;background: #FDD545;box-shadow: 0 2px 6px 0 #DDDDDD;border-radius: 10px;
-        margin: 0 auto;margin-top: 15rem/$x;
+        width: 345rem/$x;height: 80rem/$x;background: #FDD545;box-shadow: 0 2px 6px 0 #DDDDDD;border-radius: 10px;
+        margin: 0 auto;margin-top: 20rem/$x;
     }
     .my_list_l{
         width: 200rem/$x;float: left;text-align: left;

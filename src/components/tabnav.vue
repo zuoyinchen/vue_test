@@ -13,9 +13,6 @@
 				<i class="iconfont icon-tubiaolunkuo-"></i>
 				<span>我的</span>
 			</router-link>
-
-			
-
 		</ul>
 	</div>
 	
@@ -47,7 +44,7 @@
 		padding:0;
 		display: flex;
 		list-style: none;
-		margin:0 auto;
+		margin:5rem/$unit auto;
 		li{
 			flex:1;
 			float: left;

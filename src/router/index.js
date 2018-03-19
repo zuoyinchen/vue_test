@@ -11,6 +11,7 @@ import Usercollect from '@/components/usercollect'
 import Usercomp from '@/components/usercomp'
 import Answer from '@/components/answer'
 import paihang from '@/components/paihang'
+import answerQuestions from '@/components/answerQuestions'
 
 
 Vue.use(Router)
@@ -30,6 +31,11 @@ export default new Router({
       path:'/answerDetail',
       name:'answerDetail',
       component:answerDetail
+    },
+    {
+      path:'/answerQuestions',
+      name:'answerQuestions',
+      component:answerQuestions
     },{
       path: '/user',
       name: 'user',
@@ -40,7 +46,7 @@ export default new Router({
       component:Userproject
     },{
       path: '/usercollect',
-      name: '/usercollect',
+      name: 'usercollect',
       component:Usercollect,
       children: [
         {
