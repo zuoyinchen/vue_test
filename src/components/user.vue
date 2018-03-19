@@ -19,14 +19,13 @@
 			</router-link>
 
 		</ul>
-
-
 		<tabnav></tabnav> 
 	</div>
 </template>
 <script type="text/javascript">
-const openid= 'o6_bmjrPTlm6_2sgVt7hMZOPfL2M';
-const nickname= 'tomcat';
+const $url = 'http://192.168.1.120:1337';
+const openid= 'oR7BM5bSwd0SssGhYVs162zKxefQ';
+const nickname= '夏晨阳';
 const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0';
 	export default{
 		name:'user',
@@ -36,12 +35,11 @@ const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56
 				"nickName":nickname,
 				"avtarUrl":headimgurl
 			};
-			// this.$axios.post('http://192.168.1.148:1337/wxuserinfo',user_data).then(function(res){
-			// 	console.log(res);
-
-			// }).catch(function(error){
-			// 	console.log(error);
-			// })
+			this.$axios.get($url+'/wxuserinfo',{params:user_data}).then(function(res){
+				localStorage.setItem("userid",res.data);
+			}).catch(function(error){
+				console.log(error);
+			})
 		}
 	}
 </script>
@@ -59,6 +57,7 @@ const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56
 		height:100%;
 		overflow: hidden;
 		padding-bottom:49rem/$unit;
+		box-sizing:border-box;
 	}
 	.userpic{
 		width:375rem/$unit;

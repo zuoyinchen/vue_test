@@ -1,17 +1,17 @@
 <template>
 	<div class="container">
 		<ul>
-			<li class="list-item"v-for="(item,index) in prolist" data-type="0">
+			<li class="list-item" v-for="(item,index) in prolist"  data-type="0">
 				<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
-					<p class="title">{{item.title}}</p>
-					<p class="t_componet">{{item.t_componet}}</p>
+					<p class="title">{{item.topic.title}}</p>
+					<p class="t_componet">{{item.body}}</p>
 					<p class="title-infor">
 						<span>
-							<span class="seenum">{{item.seenum}}</span>
+							<span class="seenum">{{item.comments.length}}</span>
 							人回答
 						</span>
 						<span>
-							<span class="componet-num">{{item.cnum}}</span>
+							<span class="componet-num">{{item.stars.length}}</span>
 							人收藏
 						</span>
 					</p>
@@ -19,59 +19,13 @@
 				</div>
 				<div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index">
 	            </div>
-
 			</li>
 		</ul>
 	</div>
 </template>
 <script type="text/javascript">
 	const prolist =[
-		{
-			title: '你妈打你前，都说什么开场白？',
-			t_componet:'开场白？耳光太响没听清。',
-			seenum:16,
-			cnum:16
-		},{
-			title: '有哪些道理，大家不说但心里都明白？',
-			t_componet:'在成人的社交礼仪里，没有语气坚定地提出，就是客套的意思。',
-			seenum:160,
-			cnum:120
-		},{
-			title: '有哪些道理，大家不说但心里都明白？',
-			t_componet:'在成人的社交礼仪里，没有语气坚定地提出，就是客套的意思。',
-			seenum:160,
-			cnum:120
-		},{
-			title: '有哪些道理，大家不说但心里都明白？',
-			t_componet:'在成人的社交礼仪里，没有语气坚定地提出，就是客套的意思。',
-			seenum:160,
-			cnum:120
-		},{
-			title: '有哪些道理，大家不说但心里都明白？',
-			t_componet:'在成人的社交礼仪里，没有语气坚定地提出，就是客套的意思。',
-			seenum:160,
-			cnum:120
-		},{
-			title: '有哪些道理，大家不说但心里都明白？',
-			t_componet:'在成人的社交礼仪里，没有语气坚定地提出，就是客套的意思。',
-			seenum:160,
-			cnum:120
-		},{
-			title: '有哪些道理，大家不说但心里都明白？',
-			t_componet:'在成人的社交礼仪里，没有语气坚定地提出，就是客套的意思。',
-			seenum:160,
-			cnum:120
-		},{
-			title: '有哪些道理，大家不说但心里都明白？',
-			t_componet:'在成人的社交礼仪里，没有语气坚定地提出，就是客套的意思。',
-			seenum:160,
-			cnum:120
-		},{
-			title: '有哪些道理，大家不说但心里都明白？',
-			t_componet:'在成人的社交礼仪里，没有语气坚定地提出，就是客套的意思。',
-			seenum:160,
-			cnum:120
-		}
+		
 	]
 	export default{
 		name: 'usecomp',
@@ -87,8 +41,6 @@
             skip(){
                 if( this.checkSlide() ){
                     this.restSlide();
-                }else{
-                    alert('You click the slide!')
                 }
             },
             //滑动开始
@@ -137,9 +89,19 @@
             deleteItem(e){
                 let index = e.currentTarget.dataset.index;
                 this.restSlide();
-                console.log(this.list);
                 this.prolist.splice(index,1);
             }
+        },
+        beforeCreate:function(){
+        	const $url = 'http://192.168.1.120:1337';
+            //获取收藏的问题
+            const $userid = localStorage.getItem("userid");//userid
+            const data ={userid:$userid} 
+            this.$axios.get($url+'/answer',{params:data}).then((res)=>{
+                this.prolist = res.data;
+            }).catch(function(error){
+                console.log(error);
+            })
         }
 	}
 </script>
