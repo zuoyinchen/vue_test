@@ -45,6 +45,7 @@
       </ul>
       <tabnav></tabnav>
   </div>
+  
 </template>
 <script>
 export default {

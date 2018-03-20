@@ -6,57 +6,55 @@
       </div>
       <div class="theme">
           <p class="theme_t">
-              你妈打你前，都说什么开场白？
+              {{$route.params.title}}
           </p>
           <div class="theme_b clearfix">
               <div class="theme_b_l">
                   <div>
                       <i class="iconfont icon-wode"></i>
-                      <span>1313</span>
+                      <span>{{$route.params.readNum}}</span>
                   </div>
                   <div>
                       <i class="iconfont icon-pinglun"></i>
-                      <span>1313</span>
+                      <span>{{$route.params.toAnswer}}</span>
                   </div>
               </div>
               <div class="theme_b_r">
-                  <p>立即抢答</p>
+                  <router-link tag="p" :to="{name:'answerQuestions'}">
+                       <p>立即抢答</p>
+                  </router-link>
+                  
               </div>
           </div>
       </div>
       <ul class="ctn">
-          <li class="clearfix">
+          <li class="clearfix" v-for="(item,index) in msg" :key="item.id">
               <div class="ctn_l">
-                  <i>1</i>
+                  <i>{{index+1}}</i>
                   <img src="" alt="">
               </div>
               <div class="ctn_r">
                   <div>
-                      <span>李强</span>
+                      <span v-if="item.createdBy==null">{{'匿名用户'}}</span>
+                      <span v-else>{{item.createdBy.username}}</span>
                       <i class="iconfont icon-fenxiang"></i>
                       <i class="iconfont icon-shoucang1"></i>
                   </div>
                   <p>
-                      开场白？耳光太响没听清反对撒方式方法反反复复反反复复
-                      反对撒方式方法反反复复反反复复
-                      反对撒方式方法反反复复反反复复
-                      反对撒方式方法反反复复反反复复
-                      反对撒方式方法反反复复反反复复
-
-                      反对撒方式方法反反复复反反复复
+                      {{item.body}}
                   </p>
                   <div class="clearfix">
                       <div>
-                          <span>2018-1-29 13:13</span>
+                          <span>{{item.createdAt}}</span>
                       </div>
                       <div class="clearfix">
                           <div>
                               <i class="iconfont icon-dianzan"></i>
-                              <span>1212</span>
+                              <span>{{item.topic.upVotes}}</span>
                           </div>
                           <div>
                               <i class="iconfont icon-pinglun"></i>
-                              <span>1313</span>
+                              <span>{{item.topic.readNum}}</span>
                           </div>
                       </div>
                   </div>
@@ -70,13 +68,14 @@ export default {
     name:"answerDetail",
     data(){
         return {
-            msg:""
+            msg:[],
+            users:[]
         }
     },
     beforeCreate(){
-        this.$http.get('//192.168.1.148:1337/topic').then(res=>{
+        this.$http.get('//192.168.1.107:1337/answer').then(res=>{
                 this.msg = res.data
-               // console.log(res.data);
+                
          });
     }
     
