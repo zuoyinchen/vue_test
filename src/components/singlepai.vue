@@ -1,21 +1,16 @@
 <template>
-  <div class="box">
-      <div class="top">
-          <div class="top_img">
-              <img src="../assets/images/worldlist.png" alt=
-              "" v-if="iswho == 0">
-              <img src="../assets/images/friendList.png" alt="" v-else>
-          </div>
-          <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
-            切换好友榜
-          </div>
-           <div class="top_btn" @click="this.getWorld"v-else>
-            切换世界榜
-          </div>
-
-      </div>
-      
-      <ul class="paihang_list">
+	<div class="box">
+		<div class="top">
+          <div class="top_name">单场榜</div>
+          <p class="top_answer">
+          	<span>
+	          	<i class="lefticon iconfont icon-baojiaquotation2"></i>
+	          	<i class="righticon iconfont icon-baojiaquotation"></i>
+          	</span>
+          	<span class="answer_con">你妈打你前，都说什么开场白？</span>
+          </p>
+      	</div>
+      	<ul class="paihang_list">
           <li class="ctn clearfix" v-for="(item,index) in pailist">
               <div class="ctn_l clearfix">
                   <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
@@ -43,125 +38,61 @@
           </div>
           <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
       </ul>
-      <tabnav></tabnav>
-  </div>
+	</div>
 </template>
-<script>
-export default {
-  name:'paihang',
-  data(){
-      return {
-        pailist:[
-          {
-            nickname:'1111',
-            upVotes:22
+<script type="text/javascript">
+	export default {
+		name : 'singlepai',
+		data(){
+			return {
+				pailist:[
+		          {
+		            nickName:'1111',
+		            upVotes:22
 
-          },{
-            nickname:'222',
-            upVotes:20
-          },{
-            nickname:'小小鱼',
-            upVotes:24
-          },{
-            nickname:'骑着扫把的小猪',
-            upVotes:24
-          }
-        ],
-        iswho:0,
-        myavtalUrl:'',
-        myStar:0,
-        myGrade:'-'
-      }
-  },
-  methods:{
-    getWorld:function(){
-      this.iswho = 0;
-      console.log(this.iswho);
-      const $url = 'http://192.168.1.120:1337';
-      //获取世界榜
-      const $userid = localStorage.getItem("userid");//userid
-      const data ={userid:$userid} 
-      this.$axios.get($url+'/rank').then((res)=>{
-          console.log(res);
-          this.pailist =res.data;
-          const idarr = [];
-          for(let i=0;i<this.pailist.length;i++){
-            idarr.push(this.pailist[i].id);
-          }
-          if(idarr.indexOf($userid) != -1){
-            const myindex = idarr.indexOf($userid);
-            this.myGrade = Number(idarr.indexOf($userid))+1;
-            this.myStar = this.pailist[myindex].upVotes;
-            this.myavtalUrl = this.pailist[myindex].avatarUrl;
-          }else{
-            this.myGrade ='-';
-            this.myStar = 0;
-            this.myavtalUrl = localStorage.getItem("headimg");
-          }
-      }).catch(function(error){
-          console.log(error);
-      })
-    },
-    getFriend:function(){
-      this.iswho = 1;
-      console.log(this.iswho);
-      console.log("好友榜");
-      const $url = 'http://192.168.1.120:1337';
-      //获取世界榜
-      const $userid = localStorage.getItem("userid");//userid
-      const data ={search: { createdBy:$userid} }
-      this.$axios.get($url+'/friend',{params:data}).then((res)=>{
-          res.data = [];
-          if(res.data && res.data.length){
-            console.log(11);
-            console.log(res.data.length);
-            this.pailist =res.data;
-          }else{
-            this.pailist = [];
-            this.myGrade ='-';
-            this.myStar = 0;
-            this.myavtalUrl = localStorage.getItem("headimg");
-          }
-         
-      }).catch(function(error){
-          console.log(error);
-      });
-      //获取我的排名
-
-    }
-
-  },  
-  beforeCreate:function(){
-    console.log("世界榜");
-    const $url = 'http://192.168.1.120:1337';
-    //获取世界榜
-    const $userid = localStorage.getItem("userid");//userid
-    const data ={userid:$userid} 
-    this.$axios.get($url+'/rank').then((res)=>{
-        this.pailist =res.data;
-        const idarr = [];
-        for(let i=0;i<this.pailist.length;i++){
-          idarr.push(this.pailist[i].id);
-        }
-        if(idarr.indexOf($userid) != -1){
-          const myindex = idarr.indexOf($userid);
-          this.myGrade = Number(idarr.indexOf($userid))+1;
-          this.myStar = this.pailist[myindex].upVotes;
-          this.myavtalUrl = this.pailist[myindex].avatarUrl;
-        }else{
-          this.myGrade ='-';
-          this.myStar = 0;
-          this.myavtalUrl = '';
-        }
-    }).catch(function(error){
-        console.log(error);
-    });
-
-  }
-}
+		          },{
+		            nickName:'222',
+		            upVotes:20
+		          },{
+		            nickName:'小小鱼',
+		            upVotes:24
+		          },{
+		            nickName:'骑着扫把的小猪',
+		            upVotes:24
+		          }
+		        ],
+		        myavtalUrl:'',
+		        myStar:0,
+		        myGrade:'-'
+			}
+		},
+		beforeCreate:function(){
+		    const $url = 'http://192.168.1.120:1337';
+		    // const data ={userid:$userid} 
+		    // this.$axios.get($url+'/rank').then((res)=>{
+		    //     this.pailist =res.data;
+		    //     const idarr = [];
+		    //     for(let i=0;i<this.pailist.length;i++){
+		    //       idarr.push(this.pailist[i].id);
+		    //     }
+		    //     if(idarr.indexOf($userid) != -1){
+		    //       const myindex = idarr.indexOf($userid);
+		    //       this.myGrade = Number(idarr.indexOf($userid))+1;
+		    //       this.myStar = this.pailist[myindex].upVotes;
+		    //       this.myavtalUrl = this.pailist[myindex].avatarUrl;
+		    //     }else{
+		    //       this.myGrade ='-';
+		    //       this.myStar = 0;
+		    //       this.myavtalUrl = '';
+		    //     }
+		    // }).catch(function(error){
+		    //     console.log(error);
+		    // });
+		}
+	}
 </script>
-<style lang="scss" scoped>
-    $x:37.5;
+<style lang="scss">
+	$x:37.5;
     .clearfix:after {
       content: "";
       display: block;
@@ -198,35 +129,43 @@ export default {
         top:-173.5rem/$x;
         z-index: 5;
     }
-    .top_title{
-        width: 175rem/$x;height: 44rem/$x;margin: 0 auto;
+    .top_name{
+    	font-family: STHeitiSC-Medium;
+		font-size: 14px;
+		color: #333333;
+		letter-spacing: 0.43px;
     }
-    .top_title>div{
-        font-family: AppleSystemUIFont;
-        font-size: 17px;color: #030303;letter-spacing: -0.41px;
+    .top_answer{
+    	width:100%;
+    	height:48rem/$x;
+    	font-family: STHeitiSC-Medium;
+		font-size: 18px;
+		color: #333333;
+		letter-spacing: 0.22px;
+		// line-height: 48rem/$x;
+		padding:0 60rem/$x;
+		box-sizing:border-box;
+
+
     }
-    .top_img{
-        width: 275rem/$x;
-        height: 51rem/$x;
-        padding-top:8rem/$x;
-        box-sizing:border-box;
-        margin: 0 auto;
-        margin-bottom:10rem/$x;
-        
+    .top_answer span{
+    	display: inline-block;
+    	width:100%;
     }
-    .top_img>img{
-        width: 186rem/$x;
-        height: 44rem/$x;
+    .top_answer span .lefticon{
+    	float: left;
     }
-    .top_btn{
-      width: 75rem/$x;
-      height: 20rem/$x;
-      border: 1px solid #333333;
-      border-radius: 100rem/$x;
-      margin: 0 auto;
-      font-size:8px;
-      text-align: center;
-      line-height: 20rem/$x;
+    .top_answer span .righticon{
+    	float: right;
+    }
+    .top_answer .answer_con{
+    	width: 100%;
+    	padding:0 15rem/$x;
+    	box-sizing:border-box;
+    	text-align: center;
+    	overflow: hidden;
+		text-overflow:ellipsis;
+		white-space: nowrap;
     }
     .paihang_list{
       width:100%;
@@ -317,5 +256,5 @@ export default {
     .my_list_r>span:nth-of-type(1){
         
     }
-</style>
 
+</style>

@@ -27,6 +27,7 @@ const $url = 'http://192.168.1.120:1337';
 const openid= 'oR7BM5bSwd0SssGhYVs162zKxefQ';
 const nickname= '夏晨阳';
 const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0';
+localStorage.setItem('headimg',headimgurl);
 	export default{
 		name:'user',
 		mounted:function(){

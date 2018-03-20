@@ -11,15 +11,22 @@ import Usercollect from '@/components/usercollect'
 import Usercomp from '@/components/usercomp'
 import Answer from '@/components/answer'
 import paihang from '@/components/paihang'
+import singlepai from '@/components/singlepai'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    {path: '/',
-    name: 'index',
-    component: index
+    {
+      path: '/',
+      name: 'index',
+      component: index
+    },
+    {
+      path:'/singlepai',
+      name:'singlepai',
+      component: singlepai
     },
     {
       path:'/paihang',
