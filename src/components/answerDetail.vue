@@ -1,8 +1,12 @@
 <template>
   <div class="box">
       <div class="countdown">
-          <span>倒计时</span>
-          <span>7:59</span>
+            <span class="counttest">倒计时</span>
+            <span>
+                <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                </countdown>
+            </span>
       </div>
       <div class="theme">
           <p class="theme_t">
@@ -31,7 +35,8 @@
           <li class="clearfix" v-for="(item,index) in msg" :key="item.id">
               <div class="ctn_l">
                   <i>{{index+1}}</i>
-                  <img src="" alt="">
+            <!--      <img v-if="item.createdBy.avatarUrl.length<0" src="" alt="">    -->
+                  <img src="item.createdBy.avatarUrl" alt="">
               </div>
               <div class="ctn_r">
                   <div>
@@ -69,13 +74,14 @@ export default {
     data(){
         return {
             msg:[],
-            users:[]
+            users:[],
+            
         }
     },
     beforeCreate(){
-        this.$http.get('//192.168.1.107:1337/answer').then(res=>{
+        this.$http.get('//192.168.1.108:1337/answer').then(res=>{
                 this.msg = res.data
-                
+                console.log(res.data)
          });
     }
     
@@ -83,6 +89,16 @@ export default {
 </script>
 <style lang="scss" scoped>
     $x:37.5;
+    .countdown{font-family: STHeitiSC-Medium;
+font-size: 14px;
+color: #333333;
+letter-spacing: -0.39px;}
+    .counttest{
+        font-family: STHeitiSC-Medium;
+font-size: 14px;
+color: #333333;
+letter-spacing: -0.39px;
+    }
     .clearfix:after {
     content: "";
     display: block;

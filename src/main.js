@@ -9,6 +9,8 @@ import axios from 'axios'
 import global_data from './components/global'//引入全局变量
 import tabnav from './components/tabnav'//全局tabnav
 import VueResource from 'vue-resource'
+import VueCountdown from '@xkeshi/vue-countdown'
+Vue.component('countdown', VueCountdown);
 // 按需引入部分mint ui中的组件
 import {CellSwipe} from 'mint-ui'
 Vue.use(VueResource);

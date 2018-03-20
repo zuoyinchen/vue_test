@@ -1,8 +1,12 @@
 <template>
   <div class="box">
        <div class="countdown">
-          <span>倒计时</span>
-          <span>7:59</span>
+          <span class="counttest">倒计时</span>
+          <span>
+                <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                        <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                </countdown>
+          </span>
       </div>
       <div class="btn">
           <p>你妈在打你前,都说什么开场白？</p>
@@ -24,6 +28,16 @@ export default {
 </script>
 <style lang="scss" scoped>
     $x:37.5;
+    .countdown{font-family: STHeitiSC-Medium;
+font-size: 14px;
+color: #333333;
+letter-spacing: -0.39px;}
+    .counttest{
+        font-family: STHeitiSC-Medium;
+font-size: 14px;
+color: #333333;
+letter-spacing: -0.39px;
+    }
     .clearfix:after {
     content: "";
     display: block;

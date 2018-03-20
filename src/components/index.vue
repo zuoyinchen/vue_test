@@ -2,8 +2,12 @@
   <div class="box">
       <div class="nav clearfix">
           <div>
-              <span>下场开始时间</span>
-              <span>13:13</span>
+            <span class="counttest">下场开始时间</span>
+            <span>
+                <countdown :time="60 * 60 * 1000" class="countdown">
+                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                </countdown>
+            </span>
           </div>
           <div>
               <span><a href="">游戏规则</a></span>
@@ -27,7 +31,14 @@
                       <li v-else><i class="iconfont icon-paihangbang"></i><span>排行榜</span><i class="s"></i></li>
                       <li v-if="item.status==1"><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span><i class="s"></i></li>
                       <li v-else><i class="iconfont icon-wode"></i><span>{{item.readNum}}</span><i class="s"></i></li>
-                      <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1"><i></i><span>倒计时</span><span>12:59</span></li>
+                      <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
+                          <i></i>   <span class="counttest">倒计时</span>
+                                    <span>
+                                        <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                                        </countdown>
+                                    </span>
+                      </li>
                       <li style="border-bottom-right-radius: 10px;" v-else><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span></li>
                   </ul>
               </div>
@@ -38,6 +49,10 @@
       
          
       </ul>
+        
+  <!--      <countdown :time="3 * 24 * 60 * 60 * 1000" class="ss">
+  <template slot-scope="props" >Time Remaining：{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds.</template>
+</countdown>  -->
        <tabnav></tabnav> 
   </div>
 </template>
@@ -47,14 +62,16 @@ export default {
   data(){
       return {
           msg:[],
-          
+         
       }
   },
   methods:{
-      
+       countdoen:function(){
+
+       }
   },
   created(){
-            this.$http.get('//192.168.1.107:1337/topic').then(res=>{
+            this.$http.get('//192.168.1.108:1337/topic').then(res=>{
                  this.msg = res.data
                 
           });
@@ -62,6 +79,16 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+    .countdown{font-family: STHeitiSC-Medium;
+font-size: 14px;
+color: #333333;
+letter-spacing: -0.39px;}
+    .counttest{
+        font-family: STHeitiSC-Medium;
+font-size: 14px;
+color: #333333;
+letter-spacing: -0.39px;
+    }
     $x:37.5;
     .clearfix:after {
     content: "";
