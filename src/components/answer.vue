@@ -1,21 +1,23 @@
 <template>
     <div class="container">
         <ul>
-            <li class="list-item " v-for="(item,index) in prolist " data-type="0">
+            <li class="list-item" v-for="(item,index) in prolist " data-type="0">
                 <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
-                    <span class="status-bac" v-if="item.type==='0'"></span>
-                    <span class="status-bac status-bac-yellow" v-else-if="item.type==='1'"></span>
-                    <span class="status-bac status-bac-white" v-else></span>
-                    <span class="status">{{item.status}}</span>
-                    <div class="title">{{item.title}}</div>
+                    <span class="status-bac status-bac-yellow" v-if="item.status== 1"></span>
+                    <span class="status-bac" v-else></span>
+                    <span class="status status_yell" v-if="item.status== 1">进行中</span>
+                    <span class="status" v-else>已结束</span>
+                    <router-link tag="p" class="title" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.messageNum+''}}">
+                        {{item.title}}
+                    </router-link>
                     <div class="title-infor">
                         <span>
-                            <i class="iconfont icon-wode"></i>
-                            <span class="seenum">{{item.seenum}}</span>
+                            <i class="iconfont icon-xianshimima"></i>
+                            <span class="seenum">{{item.readNum}}</span>
                         </span>
                         <span>
                             <i class="iconfont icon-pinglun"></i>
-                            <span class="componet-num">{{item.cnum}}</span>
+                            <span class="componet-num">{{item.messageNum}}</span>
                         </span>
                     </div>
                 </div>
@@ -28,17 +30,10 @@
 <script>
     const prolist =[
         {
-            type:'1',
-            status:'进行中',
+            status:1,
             title: '有哪些道理，大家不说你都明白？',
-            seenum:160,
-            cnum:120
-        },{
-            type: '2',
-            status:'未开始',
-            title: '有哪些道理，大家不说但心里都明白？',
-            seenum:161,
-            cnum:161
+            readNum:160,
+            messageNum:120
         }
     ]
     export default{
@@ -55,8 +50,6 @@
             skip(){
                 if( this.checkSlide() ){
                     this.restSlide();
-                }else{
-                    alert('You click the slide!')
                 }
             },
             //滑动开始
@@ -105,9 +98,21 @@
             deleteItem(e){
                 let index = e.currentTarget.dataset.index;
                 this.restSlide();
-                console.log(this.list);
                 this.prolist.splice(index,1);
             }
+            
+        },
+        beforeCreate:function(){
+            const $url = 'http://192.168.1.120:1337';
+            //获取收藏的问题
+            const $userid = localStorage.getItem("userid");//userid
+            const data ={userid:$userid } 
+            console.log(data);
+            this.$axios.get($url+'/topics',{params:data}).then((res)=>{
+                this.prolist = res.data;
+            }).catch(function(error){
+                console.log(error);
+            })
         }
     }
 </script>
@@ -116,15 +121,21 @@
     $unit:37.5;
     .container{
         width:100%;
-        height:auto;
-        overflow: hidden;
+        height:100%;
         margin:0 auto;
         list-style: none;
-        padding-top:15rem/$unit;
+        padding-top:70rem/$unit;
+        box-sizing:border-box;
     }
-
+    ul{
+        height:100%;
+        padding:0 15rem/$unit;
+        box-sizing:border-box;
+        overflow-x:hidden;
+        overflow-y: scroll;
+    }
     .list-item{
-        width:345rem/$unit;
+        width:100%;
         height:105rem/$unit;
         margin:0 auto;
         position: relative;
@@ -140,13 +151,9 @@
     }
     
     .list-box{
-        // padding: 0.2rem;
         background: #fff;
-        // display: flex;
-        // align-items: left;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        // justify-content: flex-end;
         position: absolute;
         top: 0;
         right: 0;
@@ -160,52 +167,66 @@
         border-radius: 10px;
 
         .status-bac{
-                display:inline-block;
-                width:0;
-                height:0;
-                border-width: 25rem/$unit;
-                border-color: #666 transparent transparent #666;
-                border-style: solid;
-                border-top-left-radius: 10px;
-                position: absolute;
-                left:0;
-                top:0;
-            }
-            .status-bac.status-bac-yellow{
-                border-color:#FDD545 transparent transparent #FDD545;
-            }
-            .status-bac.status-bac-white{
-                border-color:#fff transparent transparent #fff;
-            }
+            display:inline-block;
+            width:0;
+            height:0;
+            border-width: 25rem/$unit;
+            border-color: #666 transparent transparent #666;
+            border-style: solid;
+            border-top-left-radius: 10px;
+            position: absolute;
+            left:0;
+            top:0;
+        }
+        .status{
+            display: inline-block;
+            line-height: 33.9rem/$unit;
+            text-align: center;
+            transform: rotate(-45deg);
+            font-family: STHeitiSC-Medium;
+            font-size: 12px;
+            color: #FFFFFF;
+            letter-spacing: -0.29px;
+            position: absolute;
+            left:0;
+            top:0;
+        }
+        .status.status_yell{
+            color:#333;
+        }
+        .status-bac.status-bac-yellow{
+            border-color:#FDD545 transparent transparent #FDD545;
+        }
+        .status-bac.status-bac-white{
+            border-color:#fff transparent transparent #fff;
+        }
 
-            .status{
-                display: inline-block;
-                line-height: 33.9rem/$unit;
-                text-align: center;
-                transform: rotate(-45deg);
-                font-family: STHeitiSC-Medium;
-                font-size: 12px;
-                color: #FFFFFF;
-                letter-spacing: -0.29px;
-                position: absolute;
-                left:0;
-                top:0;
-            }
             .title{
-                width:256rem/$unit;
-                height:44rem/$unit;
+                width:100%;
+                max-height:52rem/$unit;
                 font-family: STHeitiSC-Medium;
                 line-height: 19rem/$unit;
                 font-size: 18px;
                 color: #333333;
                 letter-spacing: 0.22px;
-                margin:15rem/$unit auto 19rem/$unit;
+                padding-left:45rem/$unit;
+                padding-right:20rem/$unit;
+                padding-top:15rem/$unit;
                 text-align:left;
+                box-sizing:border-box;
+                overflow:hidden;
+                text-overflow:ellipsis;
+                display:-webkit-box;
+                -webkit-line-clamp:2;
+                -webkit-box-orient:vertical;
             }
             .title-infor{
-                width:100%;
-                padding-left:15rem/$unit;
+                width:auto;
                 height:auto;
+                overflow: hidden;
+                position: absolute;
+                left:15rem/$unit;
+                bottom:21rem/$unit;
 
             }
             .title-infor>span{
@@ -227,7 +248,7 @@
         line-height: 32rem/$unit;
         position: absolute;
         top:50%;
-        right: -120em/$unit;
+        left: 106%;
         margin-top: -16rem/$unit;
     }
 </style>

@@ -34,40 +34,9 @@ new Vue({
           "appid":'wxdd66d0fb17f10a3f',
           "secret":'b78ac62d9a399570a2485dc90aa9141c'
         }
-        //获取普通token
-        // $.ajax({
-        //   url:'https://api.weixin.qq.com/cgi-bin/token',
-        //   data:base_data,
-        //   type:'GET',
-        //   dataType:'jsonp',
-        //   beforeSend: function(xhr) {
-        //       xhr.setRequestHeader("Access-Toke");
-        //   },
-        //   success:function(res){
-        //     console.log(res);
-        //   },
-        //   fail:function(error,errorval){
-        //     console.log(error);
-        //   }
-        // });
-        // this.$http.post('https://api.weixin.qq.com/cgi-bin/token', base_data, {
-        //     headers : {
-        //         'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
-        //     }
-        // }).then(function(res){
-        //   console.log(res);
-        // });
+        
         
     }
-    // getPowertoken:function(){
-    //   let data ={
-    //     "appid":'wxdd66d0fb17f10a3f',
-    //     "redirect_url": 'https://creek.xin/eguess',
-    //     "response_type":'code',
-    //     "scope": 'snsapi_userinfo',
-    //     "#wechat_redirect":''
-    //   }
-    // }
   },
   mounted:function(){
     this.getBasetoken();

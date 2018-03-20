@@ -37,6 +37,7 @@
 		bottom:0;
 		background: #FFFFFF;
 		box-shadow: 0 2px 6px 0 #DDDDDD;
+		z-index: 2;
 	}
 	.tabnav{
 		width:375rem/$unit;
