@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<ul>
-			<li class="list-item" v-for="(item,index) in prolist"  data-type="0">
+			<router-link tag="li" to="" class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
 				<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
 					<p class="title">{{item.topic.title}}</p>
 					<p class="t_componet">{{item.body}}</p>
@@ -19,7 +19,7 @@
 				</div>
 				<div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index">
 	            </div>
-			</li>
+			</router-link>
 		</ul>
 	</div>
 </template>

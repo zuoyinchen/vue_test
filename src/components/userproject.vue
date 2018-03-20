@@ -11,10 +11,10 @@
                         {{item.title}}
                     </router-link>
 				<ul class="clearfix">
-                  <li v-show="item.status==2">
-                  	<i class="iconfont icon-paihangbang"></i>
+				  <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+''}}"v-show="item.status==2">
+				  	<i class="iconfont icon-paihangbang"></i>
                   	<span>排行榜</span>
-                  </li>
+				  </router-link>
                   <li>
                   	<i class="iconfont icon-xianshimima"></i>
                   	<span>{{item.readNum}}</span>
@@ -23,7 +23,7 @@
                   	<i class="iconfont icon-pinglun"></i>
                   	<span>{{item.messageNum}}</span>
                   </li>
-                  <li class="time" v-if="item.status==1">
+                  <li class="time" v-show="item.status==1">
                   	<i></i>
                   	<span>倒计时</span>
                   	<span>12:59</span>

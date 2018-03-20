@@ -43,6 +43,7 @@
           </div>
           <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
       </ul>
+      
       <tabnav></tabnav>
   </div>
   
@@ -77,24 +78,28 @@ export default {
   methods:{
     getWorld:function(){
       this.iswho = 0;
-      console.log(this.iswho);
       const $url = 'http://192.168.1.120:1337';
       //获取世界榜
       const $userid = localStorage.getItem("userid");//userid
-      const data ={userid:$userid} 
       this.$axios.get($url+'/rank').then((res)=>{
-          console.log(res);
-          this.pailist =res.data;
-          const idarr = [];
-          for(let i=0;i<this.pailist.length;i++){
-            idarr.push(this.pailist[i].id);
-          }
-          if(idarr.indexOf($userid) != -1){
-            const myindex = idarr.indexOf($userid);
-            this.myGrade = Number(idarr.indexOf($userid))+1;
-            this.myStar = this.pailist[myindex].upVotes;
-            this.myavtalUrl = this.pailist[myindex].avatarUrl;
+          if(res.data && res.data.length){
+            this.pailist =res.data;
+            const idarr = [];
+            for(let i=0;i<this.pailist.length;i++){
+              idarr.push(this.pailist[i].id);
+            }
+            if(idarr.indexOf($userid) != -1){
+              const myindex = idarr.indexOf($userid);
+              this.myGrade = Number(idarr.indexOf($userid))+1;
+              this.myStar = this.pailist[myindex].upVotes;
+              this.myavtalUrl = this.pailist[myindex].avatarUrl;
+            }else{
+              this.myGrade ='-';
+              this.myStar = 0;
+              this.myavtalUrl = localStorage.getItem("headimg");
+            }
           }else{
+            this.pailist = [];
             this.myGrade ='-';
             this.myStar = 0;
             this.myavtalUrl = localStorage.getItem("headimg");
@@ -105,35 +110,40 @@ export default {
     },
     getFriend:function(){
       this.iswho = 1;
-      console.log(this.iswho);
-      console.log("好友榜");
       const $url = 'http://192.168.1.120:1337';
-      //获取世界榜
+      //获取好友榜
       const $userid = localStorage.getItem("userid");//userid
-      const data ={search: { createdBy:$userid} }
+      const data ={search: {id:$userid} }
       this.$axios.get($url+'/friend',{params:data}).then((res)=>{
-          res.data = [];
-          if(res.data && res.data.length){
-            console.log(11);
-            console.log(res.data.length);
-            this.pailist =res.data;
-          }else{
-            this.pailist = [];
-            this.myGrade ='-';
-            this.myStar = 0;
-            this.myavtalUrl = localStorage.getItem("headimg");
-          }
-         
+         if (res.status === 200) {
+            const allFriendIds =JSON.stringify(res.data.allFriendIds);
+            const answer ={allFriendIds:allFriendIds};
+            this.$axios.get($url+'/answerRank',{params:answer}).then((data)=>{
+              this.pailist =data.data.createdBys;
+              const idarr = [];
+              for(let i=0;i<this.pailist.length;i++){
+                idarr.push(this.pailist[i].id);
+              }
+              if(idarr.indexOf($userid) != -1){
+                const myindex = idarr.indexOf($userid);
+                this.myGrade = Number(idarr.indexOf($userid))+1;
+                this.myStar = this.pailist[myindex].upVotes;
+                this.myavtalUrl = this.pailist[myindex].avatarUrl;
+              }else{
+                this.myGrade ='-';
+                this.myStar = 0;
+                this.myavtalUrl = localStorage.getItem("headimg");
+              }
+            }).catch((error)=>{
+              console.log(error);
+            })
+         }
       }).catch(function(error){
           console.log(error);
       });
-      //获取我的排名
-
     }
-
   },  
   beforeCreate:function(){
-    console.log("世界榜");
     const $url = 'http://192.168.1.120:1337';
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
@@ -157,7 +167,6 @@ export default {
     }).catch(function(error){
         console.log(error);
     });
-
   }
 }
 </script>

@@ -28,7 +28,11 @@
                   </router-link>
                   <ul class="clearfix">
                       <li v-if="item.status==1"><i class="iconfont icon-xianshimima"></i><span>{{item.readNum}}</span><i class="s"></i></li>
-                      <li v-else><i class="iconfont icon-paihangbang"></i><span>排行榜</span><i class="s"></i></li>
+                      <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-else>
+                        <i class="iconfont icon-paihangbang"></i>
+                        <span>排行榜</span>
+                        <i class="s"></i>
+                      </router-link>
                       <li v-if="item.status==1"><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span><i class="s"></i></li>
                       <li v-else><i class="iconfont icon-wode"></i><span>{{item.readNum}}</span><i class="s"></i></li>
                       <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
@@ -71,8 +75,9 @@ export default {
        }
   },
   created(){
-            this.$http.get('//192.168.1.108:1337/topic').then(res=>{
+            this.$http.get('http://192.168.1.120:1337/topic').then(res=>{
                  this.msg = res.data
+                 console.log(res.data);
                 
           });
   }

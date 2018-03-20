@@ -7,7 +7,7 @@
 	          	<i class="lefticon iconfont icon-baojiaquotation2"></i>
 	          	<i class="righticon iconfont icon-baojiaquotation"></i>
           	</span>
-          	<span class="answer_con">你妈打你前，都说什么开场白？</span>
+          	<span class="answer_con">{{$route.params.title}}</span>
           </p>
       	</div>
       	<ul class="paihang_list">
@@ -17,12 +17,12 @@
                   <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
                   <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
                   <span class="indexname"v-else>{{index+1}}</span>
-                  <img :src="item.avatarUrl" alt="" class="avtalimg">
-                  <span class="nickname">{{item.nickName}}</span>
+                  <img :src="item.createdBy.avatarUrl" alt="" class="avtalimg">
+                  <span class="nickname">{{item.createdBy.nickName}}</span>
               </div>
               <div class="ctn_r">
                   <i class="iconfont icon-dianzan1"></i>
-                  <span>{{item.upVotes}}</span>
+                  <span>{{item.upVotes.length}}</span>
               </div>
           </li>
           <div class="my_list clearfix">
@@ -46,48 +46,52 @@
 		data(){
 			return {
 				pailist:[
-		          {
-		            nickName:'1111',
-		            upVotes:22
-
-		          },{
-		            nickName:'222',
-		            upVotes:20
-		          },{
-		            nickName:'小小鱼',
-		            upVotes:24
-		          },{
-		            nickName:'骑着扫把的小猪',
-		            upVotes:24
-		          }
+		         
 		        ],
 		        myavtalUrl:'',
 		        myStar:0,
-		        myGrade:'-'
+		        myGrade:'-',
+		        topic_title:''
 			}
 		},
 		beforeCreate:function(){
 		    const $url = 'http://192.168.1.120:1337';
-		    // const data ={userid:$userid} 
-		    // this.$axios.get($url+'/rank').then((res)=>{
-		    //     this.pailist =res.data;
-		    //     const idarr = [];
-		    //     for(let i=0;i<this.pailist.length;i++){
-		    //       idarr.push(this.pailist[i].id);
-		    //     }
-		    //     if(idarr.indexOf($userid) != -1){
-		    //       const myindex = idarr.indexOf($userid);
-		    //       this.myGrade = Number(idarr.indexOf($userid))+1;
-		    //       this.myStar = this.pailist[myindex].upVotes;
-		    //       this.myavtalUrl = this.pailist[myindex].avatarUrl;
-		    //     }else{
-		    //       this.myGrade ='-';
-		    //       this.myStar = 0;
-		    //       this.myavtalUrl = '';
-		    //     }
-		    // }).catch(function(error){
-		    //     console.log(error);
-		    // });
+		    const $topic_title = this.$route.params.title;
+		    console.log($topic_title);
+
+		    const $topicid = this.$route.params.topicid;
+		    const data = {
+		    	topicid : $topicid
+		    }
+		    const $userid = localStorage.getItem("userid");//userid
+		    this.$axios.get($url+'/singleRank',{params:data}).then((res)=>{
+		    	console.log(res.data);
+		    	console.log(res.data.length);
+		        if(res.data && res.data.length){
+		            this.pailist =res.data;
+		            const idarr = [];
+			        for(let i=0;i<this.pailist.length;i++){
+			            idarr.push(this.pailist[i].createdBy.id);
+			        }
+			        if(idarr.indexOf($userid) != -1){
+			            const myindex = idarr.indexOf($userid);
+			            this.myGrade = Number(idarr.indexOf($userid))+1;
+			            this.myStar = this.pailist[myindex].upVotes.length;
+			            this.myavtalUrl = this.pailist[myindex].createdBy.avatarUrl;
+			        }else{
+			            this.myGrade ='-';
+			            this.myStar = 0;
+			            this.myavtalUrl = localStorage.getItem("headimg");
+			        }
+		        }else{
+		            this.pailist = [];
+		            this.myGrade ='-';
+		            this.myStar = 0;
+		            this.myavtalUrl = localStorage.getItem("headimg");
+		        }
+		    }).catch(function(error){
+		        console.log(error);
+		    });
 		}
 	}
 </script>
