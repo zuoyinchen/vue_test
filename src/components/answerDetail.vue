@@ -109,7 +109,7 @@ letter-spacing: -0.39px;
         margin: 0;padding: 0;
     }
     .box{
-        width: 345rem/$x;height: 100%;margin: 0 auto;
+        width: 345rem/$x;margin: 0 auto;
     }
     .countdown{
         width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
