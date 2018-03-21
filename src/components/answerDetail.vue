@@ -1,33 +1,43 @@
 <template>
   <div class="box">
-      <div class="countdown">
+      <span v-show="false" id="status">{{$route.params.status}}</span>
+      <span v-show="false" id="topicId">{{$route.params.id}}</span>
+      <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                <countdown :time="time" class="countdown">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
       </div>
+      <div v-if="status== 2" class="countdown countend">
+            <span class="counttest">已结束</span>
+      </div>
       <div class="theme">
           <p class="theme_t">
-              {{$route.params.title}}
+              {{title}}
           </p>
           <div class="theme_b clearfix">
               <div class="theme_b_l">
                   <div>
                       <i class="iconfont icon-wode"></i>
-                      <span>{{$route.params.readNum}}</span>
+                      <span>{{readNum}}</span>
                   </div>
                   <div>
                       <i class="iconfont icon-pinglun"></i>
-                      <span>{{$route.params.toAnswer}}</span>
+                      <span>{{toAnswer}}</span>
                   </div>
               </div>
-              <div class="theme_b_r">
-                  <router-link tag="p" :to="{name:'answerQuestions'}">
+              <div class="theme_b_r" v-if="status==1">
+                  <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
                        <p>立即抢答</p>
                   </router-link>
                   
+              </div>
+              <div class="theme_b_r" v-if="status==2" v-show="false">
+                  <router-link tag="p" :to="{name:'answerQuestions'}">
+                       <p>立即抢答</p>
+                  </router-link> 
               </div>
           </div>
       </div>
@@ -35,12 +45,12 @@
           <li class="clearfix" v-for="(item,index) in msg" :key="item.id">
               <div class="ctn_l">
                   <i>{{index+1}}</i>
-                  <img src="item.createdBy.avatarUrl" alt="">
+                  <img :src="item.upVotes.avatarUrl" alt="">
               </div>
               <div class="ctn_r">
                   <div>
-                      <span v-if="item.createdBy==null">{{'匿名用户'}}</span>
-                      <span v-else>{{item.createdBy.username}}</span>
+                      <!-- <span v-if="item.user.username==null">{{'匿名用户'}}</span> -->
+                      <span>{{item.username}}</span>
                       <i class="iconfont icon-fenxiang"></i>
                       <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                       <i class="iconfont icon-shoucang1"v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
@@ -58,7 +68,7 @@
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span>{{item.upVotes.length}}</span>
                           </div>
-                          <div>
+                          <div @click="slideDown()">
                               <i class="iconfont icon-pinglun"></i>
                               <span>{{item.stars.length}}</span>
                           </div>
@@ -76,9 +86,15 @@
           return {
               msg:[],
               users:[],
-              starflag:false,
-              stars:[],
-              starsid:[]
+              status:'',
+              topicId:'',
+              time:'',
+              limit:'',
+              userid:'',
+              title:'',
+              readNum:'',
+              toAnswer:''
+              
               
           }
       },
@@ -154,6 +170,9 @@
           }).catch((error,errorcode)=>{
             console.log(error);
           })
+        },
+        slideDown:function(){
+          console.log(1);
         }
       },
       beforeCreate(){
@@ -168,7 +187,15 @@
           this.$http.get($url+'/answer', {params:data}).then(res=>{
             this.msg = res.data;
           });
-      }    
+      },
+      mounted(){
+        this.time = Number(this.$route.params.time);
+        this.status = $('#status').text();
+        this.topicId = this.$route.params.id
+        this.title = this.$route.params.title
+        this.readNum = this.$route.params.readNum
+        this.toAnswer = this.$route.params.toAnswer
+    }   
   }
 </script>
 <style lang="scss" scoped>
@@ -295,5 +322,11 @@ letter-spacing: -0.39px;}
             float: right;
     }
     .ctn_r>div:nth-of-type(2)>div:nth-of-type(2)>div{float: left;margin-right: 15rem/$x;color: #BDBDBD;}
+    .countend{
+        background: #666666;border-radius: 100rem/$x;
+    }
+    .countend>span{
+        font-family: STHeitiSC-Medium;font-size: 14px;color: #FFFFFF;letter-spacing: -0.39px;
+    }
 </style>
 

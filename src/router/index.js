@@ -19,6 +19,7 @@ import Message from '@/components/message'
 
 
 
+
 Vue.use(Router)
 
 export default new Router({

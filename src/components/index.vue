@@ -23,27 +23,33 @@
                   <div class="end" v-else>
                       <p>已结束</p>
                   </div>
-                  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',id:''+item.id+''}}">
+
+                  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
+                  status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
                         {{item.title}}
                   </router-link>
                   <ul class="clearfix">
                       <li v-if="item.status==1"><i class="iconfont icon-xianshimima"></i><span>{{item.readNum}}</span><i class="s"></i></li>
-                      <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-else>
+                      <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-if="item.status==2">
                         <i class="iconfont icon-paihangbang"></i>
                         <span>排行榜</span>
                         <i class="s"></i>
                       </router-link>
-                      <li v-if="item.status==1"><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span><i class="s"></i></li>
-                      <li v-else><i class="iconfont icon-wode"></i><span>{{item.readNum}}</span><i class="s"></i></li>
+                      <router-link tag="li" v-if="item.status==1" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
+                      status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
+                          <i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span><i class="s"></i>
+                      </router-link>   
+                      <!-- <li v-if="item.status==1"><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span><i class="s"></i></li> -->
+                      <li v-if="item.status==2"><i class="iconfont icon-wode"></i><span>{{item.readNum}}</span><i class="s"></i></li>
                       <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
                           <i></i>   <span class="counttest">倒计时</span>
                                     <span>
-                                        <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                                        <countdown :time="item.second" class="countdown">
                                             <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                                         </countdown>
                                     </span>
                       </li>
-                      <li style="border-bottom-right-radius: 10px;" v-else><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span></li>
+                      <li style="border-bottom-right-radius: 10px;" v-if="item.status==2"><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span></li>
                   </ul>
               </div>
           </li>
@@ -67,25 +73,27 @@
   </div>
 </template>
 <script>
-  export default {
-    name:"index",
-    data(){
-        return {
-            msg:[],
-           
-        }
-    },
-    methods:{
-         countdoen:function(){
+export default {
+  name:"index",
+  data(){
+      return {
+          msg:[],
+          limit:'',
+          page:2,
+          size:2
+      }
+  },
+  methods:{
+       countdown:function(){
 
-         }
-    },
-    created(){
-              this.$http.get('http://192.168.1.116:1337/topic').then(res=>{
-                   this.msg = res.data
-                   console.log(res.data);
-                  
-            });
+       }
+  },
+  created(){
+            this.$http.get('//192.168.1.116:1337/topic',{limit: 2, sort:{ createdAt:0}}).then(res=>{
+                 this.msg = res.data
+                 console.log(res.data)
+                
+          });
     }
   }
 </script>
