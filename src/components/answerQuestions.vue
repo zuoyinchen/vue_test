@@ -3,16 +3,16 @@
        <div class="countdown">
           <span class="counttest">倒计时</span>
           <span>
-                <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                <countdown :time="time" class="countdown">
                         <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
           </span>
       </div>
       <div class="btn">
-          <p>你妈在打你前,都说什么开场白？</p>
+          <p>{{$route.params.title}}</p>
           <div class="clearfix">
-              <div><i class="iconfont icon-xianshimima"></i><span>1313</span></div>
-              <div><i class="iconfont icon-pinglun"></i><span>1313</span></div>
+              <div><i class="iconfont icon-xianshimima"></i><span>{{$route.params.readNum}}</span></div>
+              <div><i class="iconfont icon-pinglun"></i><span>{{$route.params.toAnswer}}</span></div>
           </div>
       </div>
       <form action="" method="post">
@@ -23,7 +23,14 @@
 </template>
 <script>
 export default {
-  
+  data(){
+      return {
+          time:''
+      }
+  },
+  created(){
+      this.time = Number(this.$route.params.time)
+  }
 }
 </script>
 <style lang="scss" scoped>

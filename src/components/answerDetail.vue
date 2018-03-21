@@ -1,33 +1,43 @@
 <template>
   <div class="box">
-      <div class="countdown">
+      <span v-show="false" id="status">{{$route.params.status}}</span>
+      <span v-show="false" id="topicId">{{$route.params.id}}</span>
+      <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                <countdown :time="time" class="countdown">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
       </div>
+      <div v-if="status== 2" class="countdown countend">
+            <span class="counttest">已结束</span>
+      </div>
       <div class="theme">
           <p class="theme_t">
-              {{$route.params.title}}
+              {{title}}
           </p>
           <div class="theme_b clearfix">
               <div class="theme_b_l">
                   <div>
                       <i class="iconfont icon-wode"></i>
-                      <span>{{$route.params.readNum}}</span>
+                      <span>{{readNum}}</span>
                   </div>
                   <div>
                       <i class="iconfont icon-pinglun"></i>
-                      <span>{{$route.params.toAnswer}}</span>
+                      <span>{{toAnswer}}</span>
                   </div>
               </div>
-              <div class="theme_b_r">
-                  <router-link tag="p" :to="{name:'answerQuestions'}">
+              <div class="theme_b_r" v-if="status==1">
+                  <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
                        <p>立即抢答</p>
                   </router-link>
                   
+              </div>
+              <div class="theme_b_r" v-if="status==2" v-show="false">
+                  <router-link tag="p" :to="{name:'answerQuestions'}">
+                       <p>立即抢答</p>
+                  </router-link> 
               </div>
           </div>
       </div>
@@ -36,12 +46,12 @@
               <div class="ctn_l">
                   <i>{{index+1}}</i>
             <!--      <img v-if="item.createdBy.avatarUrl.length<0" src="" alt="">    -->
-                  <img src="item.createdBy.avatarUrl" alt="">
+                  <img :src="item.upVotes.avatarUrl" alt="">
               </div>
               <div class="ctn_r">
                   <div>
-                      <span v-if="item.createdBy==null">{{'匿名用户'}}</span>
-                      <span v-else>{{item.createdBy.username}}</span>
+                      <!-- <span v-if="item.user.username==null">{{'匿名用户'}}</span> -->
+                      <span>{{item.username}}</span>
                       <i class="iconfont icon-fenxiang"></i>
                       <i class="iconfont icon-shoucang1"></i>
                   </div>
@@ -55,11 +65,11 @@
                       <div class="clearfix">
                           <div>
                               <i class="iconfont icon-dianzan"></i>
-                              <span>{{item.topic.upVotes}}</span>
+                              <span>{{item.topic.downVotes}}</span>
                           </div>
-                          <div>
+                          <div @click="slideDown">
                               <i class="iconfont icon-pinglun"></i>
-                              <span>{{item.topic.readNum}}</span>
+                              <span>{{item.topic.messageNum}}</span>
                           </div>
                       </div>
                   </div>
@@ -75,14 +85,54 @@ export default {
         return {
             msg:[],
             users:[],
+            status:'',
+            topicId:'',
+            time:'',
+            limit:'',
+            userid:'',
+            title:'',
+            readNum:'',
+            toAnswer:''
+
+
+        }
+    },
+    methods:{
+        slideDown:function(){
             
         }
     },
     beforeCreate(){
-        this.$http.get('//192.168.1.108:1337/answer').then(res=>{
-                this.msg = res.data
-                console.log(res.data)
-         });
+        this.topicId = this.$route.params.id
+        const $url = 'http://192.168.1.116:1337';
+        const $userid = localStorage.getItem("userid");
+        const data ={search:JSON.stringify({topic: this.topicId}),userid:$userid};
+          this.$http.get($url+'/answer', {params:data}).then(res=>{
+            this.msg = res.data;
+            console.log(this.msg);
+
+          });
+      }
+    // ,
+    // beforeCreate(){
+    //     //console.log(this.status)
+    //     this.topicId = this.$route.params.id
+    //     // this.title = this.$route.params.title
+    //     // console.log(this.topicId);
+    //     this.$http.get(`//192.168.1.116:1337/topic/${this.topicId}`).then(res=>{
+    //         this.msg = res.data
+    //         // this.title = res.data.title
+    //         console.log(res.data)
+    //     });
+    // }
+    ,
+    mounted(){
+        this.time = Number(this.$route.params.time);
+        this.status = $('#status').text();
+        this.topicId = this.$route.params.id
+        this.title = this.$route.params.title
+        this.readNum = this.$route.params.readNum
+        this.toAnswer = this.$route.params.toAnswer
     }
     
 }
@@ -211,5 +261,11 @@ letter-spacing: -0.39px;
             float: right;
     }
     .ctn_r>div:nth-of-type(2)>div:nth-of-type(2)>div{float: left;margin-right: 15rem/$x;color: #BDBDBD;}
+    .countend{
+        background: #666666;border-radius: 100rem/$x;
+    }
+    .countend>span{
+        font-family: STHeitiSC-Medium;font-size: 14px;color: #FFFFFF;letter-spacing: -0.39px;
+    }
 </style>
 

@@ -16,7 +16,7 @@
                   <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
                   <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
                   <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
-                  <span class="indexname"v-else>{{index+1}}</span>
+                  <span class="indexname" v-else>{{index+1}}</span>
                   <img :src="item.avatarUrl" alt="" class="avtalimg">
                   <span class="nickname">{{item.nickName}}</span>
               </div>
