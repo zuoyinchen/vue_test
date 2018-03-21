@@ -35,7 +35,6 @@
           <li class="clearfix" v-for="(item,index) in msg" :key="item.id">
               <div class="ctn_l">
                   <i>{{index+1}}</i>
-            <!--      <img v-if="item.createdBy.avatarUrl.length<0" src="" alt="">    -->
                   <img src="item.createdBy.avatarUrl" alt="">
               </div>
               <div class="ctn_r">
@@ -43,7 +42,8 @@
                       <span v-if="item.createdBy==null">{{'匿名用户'}}</span>
                       <span v-else>{{item.createdBy.username}}</span>
                       <i class="iconfont icon-fenxiang"></i>
-                      <i class="iconfont icon-shoucang1"></i>
+                      <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                      <i class="iconfont icon-shoucang1"v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                   </div>
                   <p>
                       {{item.body}}
@@ -54,12 +54,13 @@
                       </div>
                       <div class="clearfix">
                           <div>
-                              <i class="iconfont icon-dianzan"></i>
-                              <span>{{item.topic.upVotes}}</span>
+                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true"@click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                              <span>{{item.upVotes.length}}</span>
                           </div>
                           <div>
                               <i class="iconfont icon-pinglun"></i>
-                              <span>{{item.topic.readNum}}</span>
+                              <span>{{item.stars.length}}</span>
                           </div>
                       </div>
                   </div>
@@ -69,23 +70,106 @@
   </div>
 </template>
 <script>
-export default {
-    name:"answerDetail",
-    data(){
-        return {
-            msg:[],
-            users:[],
-            
+  export default {
+      name:"answerDetail",
+      data(){
+          return {
+              msg:[],
+              users:[],
+              starflag:false,
+              stars:[],
+              starsid:[]
+              
+          }
+      },
+      methods:{
+        giveStar:function(event){
+          console.log(event.currentTarget.dataset);
+          const answerid = event.currentTarget.dataset.id;
+          console.log('问题id |'+answerid);
+          const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
+          const $userid = localStorage.getItem("userid");
+          console.log(this.msg[$index].stars);
+          const stars = this.msg[$index].stars;
+          const starsid = [];
+          //循环当前评论收藏的信息，拿到此条评论的所有id
+          for(let i=0;i<stars.length;i++){
+            starsid.push(stars[i].id);
+          }
+          console.log(this.msg[$index].isStar);
+          if(this.msg[$index].isStar){
+            starsid.splice(starsid.indexOf($userid),1);
+          }else{
+            starsid.push($userid);
+          }
+          console.log(starsid);
+          const data = {
+            'stars' : starsid
+          }
+          this.$axios.put('//192.168.1.116:1337/answer/'+answerid,data).then((res)=>{
+            console.log(res);
+            if(res.status == 200){
+              if(this.msg[$index].isStar){
+                this.msg[$index].isStar = false;
+              }else{
+                this.msg[$index].isStar = true;
+              }
+            }
+          }).catch((error,errorcode)=>{
+            console.log(error);
+          });
+        },
+        giveLike:function(event){
+          console.log(event.currentTarget.dataset);
+          const answerid = event.currentTarget.dataset.id;
+          console.log('问题id |'+answerid);
+          const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
+          const $userid = localStorage.getItem("userid");
+          console.log(this.msg[$index].stars);
+          const stars = this.msg[$index].stars;
+          const starsid = [];
+          //循环当前评论收藏的信息，拿到此条评论的所有id
+          for(let i=0;i<stars.length;i++){
+            starsid.push(stars[i].id);
+          }
+          console.log(this.msg[$index].upVote);
+          if(this.msg[$index].upVote){
+            starsid.splice(starsid.indexOf($userid),1);
+          }else{
+            starsid.push($userid);
+          }
+          console.log(starsid);
+          const data = {
+            'stars' : starsid
+          }
+          this.$axios.put('//192.168.1.116:1337/answer/'+answerid,data).then((res)=>{
+            console.log(res);
+            if(res.status == 200){
+              if(this.msg[$index].upVote){
+                this.msg[$index].upVote = false;
+              }else{
+                this.msg[$index].upVote = true;
+              }
+            }
+          }).catch((error,errorcode)=>{
+            console.log(error);
+          })
         }
-    },
-    beforeCreate(){
-        this.$http.get('//192.168.1.108:1337/answer').then(res=>{
-                this.msg = res.data
-                console.log(res.data)
-         });
-    }
-    
-}
+      },
+      beforeCreate(){
+        const $url = 'http://192.168.1.116:1337';
+        if(!localStorage.getItem("topic")){
+          localStorage.setItem("topic",this.$route.params.id);
+        }
+        const topicid = localStorage.getItem("topic");//问题id
+        const $userid = localStorage.getItem("userid");//用户id
+        console.log('问题id|'+topicid);
+        const data ={search:JSON.stringify({topic: topicid}),userid:$userid};
+          this.$http.get($url+'/answer', {params:data}).then(res=>{
+            this.msg = res.data;
+          });
+      }    
+  }
 </script>
 <style lang="scss" scoped>
     $x:37.5;
@@ -94,10 +178,10 @@ font-size: 14px;
 color: #333333;
 letter-spacing: -0.39px;}
     .counttest{
-        font-family: STHeitiSC-Medium;
-font-size: 14px;
-color: #333333;
-letter-spacing: -0.39px;
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
     }
     .clearfix:after {
     content: "";

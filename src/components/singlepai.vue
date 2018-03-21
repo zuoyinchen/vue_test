@@ -95,7 +95,7 @@
 		}
 	}
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 	$x:37.5;
     .clearfix:after {
       content: "";

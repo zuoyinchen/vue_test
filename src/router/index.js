@@ -13,6 +13,8 @@ import Answer from '@/components/answer'
 import paihang from '@/components/paihang'
 import singlepai from '@/components/singlepai'
 import answerQuestions from '@/components/answerQuestions'
+import Message from '@/components/message'
+
 
 
 
@@ -45,15 +47,18 @@ export default new Router({
       path:'/answerQuestions',
       name:'answerQuestions',
       component:answerQuestions
-    },{
+    },
+    {
       path: '/user',
       name: 'user',
       component:User
-    },{
+    },
+    {
       path: '/userproject',
       name: 'userproject',
       component:Userproject
-    },{
+    },
+    {
       path: '/usercollect',
       name: 'usercollect',
       component:Usercollect,
@@ -66,6 +71,11 @@ export default new Router({
           component: Answer
         }
       ]
+    },
+    {
+      path: '/message',
+      name: 'message',
+      component:Message
     }
   ]
 })

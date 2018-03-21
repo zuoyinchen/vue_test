@@ -243,7 +243,7 @@ export default {
       height:100%;
       box-sizing:border-box;
       padding-top:130rem/$x;
-      padding:130rem/$x 0 49rem/$x;
+      padding:130rem/$x 30rem/$x 49rem/$x;
       overflow-y:scroll;
       position: relative;
       z-index: 1;

@@ -23,7 +23,7 @@
                   <div class="end" v-else>
                       <p>已结束</p>
                   </div>
-                  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+''}}">
+                  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',id:''+item.id+''}}">
                         {{item.title}}
                   </router-link>
                   <ul class="clearfix">
@@ -57,49 +57,86 @@
   <!--      <countdown :time="3 * 24 * 60 * 60 * 1000" class="ss">
   <template slot-scope="props" >Time Remaining：{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds.</template>
 </countdown>  -->
+      <router-link tag="div" to="/message" class="my_message ">
+        <p>
+          <i class="iconfont icon-xiaoxi"></i>
+          <span></span>
+        </p>
+      </router-link>
        <tabnav></tabnav> 
   </div>
 </template>
 <script>
-export default {
-  name:"index",
-  data(){
-      return {
-          msg:[],
-         
-      }
-  },
-  methods:{
-       countdoen:function(){
+  export default {
+    name:"index",
+    data(){
+        return {
+            msg:[],
+           
+        }
+    },
+    methods:{
+         countdoen:function(){
 
-       }
-  },
-  created(){
-            this.$http.get('http://192.168.1.120:1337/topic').then(res=>{
-                 this.msg = res.data
-                 console.log(res.data);
-                
-          });
+         }
+    },
+    created(){
+              this.$http.get('http://192.168.1.116:1337/topic').then(res=>{
+                   this.msg = res.data
+                   console.log(res.data);
+                  
+            });
+    }
   }
-}
 </script>
 <style lang="scss" scoped>
-    .countdown{font-family: STHeitiSC-Medium;
-font-size: 14px;
-color: #333333;
-letter-spacing: -0.39px;}
+    .countdown{
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
+    }
     .counttest{
-        font-family: STHeitiSC-Medium;
-font-size: 14px;
-color: #333333;
-letter-spacing: -0.39px;
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
     }
     $x:37.5;
+    .my_message{
+      position: fixed;
+      width:40rem/$x;
+      height:40rem/$x;
+      border-radius: 40rem/$x;
+      background: #FFFFFF;
+      box-shadow: 0 2px 6px 0 #DDDDDD;
+      right:15rem/$x;
+      bottom:64rem/$x;
+    }
+    .my_message>p{
+      width:100%;
+      height:100%;
+      line-height: 40rem/$x;
+      position: relative;
+    }
+    .my_message .iconfont:nth-of-type(1){
+     font-size:24px;
+    }
+    .my_message span{
+     display: block;
+     width:8rem/$x;
+     height:8rem/$x;
+     border-radius: 8rem/$x;
+     position: absolute;
+     background:#EF5350;
+     right:8rem/$x;
+     top:8rem/$x;
+    }
     .clearfix:after {
-    content: "";
-    display: block;
-    height: 0;
-    clear: both;
+      content: "";
+      display: block;
+      height: 0;
+      clear: both;
     }
     .btn_t1>.height_light{background: #FDD545;}
     ul{padding: 0;}

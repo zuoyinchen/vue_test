@@ -61,14 +61,14 @@ localStorage.setItem('headimg',headimgurl);
 		box-sizing:border-box;
 	}
 	.userpic{
-		width:375rem/$unit;
+		width:100%;
 		height:190rem/$unit;
 		background:url(../assets/img/userpic.png) no-repeat;
 		background-size:cover;
 		margin:0 auto;
 	}
 	.user-visit{
-		width:375rem/$unit;
+		width:100%;
 		height:auto;
 		list-style: none;
 		margin:0 auto;
