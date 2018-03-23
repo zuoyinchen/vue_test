@@ -1,7 +1,5 @@
 <template>
   <div class="box">
-      <span v-show="false" id="status">{{$route.params.status}}</span>
-      <span v-show="false" id="topicId">{{$route.params.id}}</span>
       <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
@@ -10,39 +8,32 @@
                 </countdown>
             </span>
       </div>
-      <!-- <div class="countdown" v-else>
-            <span class="counttest">倒计时</span>
-            <span>
-                <countdown :time="old.time" class="countdown">
-                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
-                </countdown>
-            </span>
-      </div> -->
       <div v-if="status== 2" class="countdown countend">
             <span class="counttest">已结束</span>
       </div>
       <div class="theme">
-          <p class="theme_t" v-if="title!=null">
+          <p class="theme_t">
               {{title}}
           </p>
-          <p class="theme_t" v-else>
+          <!-- <p class="theme_t" v-else>
               {{'ssss'}}
-          </p>
+          </p> -->
           <div class="theme_b clearfix">
               <div class="theme_b_l">
                   <div>
                       <i class="iconfont icon-wode"></i>
-                      <span>{{readNum}}</span>
+                      <span>{{readnum}}</span>
                   </div>
                   <div>
                       <i class="iconfont icon-pinglun"></i>
-                      <span>{{toAnswer}}</span>
+                      <span>{{answernum}}</span>
                   </div>
               </div>
               <div class="theme_b_r" v-if="status==1">
-                  <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
+                  <p>立即抢答</p>
+                  <!-- <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
                        <p>立即抢答</p>
-                  </router-link>
+                  </router-link> -->
                   
               </div>
               <div class="theme_b_r" v-if="status==2" v-show="false">
@@ -65,64 +56,6 @@
                       <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
                       <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
                       <span v-else>{{item.createdBy.username}}</span>
-                      <i class="iconfont icon-fenxiang"></i>
-                      <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                  </div>
-                  <p>
-                      {{item.body}}
-                  </p>
-                  <div class="clearfix">
-                      <div>
-                          <span>{{item.createdAt}}</span>
-                      </div>
-                      <div class="clearfix">
-                          <div>
-                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <span>{{item.upVotes.length}}</span>
-                          </div>
-                          <div v-if="item.stars.length==0">
-                              <i class="iconfont icon-pinglun"></i>
-                              <span>{{item.stars.length}}</span>
-                          </div>
-                          <div v-else @click="slideDown($event)" :data-index="index">
-                              <i class="iconfont icon-pinglun"></i>
-                              <span>{{item.comments.length}}</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-            <div class="slide clearfix hide" v-for="i in item.comments" :key="i.id">
-              <div class="slide_l">
-                  <img src="" alt="">
-              </div>
-              <div class="slide_r">
-                  <div class="slide_rt clearfix">
-                      <div>
-                          <span v-if="!Boolean(i.username)">{{'匿名用户'}}</span>
-                          <span v-else>{{i.username}}</span>
-                      </div>
-                      <div>
-                          {{i.createdAt}}
-                      </div>
-                  </div>
-                  <p class="slide_rb">
-                      {{i.body}}
-                  </p>
-              </div>
-          </div>
-          </li>
-         
-         <!-- --------------- -->
-          <li class="clearfix ppp" v-if="msg2!=null" v-for="(item,index) in msg2" :key="item.id">
-              <div class="ctn_l">
-                  <i>{{index+1}}</i>
-                  <img :src="item.upVotes.avatarUrl" alt="">
-              </div>
-              <div class="ctn_r">
-                  <div>
-                      <span>{{item.username}}</span>
                       <i class="iconfont icon-fenxiang"></i>
                       <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                       <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
@@ -175,6 +108,7 @@
   </div>
 </template>
 <script>
+  const $userid = localStorage.getItem("userid");//用户id
   export default {
       name:"answerDetail",
       data(){
@@ -183,12 +117,10 @@
               users:[],
               status:'',
               topicId:'',
-              time:'',
-              limit:'',
-              userid:'',
+              time:0,
               title:'',
-              readNum:'',
-              toAnswer:'',
+              readnum:'',
+              answernum:'',
               defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
               
               
@@ -290,69 +222,30 @@
         }
       }
       ,
-      beforeCreate(){
-        this.defaulturl = localStorage.getItem('headimg');
-        console.log(this.defaulturl);
+      mounted(){
+        const query = localStorage.getItem("query");//参数集合
+        const queryobj = JSON.parse(query);
+        this.title = queryobj.title;
+        this.time = Number(queryobj.time);
+        this.status = queryobj.status;
+        this.readnum = Number(queryobj.readnum);
+        this.answernum =  Number(queryobj.answernum);
+        this.topicid = queryobj.topicid;
+
         const $url = 'http://192.168.1.116:1337';
-        localStorage.setItem("topic",this.$route.params.id);
-        const topicid = localStorage.getItem("topic");//问题id
-        const $userid = localStorage.getItem("userid");//用户id
-        console.log('问题id|'+topicid);
-        const data ={search:JSON.stringify({topic: topicid}),userid:$userid};
-          this.$http.get($url+'/answer', {params:data}).then(res=>{
-              console.log(res.data);
-              this.msg = res.data;
-              //localStorage.setItem("all",JSON.stringify(res.data));
-          });
+        const topicid = this.topicid;//问题id
+        
+        const data ={
+          search:JSON.stringify({topic: topicid}),
+          userid:$userid
+        };
+        this.$http.get($url+'/answer', {params:data}).then(res=>{
+            this.msg = res.data;
+        }).catch((error)=>{
+          console.log(error);
+        });
         
       }
-    ,
-      beforeMount(){
-        
-        this.time = Number(this.$route.params.time);
-        this.topicId = this.$route.params.id
-        this.title = this.$route.params.title
-        this.readNum = this.$route.params.readNum
-        this.toAnswer = this.$route.params.toAnswer
-        var obj = {
-            title:this.title,
-            time:this.time,
-            readNum:this.readNum,
-            toAnswer:this.toAnswer
-        }
-        if(obj!=null&&obj.title==this.title){
-            localStorage.setItem("t1",JSON.stringify(obj));
-        }
-        
-    
-    }
-    ,created(){
-        let n= localStorage.getItem("all");
-        let m = JSON.parse(n);
-        this.msg2 = m
-        
-    }
-    ,
-    mounted(){
-        this.status = $('#status').text();
-        let t = JSON.parse(localStorage.getItem("t1"))
-        console.log(t)
-    }
-    ,
-    // activated(){
-    //       const $url = 'http://192.168.1.116:1337';
-    //     //if(!localStorage.getItem("topic")){
-    //     localStorage.setItem("topic",this.$route.params.id);
-    //     //}
-    //     const topicid = localStorage.getItem("topic");//问题id
-    //     const $userid = localStorage.getItem("userid");//用户id
-    //     console.log('问题id|'+topicid);
-    //     const data ={search:JSON.stringify({topic: topicid}),userid:$userid};
-    //       this.$http.get($url+'/answer', {params:data}).then(res=>{
-    //           console.log(res.data);
-    //         this.msg = res.data;
-    //       });
-    // }   
   }
 </script>
 <style lang="scss" scoped>

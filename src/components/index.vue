@@ -26,12 +26,17 @@
                       <p>已结束</p>
                   </div>
 
-                  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
+                 <!--  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
                   status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
                         {{item.title}}
-                  </router-link>
+                  </router-link> -->
+                  <p @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
-                      <li v-if="item.status==1"><i class="iconfont icon-xianshimima"></i><span>{{item.readNum}}</span><i class="s"></i></li>
+                      <li v-if="item.status==1">
+                        <i class="iconfont icon-xianshimima"></i>
+                        <span>{{item.readNum}}</span>
+                        <i class="s"></i>
+                      </li>
                       <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-if="item.status==2">
                         <i class="iconfont icon-paihangbang"></i>
                         <i v-show="false" id="idTwo">{{item.id}}</i>
@@ -40,10 +45,15 @@
                       </router-link>
                       <router-link tag="li" v-if="item.status==1" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
                       status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
-                          <i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span><i class="s"></i>
+                          <i class="iconfont icon-pinglun"></i>
+                          <span>{{item.toAnswer.length}}</span>
+                          <i class="s"></i>
                       </router-link>   
-                      <!-- <li v-if="item.status==1"><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span><i class="s"></i></li> -->
-                      <li v-if="item.status==2"><i class="iconfont icon-wode"></i><span>{{item.readNum}}</span><i class="s"></i></li>
+                      <li v-if="item.status==2">
+                        <i class="iconfont icon-wode"></i>
+                        <span>{{item.readNum}}</span>
+                        <i class="s"></i>
+                      </li>
                       <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
                           <i></i>   <span class="counttest">倒计时</span>
                                     <span>
@@ -52,7 +62,10 @@
                                         </countdown>
                                     </span>
                       </li>
-                      <li style="border-bottom-right-radius: 10px;" v-if="item.status==2"><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span></li>
+                      <li style="border-bottom-right-radius: 10px;" v-if="item.status==2">
+                        <i class="iconfont icon-pinglun"></i>
+                        <span>{{item.toAnswer.length}}</span>
+                      </li>
                   </ul>
               </div>
           </li>
@@ -62,10 +75,6 @@
       
          
       </ul>
-        
-  <!--      <countdown :time="3 * 24 * 60 * 60 * 1000" class="ss">
-  <template slot-scope="props" >Time Remaining：{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds.</template>
-</countdown>  -->
     </scroller>
     <router-link tag="div" to="/message" class="my_message ">
       <p>
@@ -108,8 +117,8 @@ export default {
             this.getIndexData();
             done()
           }, 1500)
-        },
-        infinite (done) {
+       },
+       infinite (done) {
           if(this.noData) {
               setTimeout(()=>{
                   done(true);
@@ -132,7 +141,28 @@ export default {
             }
              done()
           }, 3000);
-        }
+       },
+       gotoDetail:function(event){
+          const topicid = event.currentTarget.dataset.tid;//问题id
+          const readnum = event.currentTarget.dataset.rnum;//阅读数
+          const answernum = event.currentTarget.dataset.anum;//评论数
+          const status = event.currentTarget.dataset.status;//状态
+          const time = event.currentTarget.dataset.time;//倒计时时间
+          const title = event.currentTarget.dataset.title;//问题标题
+
+          const query = {
+            topicid : topicid,
+            readnum : readnum,
+            answernum : answernum,
+            status : status,
+            time : time,
+            title : title
+          }
+          console.log(JSON.stringify(query));
+
+          localStorage.setItem("query",JSON.stringify(query));
+          this.$router.push('/answerDetail');
+       }
   },
   mounted(){
     this.getIndexData();
