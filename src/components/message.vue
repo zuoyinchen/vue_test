@@ -10,16 +10,6 @@
 				</p>
 				<p class="title">你妈打你前，都说什么开场白？</p>
 			</router-link>
-			
-			<router-link tag="li" to="">
-				<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1521609148474&di=fce29f5313fd7e6b9ecc7c92d1ac3db8&imgtype=0&src=http%3A%2F%2Fpic.qiantucdn.com%2F58pic%2F15%2F76%2F46%2F74U58PICIGA_1024.jpg" class="user_img">
-				<p class="con_detail">
-					<span>江小鱼</span>
-					<span>开场白？耳光太响没听清。</span>
-					<span>2108-1-29 13:13</span>
-				</p>
-				<p class="title">你妈打你前，都说什么开场白？</p>
-			</router-link>
 			<router-link tag="li" to="">
 				<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1521609148474&di=fce29f5313fd7e6b9ecc7c92d1ac3db8&imgtype=0&src=http%3A%2F%2Fpic.qiantucdn.com%2F58pic%2F15%2F76%2F46%2F74U58PICIGA_1024.jpg" class="user_img">
 				<p class="con_detail">
@@ -39,9 +29,17 @@
 		name :'message',
 		data(){
 			return {
-
+					items: [],
+					noData:''
 			}
-		}
+		},
+		 mounted() {
+	    	
+    	},
+
+	    methods: {
+	      
+	    }
 	}
 </script>
 <style lang="scss" scoped>
@@ -75,7 +73,7 @@
 				}
 				.title{
 					width:49rem/$unit;
-					height:46rem/$unit;
+					height:45rem/$unit;
 					font-family: STHeitiSC-Medium;
 					font-size: 12px;
 					line-height: 16rem/$unit;

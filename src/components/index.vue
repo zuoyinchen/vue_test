@@ -1,5 +1,7 @@
 <template>
   <div class="box">
+    <scroller class="message_list" :on-refresh="refresh"
+  :on-infinite="infinite" ref="myscroller">
       <div class="nav clearfix">
           <div>
             <span class="counttest">下场开始时间</span>
@@ -64,13 +66,14 @@
   <!--      <countdown :time="3 * 24 * 60 * 60 * 1000" class="ss">
   <template slot-scope="props" >Time Remaining：{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds.</template>
 </countdown>  -->
-      <router-link tag="div" to="/message" class="my_message ">
-        <p>
-          <i class="iconfont icon-xiaoxi"></i>
-          <span></span>
-        </p>
-      </router-link>
-       <tabnav></tabnav> 
+    </scroller>
+    <router-link tag="div" to="/message" class="my_message ">
+      <p>
+        <i class="iconfont icon-xiaoxi"></i>
+        <span></span>
+      </p>
+    </router-link>
+    <tabnav></tabnav> 
   </div>
 </template>
 <script>
@@ -80,25 +83,61 @@ export default {
       return {
           msg:[],
           limit:'',
-          page:2,
-          size:2,
-
+          page:1,
+          size:5
       }
   },
   methods:{
        countdown:function(){
 
-       }
-  },
-  created(){
-            this.$http.get('//192.168.1.116:1337/topic',{limit: 2, sort:{ createdAt:0}}).then(res=>{
-                 this.msg = res.data
-                 console.log(res.data)
-                 
-                 console.log()
+       },
+       getIndexData:function(){
+          this.noData='';
+          const data = {
+            limit : this.page*this.size,
+            sort:JSON.stringify({ createdAt:0})
+          }
+          this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+             this.msg = res.data;
           });
-    }
+       },
+       refresh (done) {
+          setTimeout(() => {
+            this.size = 5;
+            this.page = 1;
+            this.getIndexData();
+            done()
+          }, 1500)
+        },
+        infinite (done) {
+          if(this.noData) {
+              setTimeout(()=>{
+                  done(true);
+              });
+            return;
+          }
+          setTimeout(() => {
+            this.page++;
+            const data = {
+              limit : this.page*this.size,
+              sort:JSON.stringify({ createdAt:0})
+            }
+            this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+               this.msg = res.data;
+              
+            });
+            const limit = this.page*this.size;
+            if(this.msg.length <= limit){
+              this.noData='没有更多数据';
+            }
+             done()
+          }, 3000);
+        }
+  },
+  mounted(){
+    this.getIndexData();
   }
+}
 </script>
 <style lang="scss" scoped>
     .countdown{

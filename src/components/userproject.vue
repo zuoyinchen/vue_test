@@ -1,6 +1,7 @@
 <template>
 	<div class="box">
-		<ul class="box-list">
+		<scroller :on-refresh="refresh"
+  :on-infinite="infinite" ref="myscroller" class="box-list" v-if="prolist.length>0">
 			<router-link tag="li" v-for="(item,index) in prolist" to="" :key="index">
 				<span class="status-bac status-bac-yellow" v-if="item.status == 1"></span>
 				<span class="status-bac" v-else-if="item.status==2"></span>
@@ -26,47 +27,85 @@
                   <li class="time" v-show="item.status==1">
                   	<i></i>
                   	<span>倒计时</span>
-                  	<span>12:59</span>
+                  	<span>
+                  		<countdown :time="item.second" class="countdown">
+                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                        </countdown>
+                  	</span>
                   </li>
               </ul>
 			</router-link>
-		</ul>
+		</scroller>
+		<div v-else class="no_data">
+            <img src="../assets/images/canyuchang.png">
+            <p>您还没有参与的场次</p>
+            <router-link tag="a" class="goHome" to="./">去逛逛</router-link>
+        </div>
 	</div>	
 </template>
 <script type="text/javascript">
-	const prolist =[
-		{
-			status:1,
-			title: '有哪些道理，大家不说但心里都明白？',
-			readNum:1616,
-			messageNum:1616,
-			createdAt:''
-		},{
-			status:2,
-			title: '有哪些道理，大家不说你都明白？',
-			readNum:1616,
-			messageNum:1616,
-			createdAt:''
-		}
-	];
 	const $url = 'http://192.168.1.120:1337';
+	const $userid = localStorage.getItem("userid");//userid
 	export default{
 		name: 'userproject',
 		data(){
 			return {
-				prolist:prolist
+				prolist:[],
+				page:1,
+				size:5
 			}
 		},
-		beforeCreate:function(){
-			//获取我参与的场
-			const $userid = localStorage.getItem("userid");//userid
-			const data ={ limit: 5 * 1, sort: { createdAt: 0 },search: { createdBy:$userid } }
-			console.log(data);
-			this.$axios.get($url+'/answers',{params:data}).then((res)=>{
-				this.prolist = res.data;
-			}).catch(function(error){
-				console.log(error);
-			})
+		methods:{
+			getInitialData:function(){
+				this.noData='';
+	            const data = {
+	                limit : this.page*this.size,
+	                sort:JSON.stringify({ createdAt:0}),
+	                search: { createdBy:$userid }
+	            }
+	            this.$axios.get($url+'/answers',{params:data}).then((res)=>{
+		            this.prolist = res.data;
+		        }).catch((error)=>{
+                	console.log('error');
+                });
+			},
+			refresh (done) {
+              setTimeout(() => {
+                this.size = 5;
+                this.page = 1;
+                this.getInitialData();
+                done();
+              }, 1500);
+            },
+            infinite (done) {
+              if(this.noData) {
+                  setTimeout(()=>{
+                      done(true);
+                  });
+                return;
+              }
+              setTimeout(() => {
+                this.page++;
+                const data = {
+	                limit : this.page*this.size,
+	                sort:JSON.stringify({ createdAt:0}),
+	                search: { createdBy:$userid }
+	            }
+                this.$axios.get($url+'/answers',{params:data}).then((res)=>{
+		            this.prolist = res.data;
+		        }).catch((error)=>{
+                	console.log('error');
+                });
+                const limit = this.page*this.size;
+                if(this.prolist.length <= limit){
+                  this.noData='没有更多数据';
+                }
+                 done();
+              }, 3000);
+            }
+		},
+		mounted:function(){
+			this.getInitialData();
 		}
 	}
 </script>
@@ -182,6 +221,29 @@
     }
     .box-list ul>li>span{
         margin-left: 10rem/$unit;
+    }
+    .no_data{
+        width:100%;
+        text-align: center;
+        line-height: 20rem/$unit;
+        font-family: PingFangSC-Regular;
+		font-size: 13px;
+		color: #4C3A30;
+		letter-spacing: 0.26px;
+        img{
+            width:161rem/$unit;
+            height:88rem/$unit;
+            display: inline-block;
+            margin-top: 48rem/$unit;
+            margin-bottom: 20rem/$unit;
+        }
+    }
+    .goHome{
+        width:auto;
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #FF8500;
+        letter-spacing: 0;
     }
 
 </style>

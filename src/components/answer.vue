@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        <ul>
+        <scroller :on-refresh="refresh"
+  :on-infinite="infinite" ref="myscroller" v-if="prolist.length>0">
             <li class="list-item" v-for="(item,index) in prolist " data-type="0">
                 <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
                     <span class="status-bac status-bac-yellow" v-if="item.status== 1"></span>
@@ -21,28 +22,31 @@
                         </span>
                     </div>
                 </div>
-                <div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index">
+                <div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index" :data-id="item.id" :data-title="item.title" :data-status="item.status">
                 </div>
             </li>
-        </ul>
-    </div>
+        </scroller>
+        <div v-else class="no_data">
+            <img src="../assets/images/shoucang.png">
+            <p>您的收藏还是空的</p>
+            <router-link tag="a" class="goHome" to="../">去逛逛</router-link>
+        </div>
+
+     </div>
 </template>
 <script>
-    const prolist =[
-        {
-            status:1,
-            title: '有哪些道理，大家不说你都明白？',
-            readNum:160,
-            messageNum:120
-        }
-    ]
+    const $url = 'http://192.168.1.120:1337';
+    const $userid = localStorage.getItem("userid");//userid
     export default{
         name: 'test',
         data () {
             return {
-                prolist : prolist,
+                prolist : [],
                 startX : 0 ,
                 endX : 0 ,
+                page:1,
+                size:5,
+                noData:''
             }
         },
         methods : {
@@ -96,23 +100,90 @@
             },
             //删除
             deleteItem(e){
-                let index = e.currentTarget.dataset.index;
-                this.restSlide();
-                this.prolist.splice(index,1);
+                let index = e.currentTarget.dataset.index;//删除的当前索引值
+                let $body = e.currentTarget.dataset.body;//所删除问题的body
+                let $id = e.currentTarget.dataset.id;//所删除问题的id
+                let $title = e.currentTarget.dataset.title;//所删除问题的title
+                let $status = e.currentTarget.dataset.status;//所删除问题的status
+                const stars = this.prolist[index].stars;//拿到当前点击的收藏的stars
+                console.log(stars);
+                //拿到所有收藏的用户id
+                const starid = [];
+                for(let i = 0;i<stars.length;i++){
+                    starid.push(stars[i].id);
+                }
+                //拿到我自己id的索引值
+                const myindex = starid.indexOf($userid);
+                //根据索引值删除我的
+                stars.splice(myindex,1);
+                const data ={
+                    stars:stars,
+                    title:$title,
+                    status:$status
+                };
+                console.log(data);
+                this.$http.put($url+'/topic/'+$id,data).then(res=>{
+                    if(res.status == 200){
+                        this.restSlide();
+                        this.prolist.splice(index,1);
+                    }
+                }).catch((error,errorcode)=>{
+                    console.log('error');
+                });
+            },
+            getIndexData:function(){
+              this.noData='';
+              const data = {
+                limit : this.page*this.size,
+                sort:JSON.stringify({ createdAt:0}),
+                userid:$userid
+              }
+              this.$axios.get($url+'/topics',{params:data}).then(res=>{
+                 this.prolist = res.data;
+              }).catch((error)=>{
+                 console.log('error');
+              });
+           },
+           refresh (done) {
+              setTimeout(() => {
+                this.size = 5;
+                this.page = 1;
+                this.getIndexData();
+                done()
+              }, 1500)
+            },
+            infinite (done) {
+              if(this.noData) {
+                  setTimeout(()=>{
+                      done(true);
+                  });
+                return;
+              }
+              setTimeout(() => {
+                this.page++;
+                const data = {
+                  limit : this.page*this.size,
+                  sort:JSON.stringify({ createdAt:0}),
+                  userid:$userid
+                }
+                this.$axios.get($url+'/topics',{params:data}).then(res=>{
+                   this.prolist = res.data;
+                  
+                }).catch((error)=>{
+                    console.log('error');
+                });
+                const limit = this.page*this.size;
+                if(this.prolist.length <= limit){
+                  this.noData='没有更多数据';
+                }
+                 done()
+              }, 3000);
             }
             
         },
-        beforeCreate:function(){
-            const $url = 'http://192.168.1.120:1337';
+        mounted:function(){
             //获取收藏的问题
-            const $userid = localStorage.getItem("userid");//userid
-            const data ={userid:$userid } 
-            console.log(data);
-            this.$axios.get($url+'/topics',{params:data}).then((res)=>{
-                this.prolist = res.data;
-            }).catch(function(error){
-                console.log(error);
-            })
+            this.getIndexData();
         }
     }
 </script>
@@ -250,5 +321,28 @@
         top:50%;
         left: 106%;
         margin-top: -16rem/$unit;
+    }
+    .no_data{
+        width:100%;
+        text-align: center;
+        line-height: 20rem/$unit;
+        font-family: PingFangSC-Regular;
+        font-size: 13px;
+        color: #4C3A30;
+        letter-spacing: 0.26px;
+        img{
+            width:132rem/$unit;
+            height:119rem/$unit;
+            display: inline-block;
+            margin-top: 48rem/$unit;
+            margin-bottom: 20rem/$unit;
+        }
+    }
+    .goHome{
+        width:auto;
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #FF8500;
+        letter-spacing: 0;
     }
 </style>
