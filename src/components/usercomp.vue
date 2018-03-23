@@ -1,39 +1,45 @@
 <template>
 	<div class="container">
-		<ul>
-			<router-link tag="li" to="" class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
-				<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
-					<p class="title">{{item.topic.title}}</p>
-					<p class="t_componet">{{item.body}}</p>
-					<p class="title-infor">
-						<span>
-							<span class="seenum">{{item.comments.length}}</span>
-							人回答
-						</span>
-						<span>
-							<span class="componet-num">{{item.stars.length}}</span>
-							人收藏
-						</span>
-					</p>
-					
-				</div>
-				<div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index">
-	            </div>
-			</router-link>
-		</ul>
+			<scroller :on-refresh="refresh"
+  :on-infinite="infinite" ref="myscroller"  v-if="prolist.length>0">
+				<router-link tag="li" to="" class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
+					<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
+						<p class="title">{{item.topic.title}}</p>
+						<p class="t_componet">{{item.body}}</p>
+						<p class="title-infor">
+							<span>
+								<span class="seenum">{{item.comments.length}}</span>
+								人回答
+							</span>
+							<span>
+								<span class="componet-num">{{item.stars.length}}</span>
+								人收藏
+							</span>
+						</p>
+						
+					</div>
+					<div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index" :data-body="item.body" :data-id="item.id">
+		            </div>
+				</router-link>
+			</scroller>
+			<div v-else class="no_data">
+	            <img src="../assets/images/shoucang.png">
+	            <p>您的收藏还是空的</p>
+	            <router-link tag="a" class="goHome" to="../">去逛逛</router-link>
+	        </div>
 	</div>
 </template>
 <script type="text/javascript">
-	const prolist =[
-		
-	]
+	const $url = 'http://192.168.1.120:1337';
+    const $userid = localStorage.getItem("userid");//userid
 	export default{
 		name: 'usecomp',
 		data () {
             return {
-                prolist : prolist,
+                prolist : [],
                 startX : 0 ,
                 endX : 0 ,
+                noData:''
             }
         },
         methods : {
@@ -69,7 +75,6 @@
             //判断当前是否有滑块处于滑动状态
             checkSlide(){
                 let listItems = document.querySelectorAll('.list-item');
-
                 for( let i = 0 ; i < listItems.length ; i++){
                     if( listItems[i].dataset.type == 1 ) {
                         return true;
@@ -80,28 +85,89 @@
             //一次只能滑动一个
             restSlide(){
                 let listItems = document.querySelectorAll('.list-item');
-
                 for( let i = 0 ; i < listItems.length ; i++){
                     listItems[i].dataset.type = 0;
                 }
             },
             //删除
             deleteItem(e){
-                let index = e.currentTarget.dataset.index;
-                this.restSlide();
-                this.prolist.splice(index,1);
+                let index = e.currentTarget.dataset.index;//删除的当前索引值
+                let $body = e.currentTarget.dataset.body;//所删除评论的body
+                let $id = e.currentTarget.dataset.id;//所删除评论的id
+                const stars = this.prolist[index].stars;//拿到当前点击的收藏的stars
+                //拿到所有收藏的用户id
+                const starid = [];
+                for(let i = 0;i<stars.length;i++){
+                	starid.push(stars[i].id);
+                }
+                //拿到我自己id的索引值
+                const myindex = starid.indexOf($userid);
+                //根据索引值删除我的
+                stars.splice(myindex,1);
+                const data ={
+                    stars:stars,
+                    body:$body,
+                };
+                this.$http.put($url+'/answer/'+$id,data).then(res=>{
+                    console.log(res);
+                    if(res.status == 200){
+                    	this.restSlide();
+                		this.prolist.splice(index,1);
+                    }
+                }).catch((error)=>{
+                	console.log('error');
+                });
+            },
+            getIndexData:function(){
+              this.noData='';
+              const data = {
+                limit : this.page*this.size,
+                sort:JSON.stringify({ createdAt:0}),
+                userid:$userid
+              }
+              this.$axios.get($url+'/answer',{params:data}).then((res)=>{
+	              this.prolist = res.data;
+	          }).catch((error)=>{
+		          console.log(error);
+		      });
+           },
+           refresh (done) {
+              setTimeout(() => {
+                this.size = 5;
+                this.page = 1;
+                this.getIndexData();
+                done()
+              }, 1500)
+            },
+            infinite (done) {
+              if(this.noData) {
+                  setTimeout(()=>{
+                      done(true);
+                  });
+                return;
+              }
+              setTimeout(() => {
+                this.page++;
+                const data = {
+                  limit : this.page*this.size,
+                  sort:JSON.stringify({ createdAt:0}),
+                  userid:$userid
+                }
+                this.$axios.get($url+'/answer',{params:data}).then((res)=>{
+		            this.prolist = res.data;
+		        }).catch((error)=>{
+		            console.log(error);
+		        });
+                const limit = this.page*this.size;
+                if(this.prolist.length <= limit){
+                  this.noData='没有更多数据';
+                }
+                 done()
+              }, 3000);
             }
         },
-        beforeCreate:function(){
-        	const $url = 'http://192.168.1.120:1337';
-            //获取收藏的问题
-            const $userid = localStorage.getItem("userid");//userid
-            const data ={userid:$userid} 
-            this.$axios.get($url+'/answer',{params:data}).then((res)=>{
-                this.prolist = res.data;
-            }).catch(function(error){
-                console.log(error);
-            })
+        mounted:function(){
+            this.getIndexData();
         }
 	}
 </script>
@@ -222,4 +288,28 @@
 	    }
 
 	}
+	
+	.no_data{
+        width:100%;
+        text-align: center;
+        line-height: 20rem/$unit;
+        font-family: PingFangSC-Regular;
+		font-size: 13px;
+		color: #4C3A30;
+		letter-spacing: 0.26px;
+        img{
+            width:132rem/$unit;
+            height:119rem/$unit;
+            display: inline-block;
+            margin-top: 48rem/$unit;
+            margin-bottom: 20rem/$unit;
+        }
+    }
+    .goHome{
+        width:auto;
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #FF8500;
+        letter-spacing: 0;
+    }
 </style>

@@ -45,12 +45,15 @@
           <li class="clearfix" v-for="(item,index) in msg" :key="item.id">
               <div class="ctn_l">
                   <i>{{index+1}}</i>
-                  <img :src="item.upVotes.avatarUrl" alt="">
+                  <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
+                  <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
+                  <img v-else :src="item.createdBy.avatarUrl" alt="2">
               </div>
               <div class="ctn_r">
                   <div>
-                      <!-- <span v-if="item.user.username==null">{{'匿名用户'}}</span> -->
-                      <span>{{item.username}}</span>
+                      <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
+                      <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
+                      <span v-else>{{item.createdBy.username}}</span>
                       <i class="iconfont icon-fenxiang"></i>
                       <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                       <i class="iconfont icon-shoucang1"v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
@@ -66,7 +69,7 @@
                           <div>
                               <i class="iconfont icon-dianzan1" v-if="item.upVote == true"@click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <span>{{item.upVotes.length}}</span>
+                              <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
                           <div @click="slideDown()">
                               <i class="iconfont icon-pinglun"></i>
@@ -93,7 +96,8 @@
               userid:'',
               title:'',
               readNum:'',
-              toAnswer:''
+              toAnswer:'',
+              defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
               
               
           }
@@ -113,14 +117,22 @@
             starsid.push(stars[i].id);
           }
           console.log(this.msg[$index].isStar);
-          if(this.msg[$index].isStar){
-            starsid.splice(starsid.indexOf($userid),1);
-          }else{
-            starsid.push($userid);
-          }
+          console.log('总');
           console.log(starsid);
+          console.log('位置'+starsid.indexOf($userid));
+          if(this.msg[$index].isStar){
+            console.log("取消收藏");
+            starsid.splice(starsid.indexOf($userid),1)
+            var resultarr = starsid;
+            console.log(resultarr);
+          }else{
+            console.log("收藏");
+            starsid.push($userid);
+            var resultarr = [...new Set(starsid)]
+            console.log(resultarr);
+          }
           const data = {
-            'stars' : starsid
+            'stars' : resultarr
           }
           this.$axios.put('//192.168.1.116:1337/answer/'+answerid,data).then((res)=>{
             console.log(res);
@@ -138,31 +150,37 @@
         giveLike:function(event){
           console.log(event.currentTarget.dataset);
           const answerid = event.currentTarget.dataset.id;
-          console.log('问题id |'+answerid);
+          console.log('点赞id |'+answerid);
           const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
           const $userid = localStorage.getItem("userid");
-          console.log(this.msg[$index].stars);
-          const stars = this.msg[$index].stars;
-          const starsid = [];
+          console.log('点赞用户 |'+$userid);
+          console.log(this.msg[$index].upVotes);
+          const upVotes = this.msg[$index].upVotes;
+          const upVotesid = [];
           //循环当前评论收藏的信息，拿到此条评论的所有id
-          for(let i=0;i<stars.length;i++){
-            starsid.push(stars[i].id);
+          for(let i=0;i<upVotes.length;i++){
+            upVotesid.push(upVotes[i].id);
           }
           console.log(this.msg[$index].upVote);
+          console.log('当前用户点赞位置'+upVotesid.indexOf($userid));
           if(this.msg[$index].upVote){
-            starsid.splice(starsid.indexOf($userid),1);
+            upVotesid.splice(upVotesid.indexOf($userid),1)
+            var resultarr = upVotesid;
+            $(".upVote_num").eq($index).text(resultarr.length);
           }else{
-            starsid.push($userid);
+            upVotesid.push($userid);
+            var resultarr = [...new Set(upVotesid)];
+            $(".upVote_num").eq($index).text(resultarr.length);
           }
-          console.log(starsid);
           const data = {
-            'stars' : starsid
+            'upVotes' : resultarr
           }
           this.$axios.put('//192.168.1.116:1337/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.msg[$index].upVote){
                 this.msg[$index].upVote = false;
+
               }else{
                 this.msg[$index].upVote = true;
               }
@@ -176,10 +194,12 @@
         }
       },
       beforeCreate(){
+        this.defaulturl = localStorage.getItem('headimg');
+        console.log(this.defaulturl);
         const $url = 'http://192.168.1.116:1337';
-        if(!localStorage.getItem("topic")){
+        // if(!localStorage.getItem("topic")){
           localStorage.setItem("topic",this.$route.params.id);
-        }
+        // }
         const topicid = localStorage.getItem("topic");//问题id
         const $userid = localStorage.getItem("userid");//用户id
         console.log('问题id|'+topicid);
@@ -270,7 +290,7 @@ letter-spacing: -0.39px;}
     .icon-pinglun{
         font-size: 12px;color: #BDBDBD; 
     }
-    .icon-dianzan{
+    .icon-dianzan,.icon-dianzan1{
         font-size: 12px;color: #BDBDBD;
     }
     ul,li{list-style: none;}

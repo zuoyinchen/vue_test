@@ -35,6 +35,7 @@
 			left:50%;
 			margin-left:-90rem/$unit;
 			top:15rem/$unit;
+			z-index:5;
 			
 			li{
 				width:80rem/$unit;

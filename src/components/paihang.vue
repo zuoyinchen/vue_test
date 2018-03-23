@@ -116,27 +116,36 @@ export default {
       const data ={search: {id:$userid} }
       this.$axios.get($url+'/friend',{params:data}).then((res)=>{
          if (res.status === 200) {
-            const allFriendIds =JSON.stringify(res.data.allFriendIds);
-            const answer ={allFriendIds:allFriendIds};
-            this.$axios.get($url+'/answerRank',{params:answer}).then((data)=>{
-              this.pailist =data.data.createdBys;
-              const idarr = [];
-              for(let i=0;i<this.pailist.length;i++){
-                idarr.push(this.pailist[i].id);
-              }
-              if(idarr.indexOf($userid) != -1){
-                const myindex = idarr.indexOf($userid);
-                this.myGrade = Number(idarr.indexOf($userid))+1;
-                this.myStar = this.pailist[myindex].upVotes;
-                this.myavtalUrl = this.pailist[myindex].avatarUrl;
-              }else{
-                this.myGrade ='-';
-                this.myStar = 0;
-                this.myavtalUrl = localStorage.getItem("headimg");
-              }
-            }).catch((error)=>{
-              console.log(error);
-            })
+            console.log(res.data);
+            if(res.data&&res.data.length){
+              const allFriendIds =JSON.stringify(res.data.allFriendIds);
+              const answer ={allFriendIds:allFriendIds};
+              console.log(answer);
+              this.$axios.get($url+'/answerRank',{params:answer}).then((data)=>{
+                this.pailist =data.data.createdBys;
+                const idarr = [];
+                for(let i=0;i<this.pailist.length;i++){
+                  idarr.push(this.pailist[i].id);
+                }
+                if(idarr.indexOf($userid) != -1){
+                  const myindex = idarr.indexOf($userid);
+                  this.myGrade = Number(idarr.indexOf($userid))+1;
+                  this.myStar = this.pailist[myindex].upVotes;
+                  this.myavtalUrl = this.pailist[myindex].avatarUrl;
+                }else{
+                  this.myGrade ='-';
+                  this.myStar = 0;
+                  this.myavtalUrl = localStorage.getItem("headimg");
+                }
+              }).catch((error)=>{
+                console.log(error);
+              })
+            }else{
+              this.pailist = [];
+              this.myGrade ='-';
+              this.myStar = 0;
+              this.myavtalUrl = localStorage.getItem("headimg");
+            }
          }
       }).catch(function(error){
           console.log(error);
@@ -154,6 +163,8 @@ export default {
         for(let i=0;i<this.pailist.length;i++){
           idarr.push(this.pailist[i].id);
         }
+        console.log(idarr);
+        console.log($userid);
         if(idarr.indexOf($userid) != -1){
           const myindex = idarr.indexOf($userid);
           this.myGrade = Number(idarr.indexOf($userid))+1;
@@ -162,7 +173,7 @@ export default {
         }else{
           this.myGrade ='-';
           this.myStar = 0;
-          this.myavtalUrl = '';
+          this.myavtalUrl = localStorage.getItem("headimg");
         }
     }).catch(function(error){
         console.log(error);
