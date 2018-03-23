@@ -9,7 +9,7 @@
           <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
             切换好友榜
           </div>
-           <div class="top_btn" @click="this.getWorld"v-else>
+           <div class="top_btn" @click="this.getWorld" v-else>
             切换世界榜
           </div>
 
@@ -21,7 +21,7 @@
                   <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
                   <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
                   <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
-                  <span class="indexname"v-else>{{index+1}}</span>
+                  <span class="indexname" v-else>{{index+1}}</span>
                   <img :src="item.avatarUrl" alt="" class="avtalimg">
                   <span class="nickname">{{item.nickName}}</span>
               </div>
@@ -43,6 +43,7 @@
           </div>
           <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
       </ul>
+      
       <tabnav></tabnav>
   </div>
   
@@ -77,24 +78,28 @@ export default {
   methods:{
     getWorld:function(){
       this.iswho = 0;
-      console.log(this.iswho);
       const $url = 'http://192.168.1.120:1337';
       //获取世界榜
       const $userid = localStorage.getItem("userid");//userid
-      const data ={userid:$userid} 
       this.$axios.get($url+'/rank').then((res)=>{
-          console.log(res);
-          this.pailist =res.data;
-          const idarr = [];
-          for(let i=0;i<this.pailist.length;i++){
-            idarr.push(this.pailist[i].id);
-          }
-          if(idarr.indexOf($userid) != -1){
-            const myindex = idarr.indexOf($userid);
-            this.myGrade = Number(idarr.indexOf($userid))+1;
-            this.myStar = this.pailist[myindex].upVotes;
-            this.myavtalUrl = this.pailist[myindex].avatarUrl;
+          if(res.data && res.data.length){
+            this.pailist =res.data;
+            const idarr = [];
+            for(let i=0;i<this.pailist.length;i++){
+              idarr.push(this.pailist[i].id);
+            }
+            if(idarr.indexOf($userid) != -1){
+              const myindex = idarr.indexOf($userid);
+              this.myGrade = Number(idarr.indexOf($userid))+1;
+              this.myStar = this.pailist[myindex].upVotes;
+              this.myavtalUrl = this.pailist[myindex].avatarUrl;
+            }else{
+              this.myGrade ='-';
+              this.myStar = 0;
+              this.myavtalUrl = localStorage.getItem("headimg");
+            }
           }else{
+            this.pailist = [];
             this.myGrade ='-';
             this.myStar = 0;
             this.myavtalUrl = localStorage.getItem("headimg");
@@ -105,35 +110,49 @@ export default {
     },
     getFriend:function(){
       this.iswho = 1;
-      console.log(this.iswho);
-      console.log("好友榜");
       const $url = 'http://192.168.1.120:1337';
-      //获取世界榜
+      //获取好友榜
       const $userid = localStorage.getItem("userid");//userid
-      const data ={search: { createdBy:$userid} }
+      const data ={search: {id:$userid} }
       this.$axios.get($url+'/friend',{params:data}).then((res)=>{
-          res.data = [];
-          if(res.data && res.data.length){
-            console.log(11);
-            console.log(res.data.length);
-            this.pailist =res.data;
-          }else{
-            this.pailist = [];
-            this.myGrade ='-';
-            this.myStar = 0;
-            this.myavtalUrl = localStorage.getItem("headimg");
-          }
-         
+         if (res.status === 200) {
+            console.log(res.data);
+            if(res.data&&res.data.length){
+              const allFriendIds =JSON.stringify(res.data.allFriendIds);
+              const answer ={allFriendIds:allFriendIds};
+              console.log(answer);
+              this.$axios.get($url+'/answerRank',{params:answer}).then((data)=>{
+                this.pailist =data.data.createdBys;
+                const idarr = [];
+                for(let i=0;i<this.pailist.length;i++){
+                  idarr.push(this.pailist[i].id);
+                }
+                if(idarr.indexOf($userid) != -1){
+                  const myindex = idarr.indexOf($userid);
+                  this.myGrade = Number(idarr.indexOf($userid))+1;
+                  this.myStar = this.pailist[myindex].upVotes;
+                  this.myavtalUrl = this.pailist[myindex].avatarUrl;
+                }else{
+                  this.myGrade ='-';
+                  this.myStar = 0;
+                  this.myavtalUrl = localStorage.getItem("headimg");
+                }
+              }).catch((error)=>{
+                console.log(error);
+              })
+            }else{
+              this.pailist = [];
+              this.myGrade ='-';
+              this.myStar = 0;
+              this.myavtalUrl = localStorage.getItem("headimg");
+            }
+         }
       }).catch(function(error){
           console.log(error);
       });
-      //获取我的排名
-
     }
-
   },  
   beforeCreate:function(){
-    console.log("世界榜");
     const $url = 'http://192.168.1.120:1337';
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
@@ -144,6 +163,8 @@ export default {
         for(let i=0;i<this.pailist.length;i++){
           idarr.push(this.pailist[i].id);
         }
+        console.log(idarr);
+        console.log($userid);
         if(idarr.indexOf($userid) != -1){
           const myindex = idarr.indexOf($userid);
           this.myGrade = Number(idarr.indexOf($userid))+1;
@@ -152,12 +173,11 @@ export default {
         }else{
           this.myGrade ='-';
           this.myStar = 0;
-          this.myavtalUrl = '';
+          this.myavtalUrl = localStorage.getItem("headimg");
         }
     }).catch(function(error){
         console.log(error);
     });
-
   }
 }
 </script>
@@ -234,7 +254,7 @@ export default {
       height:100%;
       box-sizing:border-box;
       padding-top:130rem/$x;
-      padding:130rem/$x 0 49rem/$x;
+      padding:130rem/$x 30rem/$x 49rem/$x;
       overflow-y:scroll;
       position: relative;
       z-index: 1;

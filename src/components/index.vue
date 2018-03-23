@@ -1,5 +1,7 @@
 <template>
   <div class="box">
+    <scroller class="message_list" :on-refresh="refresh"
+  :on-infinite="infinite" ref="myscroller">
       <div class="nav clearfix">
           <div>
             <span class="counttest">下场开始时间</span>
@@ -14,7 +16,7 @@
          </div>
       </div>
       <ul class="btn">
-          <li v-for="item in msg" :key="item.id">
+          <li v-for="(item,index) in msg" :key="index">
               <div class="btn_t1">
                   <!--<img src="" alt="" class="loading"> -->
                   <div class="loading" v-if="item.status==1">
@@ -23,23 +25,47 @@
                   <div class="end" v-else>
                       <p>已结束</p>
                   </div>
-                  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+''}}">
+
+                 <!--  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
+                  status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
                         {{item.title}}
-                  </router-link>
+                  </router-link> -->
+                  <p @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
-                      <li v-if="item.status==1"><i class="iconfont icon-xianshimima"></i><span>{{item.readNum}}</span><i class="s"></i></li>
-                      <li v-else><i class="iconfont icon-paihangbang"></i><span>排行榜</span><i class="s"></i></li>
-                      <li v-if="item.status==1"><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span><i class="s"></i></li>
-                      <li v-else><i class="iconfont icon-wode"></i><span>{{item.readNum}}</span><i class="s"></i></li>
+                      <li v-if="item.status==1">
+                        <i class="iconfont icon-xianshimima"></i>
+                        <span>{{item.readNum}}</span>
+                        <i class="s"></i>
+                      </li>
+                      <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-if="item.status==2">
+                        <i class="iconfont icon-paihangbang"></i>
+                        <i v-show="false" id="idTwo">{{item.id}}</i>
+                        <span>排行榜</span>
+                        <i class="s"></i>
+                      </router-link>
+                      <router-link tag="li" v-if="item.status==1" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
+                      status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
+                          <i class="iconfont icon-pinglun"></i>
+                          <span>{{item.toAnswer.length}}</span>
+                          <i class="s"></i>
+                      </router-link>   
+                      <li v-if="item.status==2">
+                        <i class="iconfont icon-wode"></i>
+                        <span>{{item.readNum}}</span>
+                        <i class="s"></i>
+                      </li>
                       <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
                           <i></i>   <span class="counttest">倒计时</span>
                                     <span>
-                                        <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                                        <countdown :time="item.second" class="countdown">
                                             <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                                         </countdown>
                                     </span>
                       </li>
-                      <li style="border-bottom-right-radius: 10px;" v-else><i class="iconfont icon-pinglun"></i><span>{{item.toAnswer.length}}</span></li>
+                      <li style="border-bottom-right-radius: 10px;" v-if="item.status==2">
+                        <i class="iconfont icon-pinglun"></i>
+                        <span>{{item.toAnswer.length}}</span>
+                      </li>
                   </ul>
               </div>
           </li>
@@ -49,11 +75,14 @@
       
          
       </ul>
-        
-  <!--      <countdown :time="3 * 24 * 60 * 60 * 1000" class="ss">
-  <template slot-scope="props" >Time Remaining：{{ props.days }} days, {{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds.</template>
-</countdown>  -->
-       <tabnav></tabnav> 
+    </scroller>
+    <router-link tag="div" to="/message" class="my_message ">
+      <p>
+        <i class="iconfont icon-xiaoxi"></i>
+        <span></span>
+      </p>
+    </router-link>
+    <tabnav></tabnav> 
   </div>
 </template>
 <script>
@@ -62,39 +91,132 @@ export default {
   data(){
       return {
           msg:[],
-         
+          limit:'',
+          page:1,
+          size:5
       }
   },
   methods:{
-       countdoen:function(){
+       countdown:function(){
 
+       },
+       getIndexData:function(){
+          this.noData='';
+          const data = {
+            limit : this.page*this.size,
+            sort:JSON.stringify({ createdAt:0})
+          }
+          this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+             this.msg = res.data;
+          });
+       },
+       refresh (done) {
+          setTimeout(() => {
+            this.size = 5;
+            this.page = 1;
+            this.getIndexData();
+            done()
+          }, 1500)
+       },
+       infinite (done) {
+          if(this.noData) {
+              setTimeout(()=>{
+                  done(true);
+              });
+            return;
+          }
+          setTimeout(() => {
+            this.page++;
+            const data = {
+              limit : this.page*this.size,
+              sort:JSON.stringify({ createdAt:0})
+            }
+            this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+               this.msg = res.data;
+              
+            });
+            const limit = this.page*this.size;
+            if(this.msg.length <= limit){
+              this.noData='没有更多数据';
+            }
+             done()
+          }, 3000);
+       },
+       gotoDetail:function(event){
+          const topicid = event.currentTarget.dataset.tid;//问题id
+          const readnum = event.currentTarget.dataset.rnum;//阅读数
+          const answernum = event.currentTarget.dataset.anum;//评论数
+          const status = event.currentTarget.dataset.status;//状态
+          const time = event.currentTarget.dataset.time;//倒计时时间
+          const title = event.currentTarget.dataset.title;//问题标题
+
+          const query = {
+            topicid : topicid,
+            readnum : readnum,
+            answernum : answernum,
+            status : status,
+            time : time,
+            title : title
+          }
+          console.log(JSON.stringify(query));
+
+          localStorage.setItem("query",JSON.stringify(query));
+          this.$router.push('/answerDetail');
        }
   },
-  created(){
-            this.$http.get('//192.168.1.108:1337/topic').then(res=>{
-                 this.msg = res.data
-                
-          });
+  mounted(){
+    this.getIndexData();
   }
 }
 </script>
 <style lang="scss" scoped>
-    .countdown{font-family: STHeitiSC-Medium;
-font-size: 14px;
-color: #333333;
-letter-spacing: -0.39px;}
+    .countdown{
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
+    }
     .counttest{
-        font-family: STHeitiSC-Medium;
-font-size: 14px;
-color: #333333;
-letter-spacing: -0.39px;
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
     }
     $x:37.5;
+    .my_message{
+      position: fixed;
+      width:40rem/$x;
+      height:40rem/$x;
+      border-radius: 40rem/$x;
+      background: #FFFFFF;
+      box-shadow: 0 2px 6px 0 #DDDDDD;
+      right:15rem/$x;
+      bottom:64rem/$x;
+    }
+    .my_message>p{
+      width:100%;
+      height:100%;
+      line-height: 40rem/$x;
+      position: relative;
+    }
+    .my_message .iconfont:nth-of-type(1){
+     font-size:24px;
+    }
+    .my_message span{
+     display: block;
+     width:8rem/$x;
+     height:8rem/$x;
+     border-radius: 8rem/$x;
+     position: absolute;
+     background:#EF5350;
+     right:8rem/$x;
+     top:8rem/$x;
+    }
     .clearfix:after {
-    content: "";
-    display: block;
-    height: 0;
-    clear: both;
+      content: "";
+      display: block;
+      height: 0;
+      clear: both;
     }
     .btn_t1>.height_light{background: #FDD545;}
     ul{padding: 0;}

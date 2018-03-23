@@ -1,49 +1,64 @@
 <template>
   <div class="box">
-      <div class="countdown">
+      <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                <countdown :time="1 * 24 * 60 * 60 * 1000" class="countdown">
+                <countdown :time="time" class="countdown">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
       </div>
+      <div v-if="status== 2" class="countdown countend">
+            <span class="counttest">已结束</span>
+      </div>
       <div class="theme">
           <p class="theme_t">
-              {{$route.params.title}}
+              {{title}}
           </p>
+          <!-- <p class="theme_t" v-else>
+              {{'ssss'}}
+          </p> -->
           <div class="theme_b clearfix">
               <div class="theme_b_l">
                   <div>
                       <i class="iconfont icon-wode"></i>
-                      <span>{{$route.params.readNum}}</span>
+                      <span>{{readnum}}</span>
                   </div>
                   <div>
                       <i class="iconfont icon-pinglun"></i>
-                      <span>{{$route.params.toAnswer}}</span>
+                      <span>{{answernum}}</span>
                   </div>
               </div>
-              <div class="theme_b_r">
+              <div class="theme_b_r" v-if="status==1">
+                  <p>立即抢答</p>
+                  <!-- <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
+                       <p>立即抢答</p>
+                  </router-link> -->
+                  
+              </div>
+              <div class="theme_b_r" v-if="status==2" v-show="false">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
                        <p>立即抢答</p>
-                  </router-link>
-                  
+                  </router-link> 
               </div>
           </div>
       </div>
       <ul class="ctn">
-          <li class="clearfix" v-for="(item,index) in msg" :key="item.id">
+          <li class="clearfix ppp" v-if="msg!=null" v-for="(item,index) in msg" :key="item.id">
               <div class="ctn_l">
                   <i>{{index+1}}</i>
-            <!--      <img v-if="item.createdBy.avatarUrl.length<0" src="" alt="">    -->
-                  <img src="item.createdBy.avatarUrl" alt="">
+                  <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
+                  <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
+                  <img v-else :src="item.createdBy.avatarUrl" alt="2">
               </div>
               <div class="ctn_r">
                   <div>
-                      <span v-if="item.createdBy==null">{{'匿名用户'}}</span>
+                      <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
+                      <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
                       <span v-else>{{item.createdBy.username}}</span>
                       <i class="iconfont icon-fenxiang"></i>
-                      <i class="iconfont icon-shoucang1"></i>
+                      <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                   </div>
                   <p>
                       {{item.body}}
@@ -54,38 +69,184 @@
                       </div>
                       <div class="clearfix">
                           <div>
-                              <i class="iconfont icon-dianzan"></i>
-                              <span>{{item.topic.upVotes}}</span>
+                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                              <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
-                          <div>
+                          <div v-if="item.stars.length==0">
                               <i class="iconfont icon-pinglun"></i>
-                              <span>{{item.topic.readNum}}</span>
+                              <span>{{item.stars.length}}</span>
+                          </div>
+                          <div v-else @click="slideDown($event)" :data-index="index">
+                              <i class="iconfont icon-pinglun"></i>
+                              <span>{{item.comments.length}}</span>
                           </div>
                       </div>
                   </div>
               </div>
+            <div class="slide clearfix hide" v-for="i in item.comments" :key="i.id">
+              <div class="slide_l">
+                  <img src="" alt="">
+              </div>
+              <div class="slide_r">
+                  <div class="slide_rt clearfix">
+                      <div>
+                          <span v-if="!Boolean(i.username)">{{'匿名用户'}}</span>
+                          <span v-else>{{i.username}}</span>
+                      </div>
+                      <div>
+                          {{i.createdAt}}
+                      </div>
+                  </div>
+                  <p class="slide_rb">
+                      {{i.body}}
+                  </p>
+              </div>
+          </div>
           </li>
       </ul>
   </div>
 </template>
 <script>
-export default {
-    name:"answerDetail",
-    data(){
-        return {
-            msg:[],
-            users:[],
-            
+  const $userid = localStorage.getItem("userid");//用户id
+  export default {
+      name:"answerDetail",
+      data(){
+          return {
+              msg:[],
+              users:[],
+              status:'',
+              topicId:'',
+              time:0,
+              title:'',
+              readnum:'',
+              answernum:'',
+              defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
+              
+              
+          }
+      },
+      methods:{
+        giveStar:function(event){
+          console.log(event.currentTarget.dataset);
+          const answerid = event.currentTarget.dataset.id;
+          console.log('问题id |'+answerid);
+          const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
+          const $userid = localStorage.getItem("userid");
+          console.log(this.msg[$index].stars);
+          const stars = this.msg[$index].stars;
+          const starsid = [];
+          //循环当前评论收藏的信息，拿到此条评论的所有id
+          for(let i=0;i<stars.length;i++){
+            starsid.push(stars[i].id);
+          }
+          console.log(this.msg[$index].isStar);
+          console.log('总');
+          console.log(starsid);
+          console.log('位置'+starsid.indexOf($userid));
+          if(this.msg[$index].isStar){
+            console.log("取消收藏");
+            starsid.splice(starsid.indexOf($userid),1)
+            var resultarr = starsid;
+            console.log(resultarr);
+          }else{
+            console.log("收藏");
+            starsid.push($userid);
+            var resultarr = [...new Set(starsid)]
+            console.log(resultarr);
+          }
+          const data = {
+            'stars' : resultarr
+          }
+          this.$axios.put('//192.168.1.116:1337/answer/'+answerid,data).then((res)=>{
+            console.log(res);
+            if(res.status == 200){
+              if(this.msg[$index].isStar){
+                this.msg[$index].isStar = false;
+              }else{
+                this.msg[$index].isStar = true;
+              }
+            }
+          }).catch((error,errorcode)=>{
+            console.log(error);
+          });
+        },
+        giveLike:function(event){
+          console.log(event.currentTarget.dataset);
+          const answerid = event.currentTarget.dataset.id;
+          console.log('点赞id |'+answerid);
+          const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
+          const $userid = localStorage.getItem("userid");
+          console.log('点赞用户 |'+$userid);
+          console.log(this.msg[$index].upVotes);
+          const upVotes = this.msg[$index].upVotes;
+          const upVotesid = [];
+          //循环当前评论收藏的信息，拿到此条评论的所有id
+          for(let i=0;i<upVotes.length;i++){
+            upVotesid.push(upVotes[i].id);
+          }
+          console.log(this.msg[$index].upVote);
+          console.log('当前用户点赞位置'+upVotesid.indexOf($userid));
+          if(this.msg[$index].upVote){
+            upVotesid.splice(upVotesid.indexOf($userid),1)
+            var resultarr = upVotesid;
+            $(".upVote_num").eq($index).text(resultarr.length);
+          }else{
+            upVotesid.push($userid);
+            var resultarr = [...new Set(upVotesid)];
+            $(".upVote_num").eq($index).text(resultarr.length);
+          }
+          const data = {
+            'upVotes' : resultarr
+          }
+          this.$axios.put('//192.168.1.116:1337/answer/'+answerid,data).then((res)=>{
+            console.log(res);
+            if(res.status == 200){
+              if(this.msg[$index].upVote){
+                this.msg[$index].upVote = false;
+
+              }else{
+                this.msg[$index].upVote = true;
+              }
+            }
+          }).catch((error,errorcode)=>{
+            console.log(error);
+          })
+        },
+        slideDown:function(event){
+          const index = event.currentTarget.dataset.index;
+          $('.ppp').eq(index).find(".slide").toggle();
+        },
+        timeReplace:function(str) {
+        return str.replace('T', ' ').slice(0, str.indexOf('.'));
         }
-    },
-    beforeCreate(){
-        this.$http.get('//192.168.1.108:1337/answer').then(res=>{
-                this.msg = res.data
-                console.log(res.data)
-         });
-    }
-    
-}
+      }
+      ,
+      mounted(){
+        const query = localStorage.getItem("query");//参数集合
+        const queryobj = JSON.parse(query);
+        this.title = queryobj.title;
+        this.time = Number(queryobj.time);
+        this.status = queryobj.status;
+        this.readnum = Number(queryobj.readnum);
+        this.answernum =  Number(queryobj.answernum);
+        this.topicid = queryobj.topicid;
+
+        const $url = 'http://192.168.1.116:1337';
+        const topicid = this.topicid;//问题id
+        
+        const data ={
+          search:JSON.stringify({topic: topicid}),
+          userid:$userid
+        };
+        this.$http.get($url+'/answer', {params:data}).then(res=>{
+            this.msg = res.data;
+        }).catch((error)=>{
+          console.log(error);
+        });
+        
+      }
+  }
 </script>
 <style lang="scss" scoped>
     $x:37.5;
@@ -94,10 +255,10 @@ font-size: 14px;
 color: #333333;
 letter-spacing: -0.39px;}
     .counttest{
-        font-family: STHeitiSC-Medium;
-font-size: 14px;
-color: #333333;
-letter-spacing: -0.39px;
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
     }
     .clearfix:after {
     content: "";
@@ -159,7 +320,7 @@ letter-spacing: -0.39px;
     .icon-pinglun{
         font-size: 12px;color: #BDBDBD; 
     }
-    .icon-dianzan{
+    .icon-dianzan,.icon-dianzan1{
         font-size: 12px;color: #BDBDBD;
     }
     ul,li{list-style: none;}
@@ -211,5 +372,47 @@ letter-spacing: -0.39px;
             float: right;
     }
     .ctn_r>div:nth-of-type(2)>div:nth-of-type(2)>div{float: left;margin-right: 15rem/$x;color: #BDBDBD;}
+    .countend{
+        background: #666666;border-radius: 100rem/$x;
+    }
+    .countend>span{
+        font-family: STHeitiSC-Medium;font-size: 14px;color: #FFFFFF;letter-spacing: -0.39px;
+    }
+    .slide{
+        margin-top: 0;border-radius: 0;background: #FAFAFA;
+    }
+    .slide_l{
+        float: left;text-align: left;width: 62rem/$x;
+    }
+    .slide_l>img{width: 32rem/$x;height: 32rem/$x;background: #FDD545;display: inline-block;
+    border-radius: 50%;margin: 15rem/$x;}
+    .slide_r{
+        float: left;width: 283rem/$x;
+    }
+    .slide_rt{
+        width: 283rem/$x;margin-top: 15rem/$x;
+    }
+    .slide_rt>div:nth-of-type(1){
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #333333;
+        letter-spacing: 0.14px;
+        float: left;
+    }
+    .slide_rt>div:nth-of-type(2){
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #BDBDBD;
+        letter-spacing: 0.14px;
+        float: right;
+        margin-right: 15rem/$x;
+    }
+    .slide_rb{
+        text-align: left;font-family: STHeitiSC-Medium;font-size: 12px;color: #666666;
+        letter-spacing: 0.14px;margin-top: 10rem/$x;
+    }
+    .hide{
+        display: none;
+    }
 </style>
 

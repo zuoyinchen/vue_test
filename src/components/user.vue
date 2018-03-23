@@ -23,25 +23,9 @@
 	</div>
 </template>
 <script type="text/javascript">
-const $url = 'http://192.168.1.120:1337';
-const openid= 'oR7BM5bSwd0SssGhYVs162zKxefQ';
-const nickname= '夏晨阳';
-const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0';
-localStorage.setItem('headimg',headimgurl);
+	
 	export default{
-		name:'user',
-		mounted:function(){
-			const user_data = {
-				"openid":openid,
-				"nickName":nickname,
-				"avtarUrl":headimgurl
-			};
-			this.$axios.get($url+'/wxuserinfo',{params:user_data}).then(function(res){
-				localStorage.setItem("userid",res.data);
-			}).catch(function(error){
-				console.log(error);
-			})
-		}
+		name:'user'
 	}
 </script>
 <style scoped lang='scss'>
@@ -61,14 +45,14 @@ localStorage.setItem('headimg',headimgurl);
 		box-sizing:border-box;
 	}
 	.userpic{
-		width:375rem/$unit;
+		width:100%;
 		height:190rem/$unit;
 		background:url(../assets/img/userpic.png) no-repeat;
 		background-size:cover;
 		margin:0 auto;
 	}
 	.user-visit{
-		width:375rem/$unit;
+		width:100%;
 		height:auto;
 		list-style: none;
 		margin:0 auto;
