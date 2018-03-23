@@ -8,9 +8,7 @@
                     <span class="status-bac" v-else></span>
                     <span class="status status_yell" v-if="item.status== 1">进行中</span>
                     <span class="status" v-else>已结束</span>
-                    <router-link tag="p" class="title" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.messageNum+''}}">
-                        {{item.title}}
-                    </router-link>
+                    <p class="title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                     <div class="title-infor">
                         <span>
                             <i class="iconfont icon-xianshimima"></i>
@@ -51,17 +49,17 @@
         },
         methods : {
             //跳转
-            skip(){
+            skip:function(){
                 if( this.checkSlide() ){
                     this.restSlide();
                 }
             },
             //滑动开始
-            touchStart(e){
+            touchStart:function(e){
                 this.startX = e.touches[0].clientX;
             },
             //滑动结束
-            touchEnd(e){
+            touchEndL:function(e){
 
                 let parentElement = e.currentTarget.parentElement;
                 this.endX = e.changedTouches[0].clientX;
@@ -80,7 +78,7 @@
                 this.endX = 0;
             },
             //判断当前是否有滑块处于滑动状态
-            checkSlide(){
+            checkSlide:function(){
                 let listItems = document.querySelectorAll('.list-item');
 
                 for( let i = 0 ; i < listItems.length ; i++){
@@ -91,7 +89,7 @@
                 return false;
             },
             //一次只能滑动一个
-            restSlide(){
+            restSlide:function(){
                 let listItems = document.querySelectorAll('.list-item');
 
                 for( let i = 0 ; i < listItems.length ; i++){
@@ -99,7 +97,7 @@
                 }
             },
             //删除
-            deleteItem(e){
+            deleteItem:function(e){
                 let index = e.currentTarget.dataset.index;//删除的当前索引值
                 let $body = e.currentTarget.dataset.body;//所删除问题的body
                 let $id = e.currentTarget.dataset.id;//所删除问题的id
@@ -144,7 +142,7 @@
                  console.log('error');
               });
            },
-           refresh (done) {
+           refresh:function(done) {
               setTimeout(() => {
                 this.size = 5;
                 this.page = 1;
@@ -152,7 +150,7 @@
                 done()
               }, 1500)
             },
-            infinite (done) {
+            infinite:function(done) {
               if(this.noData) {
                   setTimeout(()=>{
                       done(true);
@@ -178,6 +176,26 @@
                 }
                  done()
               }, 3000);
+            },
+            gotoDetail:function(event){
+              const topicid = event.currentTarget.dataset.tid;//问题id
+              const readnum = event.currentTarget.dataset.rnum;//阅读数
+              const answernum = event.currentTarget.dataset.anum;//评论数
+              const status = event.currentTarget.dataset.status;//状态
+              const time = event.currentTarget.dataset.time;//倒计时时间
+              const title = event.currentTarget.dataset.title;//问题标题
+
+              const query = {
+                topicid : topicid,
+                readnum : readnum,
+                answernum : answernum,
+                status : status,
+                time : time,
+                title : title
+              }
+
+              localStorage.setItem("query",JSON.stringify(query));
+              this.$router.push('/answerDetail');
             }
             
         },

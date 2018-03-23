@@ -18,18 +18,12 @@
       <ul class="btn">
           <li v-for="(item,index) in msg" :key="index">
               <div class="btn_t1">
-                  <!--<img src="" alt="" class="loading"> -->
                   <div class="loading" v-if="item.status==1">
                       <p>进行中</p>
                   </div>
                   <div class="end" v-else>
                       <p>已结束</p>
                   </div>
-
-                 <!--  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
-                  status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
-                        {{item.title}}
-                  </router-link> -->
                   <p @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
                       <li v-if="item.status==1">
@@ -37,18 +31,17 @@
                         <span>{{item.readNum}}</span>
                         <i class="s"></i>
                       </li>
-                      <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-if="item.status==2">
+                      <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
                         <i class="iconfont icon-paihangbang"></i>
                         <i v-show="false" id="idTwo">{{item.id}}</i>
                         <span>排行榜</span>
                         <i class="s"></i>
-                      </router-link>
-                      <router-link tag="li" v-if="item.status==1" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
-                      status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
+                      </li>
+                      <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
                           <i class="iconfont icon-pinglun"></i>
                           <span>{{item.toAnswer.length}}</span>
                           <i class="s"></i>
-                      </router-link>   
+                      </li>   
                       <li v-if="item.status==2">
                         <i class="iconfont icon-wode"></i>
                         <span>{{item.readNum}}</span>
@@ -158,10 +151,19 @@ export default {
             time : time,
             title : title
           }
-          console.log(JSON.stringify(query));
 
           localStorage.setItem("query",JSON.stringify(query));
           this.$router.push('/answerDetail');
+       },
+       goSiglepai:function(event){
+          const topicid = event.currentTarget.dataset.tid;//问题id
+          const title = event.currentTarget.dataset.title;//问题标题
+          const squery = {
+            topicid : topicid,
+            title : title
+          }
+          localStorage.setItem("squery",JSON.stringify(squery));
+          this.$router.push('/singlepai');
        }
   },
   mounted(){

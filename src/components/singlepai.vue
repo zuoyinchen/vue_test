@@ -7,7 +7,7 @@
 	          	<i class="lefticon iconfont icon-baojiaquotation2"></i>
 	          	<i class="righticon iconfont icon-baojiaquotation"></i>
           	</span>
-          	<span class="answer_con">{{$route.params.title}}</span>
+          	<span class="answer_con">{{title}}</span>
           </p>
       	</div>
       	<ul class="paihang_list">
@@ -41,32 +41,30 @@
 	</div>
 </template>
 <script type="text/javascript">
+  const $url = 'http://192.168.1.120:1337';
+  const $userid = localStorage.getItem("userid");//userid
 	export default {
 		name : 'singlepai',
 		data(){
 			return {
-				pailist:[
-		         
-		        ],
-		        myavtalUrl:'',
-		        myStar:0,
-		        myGrade:'-',
-		        topic_title:''
+				pailist:[],
+        myavtalUrl:'',
+        myStar:0,
+        myGrade:'-',
+        topic_title:'',
+        title:'',
+        topicid:''
 			}
 		},
-		beforeCreate:function(){
-		    const $url = 'http://192.168.1.120:1337';
-		    const $topic_title = this.$route.params.title;
-		    console.log($topic_title);
-
-		    const $topicid = this.$route.params.topicid;
+		mounted:function(){
+        const squery = localStorage.getItem("squery");//参数集合
+        const queryobj = JSON.parse(squery);
+        this.title = queryobj.title;
+        this.topicid = queryobj.topicid;
 		    const data = {
-		    	topicid : $topicid
+		    	topicid : this.topicid
 		    }
-		    const $userid = localStorage.getItem("userid");//userid
 		    this.$axios.get($url+'/singleRank',{params:data}).then((res)=>{
-		    	console.log(res.data);
-		    	console.log(res.data.length);
 		        if(res.data && res.data.length){
 		            this.pailist =res.data;
 		            const idarr = [];
