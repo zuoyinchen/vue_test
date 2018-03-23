@@ -15,9 +15,6 @@
           <p class="theme_t">
               {{title}}
           </p>
-          <!-- <p class="theme_t" v-else>
-              {{'ssss'}}
-          </p> -->
           <div class="theme_b clearfix">
               <div class="theme_b_l">
                   <div>
@@ -30,7 +27,7 @@
                   </div>
               </div>
               <div class="theme_b_r" v-if="status==1">
-                  <p>立即抢答</p>
+                  <p @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
                   <!-- <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
                        <p>立即抢答</p>
                   </router-link> -->
@@ -219,7 +216,27 @@
         },
         timeReplace:function(str) {
         return str.replace('T', ' ').slice(0, str.indexOf('.'));
-        }
+        },
+        gotoQuestion:function(event){
+          const topicid = event.currentTarget.dataset.tid;//问题id
+          const readnum = event.currentTarget.dataset.rnum;//阅读数
+          const answernum = event.currentTarget.dataset.anum;//评论数
+          const status = event.currentTarget.dataset.status;//状态
+          const time = event.currentTarget.dataset.time;//倒计时时间
+          const title = event.currentTarget.dataset.title;//问题标题
+          const userQuestion = {
+            topicid : topicid,
+            readnum : readnum,
+            answernum : answernum,
+            status : status,
+            time : time,
+            title : title
+          }
+          console.log(JSON.stringify(userQuestion));
+
+          localStorage.setItem("userQuestion",JSON.stringify(userQuestion));
+          this.$router.push('/answerQuestions');
+       }
       }
       ,
       mounted(){
