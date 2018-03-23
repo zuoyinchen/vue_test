@@ -27,7 +27,10 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: index
+      component: index,
+      meta:{
+        keepAlive:false
+      }
     },
     {
       path:'/singlepai',
@@ -42,7 +45,10 @@ export default new Router({
     {
       path:'/answerDetail',
       name:'answerDetail',
-      component:answerDetail
+      component:answerDetail,
+      meta:{
+        keepAlive:false
+      }
     },
     {
       path:'/answerQuestions',

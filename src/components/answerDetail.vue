@@ -10,12 +10,23 @@
                 </countdown>
             </span>
       </div>
+      <!-- <div class="countdown" v-else>
+            <span class="counttest">倒计时</span>
+            <span>
+                <countdown :time="old.time" class="countdown">
+                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                </countdown>
+            </span>
+      </div> -->
       <div v-if="status== 2" class="countdown countend">
             <span class="counttest">已结束</span>
       </div>
       <div class="theme">
-          <p class="theme_t">
+          <p class="theme_t" v-if="title!=null">
               {{title}}
+          </p>
+          <p class="theme_t" v-else>
+              {{'ssss'}}
           </p>
           <div class="theme_b clearfix">
               <div class="theme_b_l">
@@ -42,7 +53,7 @@
           </div>
       </div>
       <ul class="ctn">
-          <li class="clearfix" v-for="(item,index) in msg" :key="item.id">
+          <li class="clearfix ppp" v-if="msg!=null" v-for="(item,index) in msg" :key="item.id">
               <div class="ctn_l">
                   <i>{{index+1}}</i>
                   <img :src="item.upVotes.avatarUrl" alt="">
@@ -53,7 +64,7 @@
                       <span>{{item.username}}</span>
                       <i class="iconfont icon-fenxiang"></i>
                       <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                      <i class="iconfont icon-shoucang1"v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                   </div>
                   <p>
                       {{item.body}}
@@ -64,17 +75,98 @@
                       </div>
                       <div class="clearfix">
                           <div>
-                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true"@click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span>{{item.upVotes.length}}</span>
                           </div>
-                          <div @click="slideDown()">
+                          <div v-if="item.stars.length==0">
                               <i class="iconfont icon-pinglun"></i>
                               <span>{{item.stars.length}}</span>
+                          </div>
+                          <div v-else @click="slideDown($event)" :data-index="index">
+                              <i class="iconfont icon-pinglun"></i>
+                              <span>{{item.comments.length}}</span>
                           </div>
                       </div>
                   </div>
               </div>
+            <div class="slide clearfix hide" v-for="i in item.comments" :key="i.id">
+              <div class="slide_l">
+                  <img src="" alt="">
+              </div>
+              <div class="slide_r">
+                  <div class="slide_rt clearfix">
+                      <div>
+                          <span v-if="!Boolean(i.username)">{{'匿名用户'}}</span>
+                          <span v-else>{{i.username}}</span>
+                      </div>
+                      <div>
+                          {{i.createdAt}}
+                      </div>
+                  </div>
+                  <p class="slide_rb">
+                      {{i.body}}
+                  </p>
+              </div>
+          </div>
+          </li>
+         
+         <!-- --------------- -->
+          <li class="clearfix ppp" v-if="msg2!=null" v-for="(item,index) in msg2" :key="item.id">
+              <div class="ctn_l">
+                  <i>{{index+1}}</i>
+                  <img :src="item.upVotes.avatarUrl" alt="">
+              </div>
+              <div class="ctn_r">
+                  <div>
+                      <span>{{item.username}}</span>
+                      <i class="iconfont icon-fenxiang"></i>
+                      <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                  </div>
+                  <p>
+                      {{item.body}}
+                  </p>
+                  <div class="clearfix">
+                      <div>
+                          <span>{{item.createdAt}}</span>
+                      </div>
+                      <div class="clearfix">
+                          <div>
+                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                              <span>{{item.upVotes.length}}</span>
+                          </div>
+                          <div v-if="item.stars.length==0">
+                              <i class="iconfont icon-pinglun"></i>
+                              <span>{{item.stars.length}}</span>
+                          </div>
+                          <div v-else @click="slideDown($event)" :data-index="index">
+                              <i class="iconfont icon-pinglun"></i>
+                              <span>{{item.comments.length}}</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            <div class="slide clearfix hide" v-for="i in item.comments" :key="i.id">
+              <div class="slide_l">
+                  <img src="" alt="">
+              </div>
+              <div class="slide_r">
+                  <div class="slide_rt clearfix">
+                      <div>
+                          <span v-if="!Boolean(i.username)">{{'匿名用户'}}</span>
+                          <span v-else>{{i.username}}</span>
+                      </div>
+                      <div>
+                          {{i.createdAt}}
+                      </div>
+                  </div>
+                  <p class="slide_rb">
+                      {{i.body}}
+                  </p>
+              </div>
+          </div>
           </li>
       </ul>
   </div>
@@ -93,9 +185,10 @@
               userid:'',
               title:'',
               readNum:'',
-              toAnswer:''
-              
-              
+              toAnswer:'',
+              flag:'',
+              msg2:[],
+              old:{}  
           }
       },
       methods:{
@@ -171,31 +264,76 @@
             console.log(error);
           })
         },
-        slideDown:function(){
-          console.log(1);
+        slideDown:function(event){
+          const index = event.currentTarget.dataset.index;
+          $('.ppp').eq(index).find(".slide").toggle();
+        },
+        timeReplace:function(str) {
+        return str.replace('T', ' ').slice(0, str.indexOf('.'));
         }
-      },
+      }
+      ,
       beforeCreate(){
         const $url = 'http://192.168.1.116:1337';
-        if(!localStorage.getItem("topic")){
-          localStorage.setItem("topic",this.$route.params.id);
-        }
+        localStorage.setItem("topic",this.$route.params.id);
         const topicid = localStorage.getItem("topic");//问题id
         const $userid = localStorage.getItem("userid");//用户id
         console.log('问题id|'+topicid);
         const data ={search:JSON.stringify({topic: topicid}),userid:$userid};
           this.$http.get($url+'/answer', {params:data}).then(res=>{
-            this.msg = res.data;
+              console.log(res.data);
+              this.msg = res.data;
+              //localStorage.setItem("all",JSON.stringify(res.data));
           });
-      },
-      mounted(){
+        
+      }
+    ,
+      beforeMount(){
+        
         this.time = Number(this.$route.params.time);
-        this.status = $('#status').text();
         this.topicId = this.$route.params.id
         this.title = this.$route.params.title
         this.readNum = this.$route.params.readNum
         this.toAnswer = this.$route.params.toAnswer
-    }   
+        var obj = {
+            title:this.title,
+            time:this.time,
+            readNum:this.readNum,
+            toAnswer:this.toAnswer
+        }
+        if(obj!=null&&obj.title==this.title){
+            localStorage.setItem("t1",JSON.stringify(obj));
+        }
+        
+    
+    }
+    ,created(){
+        let n= localStorage.getItem("all");
+        let m = JSON.parse(n);
+        this.msg2 = m
+        
+    }
+    ,
+    mounted(){
+        this.status = $('#status').text();
+        let t = JSON.parse(localStorage.getItem("t1"))
+        console.log(t)
+    }
+    ,
+    // activated(){
+    //       const $url = 'http://192.168.1.116:1337';
+    //     //if(!localStorage.getItem("topic")){
+    //     localStorage.setItem("topic",this.$route.params.id);
+    //     //}
+    //     const topicid = localStorage.getItem("topic");//问题id
+    //     const $userid = localStorage.getItem("userid");//用户id
+    //     console.log('问题id|'+topicid);
+    //     const data ={search:JSON.stringify({topic: topicid}),userid:$userid};
+    //       this.$http.get($url+'/answer', {params:data}).then(res=>{
+    //           console.log(res.data);
+    //         this.msg = res.data;
+    //       });
+    // }   
   }
 </script>
 <style lang="scss" scoped>
@@ -327,6 +465,42 @@ letter-spacing: -0.39px;}
     }
     .countend>span{
         font-family: STHeitiSC-Medium;font-size: 14px;color: #FFFFFF;letter-spacing: -0.39px;
+    }
+    .slide{
+        margin-top: 0;border-radius: 0;background: #FAFAFA;
+    }
+    .slide_l{
+        float: left;text-align: left;width: 62rem/$x;
+    }
+    .slide_l>img{width: 32rem/$x;height: 32rem/$x;background: #FDD545;display: inline-block;
+    border-radius: 50%;margin: 15rem/$x;}
+    .slide_r{
+        float: left;width: 283rem/$x;
+    }
+    .slide_rt{
+        width: 283rem/$x;margin-top: 15rem/$x;
+    }
+    .slide_rt>div:nth-of-type(1){
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #333333;
+        letter-spacing: 0.14px;
+        float: left;
+    }
+    .slide_rt>div:nth-of-type(2){
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #BDBDBD;
+        letter-spacing: 0.14px;
+        float: right;
+        margin-right: 15rem/$x;
+    }
+    .slide_rb{
+        text-align: left;font-family: STHeitiSC-Medium;font-size: 12px;color: #666666;
+        letter-spacing: 0.14px;margin-top: 10rem/$x;
+    }
+    .hide{
+        display: none;
     }
 </style>
 

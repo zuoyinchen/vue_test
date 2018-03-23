@@ -14,7 +14,7 @@
          </div>
       </div>
       <ul class="btn">
-          <li v-for="item in msg" :key="item.id">
+          <li v-for="(item,index) in msg" :key="index">
               <div class="btn_t1">
                   <!--<img src="" alt="" class="loading"> -->
                   <div class="loading" v-if="item.status==1">
@@ -32,6 +32,7 @@
                       <li v-if="item.status==1"><i class="iconfont icon-xianshimima"></i><span>{{item.readNum}}</span><i class="s"></i></li>
                       <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-if="item.status==2">
                         <i class="iconfont icon-paihangbang"></i>
+                        <i v-show="false" id="idTwo">{{item.id}}</i>
                         <span>排行榜</span>
                         <i class="s"></i>
                       </router-link>
@@ -80,7 +81,8 @@ export default {
           msg:[],
           limit:'',
           page:2,
-          size:2
+          size:2,
+
       }
   },
   methods:{
@@ -92,7 +94,8 @@ export default {
             this.$http.get('//192.168.1.116:1337/topic',{limit: 2, sort:{ createdAt:0}}).then(res=>{
                  this.msg = res.data
                  console.log(res.data)
-                
+                 
+                 console.log()
           });
     }
   }

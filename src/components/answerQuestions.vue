@@ -23,6 +23,7 @@
 </template>
 <script>
 export default {
+    name:'answerQuestions',
   data(){
       return {
           time:''
