@@ -14,7 +14,7 @@ import paihang from '@/components/paihang'
 import singlepai from '@/components/singlepai'
 import answerQuestions from '@/components/answerQuestions'
 import Message from '@/components/message'
-
+import contactUs from '@/components/contactUs'
 
 
 
@@ -83,6 +83,11 @@ export default new Router({
       path: '/message',
       name: 'message',
       component:Message
+    },
+    {
+      path:'/contactUs',
+      name:'contactUs',
+      component:contactUs
     }
   ]
 })

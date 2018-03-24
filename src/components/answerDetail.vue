@@ -100,6 +100,13 @@
               </div>
           </li>
       </ul>
+      <div class="int" v-show="false">
+          <div class="int_l"></div>
+          <form action="">
+            <input type="text" class="int_m">
+          </form>
+          <div class="int_r"></div>
+      </div>
   </div>
 </template>
 <script>
@@ -293,22 +300,30 @@
               this.msg = res.data;
               //拿到所有答题者的id
               const userarr = [];//答题者id集合
-              for(let i=0;i<this.msg.length;i++){
+              for(var i=0;i<this.msg.length;i++){
                   this.msg[i].isMe = false;
                   userarr.push(this.msg[i].id);
+                  
               }
               this.users = this.msg;
+              //判断答题者的id中是否有自己
               if(userarr.indexOf($userid) !== -1){
                 console.log(this.users);
                 this.users[userarr.indexOf($userid)].isMe = true;
-                //判断答题者的id中是否有自己
                 for(var j=0;j<this.users[userarr.indexOf($userid)].comments.length;j++){
                   this.users[userarr.indexOf($userid)].comments[j].isMe = true;
                   console.log(this.users[userarr.indexOf($userid)].comments[j]);
                 }
               }else{
-
-
+                $.each(this.users,function(i,v){
+                  $.each(v.comments,function(i,v){
+                    v.isMe = false;
+                    if(v.id == $userid){
+                      v.isMe = true;
+                    };
+                  })
+                });
+                console.log(this.users);
               }
           }).catch((error)=>{
             console.log(error);
@@ -403,9 +418,9 @@
 <style lang="scss" scoped>
     $x:37.5;
     .countdown{font-family: STHeitiSC-Medium;
-font-size: 14px;
-color: #333333;
-letter-spacing: -0.39px;}
+    font-size: 14px;
+    color: #333333;
+    letter-spacing: -0.39px;}
     .counttest{
       font-family: STHeitiSC-Medium;
       font-size: 14px;
@@ -571,6 +586,34 @@ letter-spacing: -0.39px;}
       font-size: 12px;
       color: #1E88E5;
       letter-spacing: 0.14px;
+    }
+    .int{
+        width: 345rem/$x;
+        height: 33rem/$x;
+        position: fixed;
+        bottom: 33rem/$x;
+        left: 15rem/$x;
+    }
+    .int_l{
+        float: left;
+        background: #f4f4f4;
+        // border-right:1px solid #000;
+        width: 54rem/$x;
+        height: 33rem/$x;
+    }
+    .int_m{
+        float: left;
+        width: 207rem/$x;
+        background: #f4f4f4;
+        height: 33rem/$x;
+        outline:medium
+        
+    }
+    .int_r{
+        float: left;
+        background: #f4f4f4;
+        width: 46rem/$x;
+        height: 35rem/$x;
     }
 </style>
 
