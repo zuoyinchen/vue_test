@@ -49,6 +49,7 @@
   
 </template>
 <script>
+const $url = 'https://www.13cai.com.cn';
 export default {
   name:'paihang',
   data(){
@@ -65,7 +66,6 @@ export default {
   methods:{
     getWorld:function(){
       this.iswho = 0;
-      const $url = 'http://192.168.1.120:1337';
       //获取世界榜
       const $userid = localStorage.getItem("userid");//userid
       this.$axios.get($url+'/rank').then((res)=>{
@@ -97,7 +97,6 @@ export default {
     },
     getFriend:function(){
       this.iswho = 1;
-      const $url = 'http://192.168.1.120:1337';
 
       //获取好友榜
       const $userid = localStorage.getItem("userid");//userid
@@ -144,7 +143,6 @@ export default {
     this.myavtalUrl = localStorage.getItem("headimg");
   },
   beforeCreate:function(){
-    const $url = 'http://192.168.1.120:1337';
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 

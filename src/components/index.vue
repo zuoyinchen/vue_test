@@ -69,7 +69,7 @@
   </div>
 </template>
 <script>
-const $url = 'http://192.168.1.116:1337';
+const $url = 'https://www.13cai.com.cn';
 export default {
   name:"index",
   data(){
@@ -92,7 +92,7 @@ export default {
                 title,
                 status
             }
-            this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+            this.$http.get($url+'/topic',{params:data}).then(res=>{
             this.msg = res.data;
           });
        },

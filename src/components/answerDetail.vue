@@ -113,6 +113,7 @@
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
   const $userid = localStorage.getItem("userid");//用户id
+  const $url = 'https://www.13cai.com.cn';
   // const $userid = '5ab62034992ae628add1f2eb';//用户id
   export default {
       name:"answerDetail",
@@ -161,7 +162,7 @@
           const data = {
             'stars' : resultarr
           }
-          this.$axios.put('//192.168.1.116:1337/answer/'+answerid,data).then((res)=>{
+          this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.msg[$index].isStar){
@@ -202,7 +203,7 @@
           const data = {
             'upVotes' : resultarr
           }
-          this.$axios.put('//192.168.1.116:1337/answer/'+answerid,data).then((res)=>{
+          this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.msg[$index].upVote){
@@ -265,7 +266,7 @@
           console.log("删除答案");
           const answerid = event.currentTarget.dataset.id;
 
-          this.$axios.delete('//192.168.1.116:1337/answer/'+answerid).then((res)=>{
+          this.$axios.delete($url+'/answer/'+answerid).then((res)=>{
             console.log(res);
             this.answernum -=1;
             this.upDatedata();
@@ -279,7 +280,7 @@
           let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
           comment_num -=1;
           $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
-          this.$axios.delete('//192.168.1.116:1337/comment/'+commentid).then((res)=>{
+          this.$axios.delete($url+'/comment/'+commentid).then((res)=>{
             console.log(res);
             
           }).catch((error,errorcode)=>{
@@ -290,7 +291,7 @@
           const query = localStorage.getItem("query");//参数集合
           const queryobj = JSON.parse(query);
           this.topicid = queryobj.topicid;
-          const $url = 'http://192.168.1.116:1337';
+          
           const topicid = this.topicid;//问题id
           const data ={
             search:JSON.stringify({topic: topicid}),
@@ -340,7 +341,7 @@
         this.answernum =  Number(queryobj.answernum);
         this.topicid = queryobj.topicid;
 
-        const $url = 'http://192.168.1.116:1337';
+        
         const topicid = this.topicid;//问题id
         
         const data ={
