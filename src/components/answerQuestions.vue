@@ -9,10 +9,10 @@
           </span>
       </div>
       <div class="btn">
-          <p>{{$route.params.title}}</p>
+          <p>{{title}}</p>
           <div class="clearfix">
-              <div><i class="iconfont icon-xianshimima"></i><span>{{$route.params.readNum}}</span></div>
-              <div><i class="iconfont icon-pinglun"></i><span>{{$route.params.toAnswer}}</span></div>
+              <div><i class="iconfont icon-xianshimima"></i><span>{{readnum}}</span></div>
+              <div><i class="iconfont icon-pinglun"></i><span>{{answernum}}</span></div>
           </div>
       </div>
       <form action="" method="post">
@@ -24,14 +24,40 @@
 <script>
 export default {
     name:'answerQuestions',
-  data(){
-      return {
-          time:''
-      }
-  },
-  created(){
-      this.time = Number(this.$route.params.time)
-  }
+    data(){
+        return {
+            status:'',
+            topicid:'',
+            time:0,
+            title:'',
+            readnum:'',
+            answernum:'',
+        }
+    },
+    mounted(){
+        const userQuestion = localStorage.getItem("userQuestion");//参数集合
+        const userQuestionobj = JSON.parse(userQuestion);
+        this.title = userQuestionobj.title;
+        this.time = Number(userQuestionobj.time);
+        this.status = userQuestionobj.status;
+        this.readnum = Number(userQuestionobj.readnum);
+        this.answernum =  Number(userQuestionobj.answernum);
+        this.topicid = userQuestionobj.topicid;
+        console.log(this.title);
+        // const $url = 'http://192.168.1.116:1337';
+        // const topicid = this.topicid;//问题id
+
+        // const data ={
+        //     search:JSON.stringify({topic: topicid}),
+        //     userid:$userid
+        // };
+        // this.$http.get($url+'/answer', {params:data}).then(res=>{
+        //     this.msg = res.data;
+        // }).catch((error)=>{
+        //     console.log(error);
+        // });
+
+    }
 }
 </script>
 <style lang="scss" scoped>

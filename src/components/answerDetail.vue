@@ -15,9 +15,6 @@
           <p class="theme_t">
               {{title}}
           </p>
-          <!-- <p class="theme_t" v-else>
-              {{'ssss'}}
-          </p> -->
           <div class="theme_b clearfix">
               <div class="theme_b_l">
                   <div>
@@ -30,7 +27,7 @@
                   </div>
               </div>
               <div class="theme_b_r" v-if="status==1">
-                  <p>立即抢答</p>
+                  <p @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
                   <!-- <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
                        <p>立即抢答</p>
                   </router-link> -->
@@ -44,7 +41,7 @@
           </div>
       </div>
       <ul class="ctn">
-          <li class="clearfix ppp" v-if="msg!=null" v-for="(item,index) in msg" :key="item.id">
+          <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id">
               <div class="ctn_l">
                   <i>{{index+1}}</i>
                   <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
@@ -56,7 +53,7 @@
                       <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
                       <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
                       <span v-else>{{item.createdBy.username}}</span>
-                      <i class="iconfont icon-fenxiang"></i>
+                      <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i>
                       <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                       <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                   </div>
@@ -66,6 +63,7 @@
                   <div class="clearfix">
                       <div>
                           <span>{{item.createdAt}}</span>
+                          <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
                       </div>
                       <div class="clearfix">
                           <div>
@@ -73,42 +71,42 @@
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
-                          <div v-if="item.stars.length==0">
+                          <div @click="slideDown($event)" :data-index="index">
                               <i class="iconfont icon-pinglun"></i>
-                              <span>{{item.stars.length}}</span>
-                          </div>
-                          <div v-else @click="slideDown($event)" :data-index="index">
-                              <i class="iconfont icon-pinglun"></i>
-                              <span>{{item.comments.length}}</span>
+                              <span class="comment_num">{{item.comments.length}}</span>
                           </div>
                       </div>
                   </div>
               </div>
-            <div class="slide clearfix hide" v-for="i in item.comments" :key="i.id">
-              <div class="slide_l">
-                  <img src="" alt="">
+              <div v-show="item.comments.length>0" class="slide clearfix hide" v-for="i in item.comments" :key="i.id">
+                <div class="slide_l">
+                    <img src="" alt="">
+                </div>
+                <div class="slide_r">
+                    <div class="slide_rt clearfix">
+                        <div>
+                            <span v-if="!Boolean(i.username)">{{'匿名用户'}}</span>
+                            <span v-else>{{i.username}}</span>
+                        </div>
+                        <div>
+                            <span v-show="i.isMe" class="delete_pinglun" @click="deletePinlun()" :data-id="i.id" :data-index="index">删除</span>
+                            <span>{{i.createdAt}}</span>
+                        </div>
+                    </div>
+                    <p class="slide_rb">
+                        {{i.body}}
+                    </p>
+                </div>
               </div>
-              <div class="slide_r">
-                  <div class="slide_rt clearfix">
-                      <div>
-                          <span v-if="!Boolean(i.username)">{{'匿名用户'}}</span>
-                          <span v-else>{{i.username}}</span>
-                      </div>
-                      <div>
-                          {{i.createdAt}}
-                      </div>
-                  </div>
-                  <p class="slide_rb">
-                      {{i.body}}
-                  </p>
-              </div>
-          </div>
           </li>
       </ul>
   </div>
 </template>
 <script>
+  //引入微信js-sdk
+ import wx from 'weixin-js-sdk'
   const $userid = localStorage.getItem("userid");//用户id
+  // const $userid = '5ab62034992ae628add1f2eb';//用户id
   export default {
       name:"answerDetail",
       data(){
@@ -122,8 +120,6 @@
               readnum:'',
               answernum:'',
               defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
-              
-              
           }
       },
       methods:{
@@ -215,13 +211,110 @@
         },
         slideDown:function(event){
           const index = event.currentTarget.dataset.index;
-          $('.ppp').eq(index).find(".slide").toggle();
+          $('.pin_list').eq(index).find(".slide").toggle();
         },
         timeReplace:function(str) {
         return str.replace('T', ' ').slice(0, str.indexOf('.'));
-        }
-      }
-      ,
+        },
+        gotoQuestion:function(event){
+          const topicid = event.currentTarget.dataset.tid;//问题id
+          const readnum = event.currentTarget.dataset.rnum;//阅读数
+          const answernum = event.currentTarget.dataset.anum;//评论数
+          const status = event.currentTarget.dataset.status;//状态
+          // const time = event.currentTarget.dataset.time;//倒计时时间
+          const title = event.currentTarget.dataset.title;//问题标题
+          const userQuestion = {
+            topicid : topicid,
+            readnum : readnum,
+            answernum : answernum,
+            status : status,
+            time : this.time,
+            title : title
+          }
+          console.log(JSON.stringify(userQuestion));
+
+          localStorage.setItem("userQuestion",JSON.stringify(userQuestion));
+          this.$router.push('/answerQuestions');
+        },
+       gotoShare:function(){
+        wx.onMenuShareAppMessage({
+          title: '这是个问题吗', // 分享标题
+          desc: '回答问题', // 分享描述
+          link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: '../assets/images/logo.png', // 分享图标
+          type: '', // 分享类型,music、video或link，不填默认为link
+          dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+          success: function () {
+              // 用户确认分享后执行的回调函数
+              console.log("成功");
+          },
+          cancel: function () {
+            console.log("取消");
+          // 用户取消分享后执行的回调函数
+          }
+        });
+       },
+       deleteAnswer:function(){
+          console.log("删除答案");
+          const answerid = event.currentTarget.dataset.id;
+
+          this.$axios.delete('//192.168.1.116:1337/answer/'+answerid).then((res)=>{
+            console.log(res);
+            this.answernum -=1;
+            this.upDatedata();
+          }).catch((error,errorcode)=>{
+            console.log(error);
+          })
+       },
+       deletePinlun:function(){
+          const commentid = event.currentTarget.dataset.id;
+          const answerindex = event.currentTarget.dataset.index;//所评论的问题索引
+          let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
+          comment_num -=1;
+          $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
+          this.$axios.delete('//192.168.1.116:1337/comment/'+commentid).then((res)=>{
+            console.log(res);
+            
+          }).catch((error,errorcode)=>{
+            console.log(error);
+          });
+       },
+       upDatedata:function(){
+          const query = localStorage.getItem("query");//参数集合
+          const queryobj = JSON.parse(query);
+          this.topicid = queryobj.topicid;
+          const $url = 'http://192.168.1.116:1337';
+          const topicid = this.topicid;//问题id
+          const data ={
+            search:JSON.stringify({topic: topicid}),
+            userid:$userid
+          };
+          this.$http.get($url+'/answer', {params:data}).then(res=>{
+              this.msg = res.data;
+              //拿到所有答题者的id
+              const userarr = [];//答题者id集合
+              for(let i=0;i<this.msg.length;i++){
+                  this.msg[i].isMe = false;
+                  userarr.push(this.msg[i].id);
+              }
+              this.users = this.msg;
+              if(userarr.indexOf($userid) !== -1){
+                console.log(this.users);
+                this.users[userarr.indexOf($userid)].isMe = true;
+                //判断答题者的id中是否有自己
+                for(var j=0;j<this.users[userarr.indexOf($userid)].comments.length;j++){
+                  this.users[userarr.indexOf($userid)].comments[j].isMe = true;
+                  console.log(this.users[userarr.indexOf($userid)].comments[j]);
+                }
+              }else{
+
+
+              }
+          }).catch((error)=>{
+            console.log(error);
+          });
+       }
+      },
       mounted(){
         const query = localStorage.getItem("query");//参数集合
         const queryobj = JSON.parse(query);
@@ -241,9 +334,68 @@
         };
         this.$http.get($url+'/answer', {params:data}).then(res=>{
             this.msg = res.data;
+            //拿到所有答题者的id
+            const userarr = [];//答题者id集合
+            for(var i=0;i<this.msg.length;i++){
+                this.msg[i].isMe = false;
+                userarr.push(this.msg[i].id);
+                
+            }
+            this.users = this.msg;
+            //判断答题者的id中是否有自己
+            if(userarr.indexOf($userid) !== -1){
+              console.log(this.users);
+              this.users[userarr.indexOf($userid)].isMe = true;
+              for(var j=0;j<this.users[userarr.indexOf($userid)].comments.length;j++){
+                this.users[userarr.indexOf($userid)].comments[j].isMe = true;
+                console.log(this.users[userarr.indexOf($userid)].comments[j]);
+              }
+            }else{
+              $.each(this.users,function(i,v){
+                $.each(v.comments,function(i,v){
+                  v.isMe = false;
+                  if(v.id == $userid){
+                    v.isMe = true;
+                  };
+                })
+              });
+              console.log(this.users);
+            }
         }).catch((error)=>{
           console.log(error);
         });
+
+        //微信js-sdk
+        this.$axios.get($url+'/wechat_share').then(res=>{
+            console.log(res);
+            const appid = res.data.appId;
+            const nonceStr = res.data.nonceStr;
+            const signature = res.data.signature;
+            const timestamp = res.data.timestamp;
+
+            //配置微信js-sdk
+            wx.config({
+                debug: true, // 
+                appId: appid, // 必填，公众号的唯一标识
+                timestamp: timestamp, // 必填，生成签名的时间戳
+                nonceStr: nonceStr, // 必填，生成签名的随机串
+                signature: signature,// 必填，签名
+                jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+            });
+
+            wx.ready(function(){
+                console.log("成功");
+            });
+            wx.error(function(res){
+                console.log("失败");
+            });
+
+        }).catch((error)=>{
+          console.log(error);
+        })
+      },
+      beforeCreate:function(){
+       
         
       }
   }
@@ -413,6 +565,12 @@ letter-spacing: -0.39px;}
     }
     .hide{
         display: none;
+    }
+    .delete_pinglun{
+      font-family: STHeitiSC-Medium;
+      font-size: 12px;
+      color: #1E88E5;
+      letter-spacing: 0.14px;
     }
 </style>
 

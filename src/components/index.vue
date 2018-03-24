@@ -79,6 +79,7 @@
   </div>
 </template>
 <script>
+const $url = 'https://www.13cai.com.cn';
 export default {
   name:"index",
   data(){
@@ -99,7 +100,7 @@ export default {
             limit : this.page*this.size,
             sort:JSON.stringify({ createdAt:0})
           }
-          this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+          this.$http.get($url+'/topic',{params:data}).then(res=>{
              this.msg = res.data;
           });
        },
@@ -124,9 +125,8 @@ export default {
               limit : this.page*this.size,
               sort:JSON.stringify({ createdAt:0})
             }
-            this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+            this.$http.get($url+'/topic',{params:data}).then(res=>{
                this.msg = res.data;
-              
             });
             const limit = this.page*this.size;
             if(this.msg.length <= limit){
