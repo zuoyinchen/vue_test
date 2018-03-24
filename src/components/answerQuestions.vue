@@ -37,21 +37,22 @@ export default {
     methods:{
         submit:function(){
             const body = $('#ctn').val();
-            const answer = localStorage.getItem('topicid');
+            const all = JSON.parse(localStorage.getItem('userQuestion'));
+            const topic = all.topicid;
             const createdBy = localStorage.getItem('userid');
+            console.log(createdBy)
             const newMsg = {
                 body,
-                answer,
+                topic,
                 createdBy
             }
-            const that = this;
-            this.$http.post('//192.168.1.116:1337/comment',JSON.stringify(newMsg)).then(res=>{
+            this.$http.post('//192.168.1.116:1337/answer',JSON.stringify(newMsg)).then(res=>{
                if (res.status === 200 || res.status === 201) {
                     alert("成功");
                     this.$router.push('/answerDetail');
                     //getComment(that, option);
                 }
-               console.log(res)
+            //    console.log(res)
             });
         //     $.ajax('/comment', JSON.stringify(newMsg), function (res) {
         //         console.log(res)
