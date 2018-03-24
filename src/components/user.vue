@@ -12,7 +12,7 @@
 				<span>我的收藏</span>
 				<i class="iconlist-right iconfont icon-youjiantou"></i>
 			</router-link>
-			<router-link tag="li" to="">
+			<router-link tag="li" to="/contactUs">
 				<i class="iconlist-left iconcall iconfont icon-kefu-xuanzhong"></i>
 				<span>联系我们</span>
 				<i class="iconlist-right iconfont icon-youjiantou"></i>
