@@ -6,7 +6,7 @@
           <div>
             <span class="counttest">下场开始时间</span>
             <span>
-                <countdown :time="60 * 60 * 1000" class="countdown">
+                <countdown :time="60*60 * 60 * 1000" class="countdown" v-on:countdownend = "countdownend">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
@@ -22,7 +22,7 @@
                   <div class="loading" v-if="item.status==1">
                       <p>进行中</p>
                   </div>
-                  <div class="end" v-else>
+                  <div class="end" v-else-if="item.status==2">
                       <p>已结束</p>
                   </div>
 
@@ -30,25 +30,34 @@
                   status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
                         {{item.title}}
                   </router-link> -->
-                  <p @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
+                  <p id="a_title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
                       <li v-if="item.status==1">
                         <i class="iconfont icon-xianshimima"></i>
                         <span>{{item.readNum}}</span>
                         <i class="s"></i>
                       </li>
-                      <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-if="item.status==2">
+                      <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}" v-if="item.status==2">
                         <i class="iconfont icon-paihangbang"></i>
                         <i v-show="false" id="idTwo">{{item.id}}</i>
                         <span>排行榜</span>
                         <i class="s"></i>
                       </router-link>
-                      <router-link tag="li" v-if="item.status==1" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
+                    <!-- 评论小图标跳转修正 -->
+                      <!-- <router-link tag="li" v-if="item.status==1" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
                       status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
                           <i class="iconfont icon-pinglun"></i>
                           <span>{{item.toAnswer.length}}</span>
                           <i class="s"></i>
-                      </router-link>   
+                      </router-link> -->
+                     <li style="border-bottom-right-radius: 10px;" v-if="item.status==1">
+                        <i class="iconfont icon-pinglun"></i>
+                        <!-- <span>{{item.toAnswer.length}}</span> -->
+                        <span @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
+                            {{item.toAnswer.length}}</span>
+                            <i class="s"></i>
+                      </li>
+
                       <li v-if="item.status==2">
                         <i class="iconfont icon-wode"></i>
                         <span>{{item.readNum}}</span>
@@ -64,7 +73,9 @@
                       </li>
                       <li style="border-bottom-right-radius: 10px;" v-if="item.status==2">
                         <i class="iconfont icon-pinglun"></i>
-                        <span>{{item.toAnswer.length}}</span>
+                        <!-- <span>{{item.toAnswer.length}}</span> -->
+                        <span @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
+                            {{item.toAnswer.length}}</span>
                       </li>
                   </ul>
               </div>
@@ -72,8 +83,6 @@
         <div class="block">
 
         </div>
-      
-         
       </ul>
     </scroller>
     <router-link tag="div" to="/message" class="my_message ">
@@ -99,6 +108,18 @@ export default {
   methods:{
        countdown:function(){
 
+       },
+       countdownend(){
+            this.$emit('countdownend');
+            let title = $("#a_title").text();
+            let status = 2;
+            let data = {
+                title,
+                status
+            }
+            this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+            this.msg = res.data;
+          });
        },
        getIndexData:function(){
           this.noData='';
@@ -133,7 +154,7 @@ export default {
             }
             this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
                this.msg = res.data;
-              
+               console.log(res.data)
             });
             const limit = this.page*this.size;
             if(this.msg.length <= limit){
@@ -166,7 +187,9 @@ export default {
   },
   mounted(){
     this.getIndexData();
-  }
+  },
+  
+  
 }
 </script>
 <style lang="scss" scoped>

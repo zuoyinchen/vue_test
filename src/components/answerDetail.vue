@@ -70,9 +70,9 @@
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
-                          <div v-if="item.stars.length==0">
+                          <div v-if="item.comments.length==0">
                               <i class="iconfont icon-pinglun"></i>
-                              <span>{{item.stars.length}}</span>
+                              <span>{{item.comments.length}}</span>
                           </div>
                           <div v-else @click="slideDown($event)" :data-index="index">
                               <i class="iconfont icon-pinglun"></i>
@@ -102,6 +102,13 @@
           </div>
           </li>
       </ul>
+      <div class="int" v-show="false">
+          <div class="int_l"></div>
+          <form action="">
+            <input type="text" class="int_m">
+          </form>
+          <div class="int_r"></div>
+      </div>
   </div>
 </template>
 <script>
@@ -213,6 +220,7 @@
         slideDown:function(event){
           const index = event.currentTarget.dataset.index;
           $('.ppp').eq(index).find(".slide").toggle();
+
         },
         timeReplace:function(str) {
         return str.replace('T', ' ').slice(0, str.indexOf('.'));
@@ -268,9 +276,9 @@
 <style lang="scss" scoped>
     $x:37.5;
     .countdown{font-family: STHeitiSC-Medium;
-font-size: 14px;
-color: #333333;
-letter-spacing: -0.39px;}
+    font-size: 14px;
+    color: #333333;
+    letter-spacing: -0.39px;}
     .counttest{
       font-family: STHeitiSC-Medium;
       font-size: 14px;
@@ -430,6 +438,34 @@ letter-spacing: -0.39px;}
     }
     .hide{
         display: none;
+    }
+    .int{
+        width: 345rem/$x;
+        height: 33rem/$x;
+        position: fixed;
+        bottom: 33rem/$x;
+        left: 15rem/$x;
+    }
+    .int_l{
+        float: left;
+        background: #f4f4f4;
+        // border-right:1px solid #000;
+        width: 54rem/$x;
+        height: 33rem/$x;
+    }
+    .int_m{
+        float: left;
+        width: 207rem/$x;
+        background: #f4f4f4;
+        height: 33rem/$x;
+        outline:medium
+        
+    }
+    .int_r{
+        float: left;
+        background: #f4f4f4;
+        width: 46rem/$x;
+        height: 35rem/$x;
     }
 </style>
 
