@@ -57,6 +57,7 @@
 			}
 		},
 		mounted:function(){
+        this.myavtalUrl = localStorage.getItem("headimg");
         const squery = localStorage.getItem("squery");//参数集合
         const queryobj = JSON.parse(squery);
         this.title = queryobj.title;
