@@ -382,7 +382,7 @@
         });
 
         //微信js-sdk
-        this.$axios.get($url+'/wechat_share').then(res=>{
+        this.$axios.get($url+'/wechat_share',{params:{url:window.location.href}}).then(res=>{
             console.log(res);
             const appid = res.data.appId;
             const nonceStr = res.data.nonceStr;

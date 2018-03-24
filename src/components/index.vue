@@ -24,7 +24,7 @@
                   <div class="end" v-else-if="item.status==2">
                       <p>已结束</p>
                   </div>
-                  <p id="a_title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
+                  <p id="a_title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
                       <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
                         <i class="iconfont icon-paihangbang"></i>
@@ -34,10 +34,10 @@
                       </li>
                       <li>
                         <i class="iconfont icon-xianshimima"></i>
-                        <span>{{item.readNum}}</span>
+                        <span>{{item.readNum? item.readNum : 0}}</span>
                         <i class="s"></i>
                       </li>
-                      <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
+                      <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
                           <i class="iconfont icon-pinglun"></i>
                           <span>{{item.toAnswer.length}}</span>
                           <i class="s"></i>
@@ -104,6 +104,10 @@ export default {
           }
           this.$http.get($url+'/topic',{params:data}).then(res=>{
              this.msg = res.data;
+             const limit = this.page*this.size;
+             if(this.msg.length <= limit){
+                this.noData='没有更多数据';
+             }
           });
        },
        refresh (done) {

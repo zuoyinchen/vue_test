@@ -30,7 +30,7 @@ new Vue({
     
   },
   mounted:function(){
-    const $url = 'http://192.168.1.116:1337';
+    const $url = 'https://www.13cai.com.cn';
     const openid= 'oR7BM5bSwd0SssGhYVs162zKxefQ';
     const nickname= '夏晨阳';
     const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0';

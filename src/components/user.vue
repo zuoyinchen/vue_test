@@ -41,8 +41,6 @@
 		width:100%;
 		height:100%;
 		overflow: hidden;
-		padding-bottom:49rem/$unit;
-		box-sizing:border-box;
 	}
 	.userpic{
 		width:100%;
