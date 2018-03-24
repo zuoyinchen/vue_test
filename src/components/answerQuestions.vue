@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-       <div class="countdown">
+       <div class="countdown" v-if="status==1">
           <span class="counttest">倒计时</span>
           <span>
                 <countdown :time="time" class="countdown">
@@ -9,29 +9,87 @@
           </span>
       </div>
       <div class="btn">
-          <p>{{$route.params.title}}</p>
+          <p>{{title}}</p>
           <div class="clearfix">
-              <div><i class="iconfont icon-xianshimima"></i><span>{{$route.params.readNum}}</span></div>
-              <div><i class="iconfont icon-pinglun"></i><span>{{$route.params.toAnswer}}</span></div>
+              <div><i class="iconfont icon-xianshimima"></i><span>{{readnum}}</span></div>
+              <div><i class="iconfont icon-pinglun"></i><span>{{answernum}}</span></div>
           </div>
       </div>
       <form action="" method="post">
-        <textarea name="" class="int"></textarea>
-        <input type="submit" name="Submit" value="提交" class="int_sub"/> 
+        <textarea name="" class="int" id="ctn"></textarea>
+        <input  type="button" name="button" value="提交" class="int_sub" @click="submit"/> 
       </form>
   </div>
 </template>
 <script>
 export default {
     name:'answerQuestions',
-  data(){
-      return {
-          time:''
-      }
-  },
-  created(){
-      this.time = Number(this.$route.params.time)
-  }
+    data(){
+        return {
+            status:'',
+            topicid:'',
+            time:0,
+            title:'',
+            readnum:'',
+            answernum:'',
+        }
+    },
+    methods:{
+        submit:function(){
+            const body = $('#ctn').val();
+            const answer = localStorage.getItem('topicid');
+            const createdBy = localStorage.getItem('userid');
+            const newMsg = {
+                body,
+                answer,
+                createdBy
+            }
+            const that = this;
+            this.$http.post('//192.168.1.116:1337/comment',JSON.stringify(newMsg)).then(res=>{
+               if (res.status === 200 || res.status === 201) {
+                    alert("成功");
+                    this.$router.push('/answerDetail');
+                    //getComment(that, option);
+                }
+               console.log(res)
+            });
+        //     $.ajax('/comment', JSON.stringify(newMsg), function (res) {
+        //         console.log(res)
+        //     if (res.statusCode === 200 || res.statusCode === 201) {
+        //         wx.showToast({
+        //             title: '评论成功',
+        //             icon: 'success',
+        //             duration: 1500
+        //         })
+        //         getComment(that, option);
+        //     }
+        // }, 'POST');
+        }
+    },
+    mounted(){
+        const userQuestion = localStorage.getItem("userQuestion");//参数集合
+        const userQuestionobj = JSON.parse(userQuestion);
+        this.title = userQuestionobj.title;
+        this.time = Number(userQuestionobj.time);
+        this.status = userQuestionobj.status;
+        this.readnum = Number(userQuestionobj.readnum);
+        this.answernum =  Number(userQuestionobj.answernum);
+        this.topicid = userQuestionobj.topicid;
+        console.log(this.title);
+        // const $url = 'http://192.168.1.116:1337';
+        // const topicid = this.topicid;//问题id
+
+        // const data ={
+        //     search:JSON.stringify({topic: topicid}),
+        //     userid:$userid
+        // };
+        // this.$http.get($url+'/answer', {params:data}).then(res=>{
+        //     this.msg = res.data;
+        // }).catch((error)=>{
+        //     console.log(error);
+        // });
+
+    }
 }
 </script>
 <style lang="scss" scoped>

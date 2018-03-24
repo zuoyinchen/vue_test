@@ -15,6 +15,7 @@ Vue.component('countdown', VueCountdown);
 import VueScroller from 'vue-scroller'
 Vue.use(VueScroller);
 Vue.use(VueResource);
+
 //将全局变量挂载到vue实例上
 Vue.prototype.$axios = axios;
 Vue.component("tabnav",tabnav);//全局注册tabnav组件；
@@ -47,3 +48,30 @@ new Vue({
   }
   
 })
+// window.addEventListener('DOMContentLoaded', function () {
+//   var Vue = window.Vue;
+//   var VueCountdown = window.VueCountdown;
+
+//   Vue.component('countdown', VueCountdown);
+
+//   new Vue({
+//     el: '#app',
+//     data: function () {
+//       var now = new Date();
+//       var newYear = new Date(now.getFullYear() + 1, 0, 1);
+
+//       return {
+//         counting: false,
+//         time: newYear - now,
+//       };
+//     },
+//     methods: {
+//       countdown: function () {
+//         this.counting = true;
+//       },
+//       countdownend: function () {
+//         this.counting = false;
+//       },
+//     },
+//   });
+// });

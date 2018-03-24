@@ -6,7 +6,7 @@
           <div>
             <span class="counttest">下场开始时间</span>
             <span>
-                <countdown :time="60 * 60 * 1000" class="countdown">
+                <countdown :time="60*60 * 60 * 1000" class="countdown" v-on:countdownend = "countdownend">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
@@ -18,53 +18,38 @@
       <ul class="btn">
           <li v-for="(item,index) in msg" :key="index">
               <div class="btn_t1">
-                  <!--<img src="" alt="" class="loading"> -->
                   <div class="loading" v-if="item.status==1">
                       <p>进行中</p>
                   </div>
-                  <div class="end" v-else>
+                  <div class="end" v-else-if="item.status==2">
                       <p>已结束</p>
                   </div>
-
-                 <!--  <router-link tag="p" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
-                  status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
-                        {{item.title}}
-                  </router-link> -->
-                  <p @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
+                  <p id="a_title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
-                      <li v-if="item.status==1">
-                        <i class="iconfont icon-xianshimima"></i>
-                        <span>{{item.readNum}}</span>
-                        <i class="s"></i>
-                      </li>
-                      <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+'',title:''+item.title+''}}"v-if="item.status==2">
+                      <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
                         <i class="iconfont icon-paihangbang"></i>
                         <i v-show="false" id="idTwo">{{item.id}}</i>
                         <span>排行榜</span>
                         <i class="s"></i>
-                      </router-link>
-                      <router-link tag="li" v-if="item.status==1" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.toAnswer.length+'',
-                      status:''+item.status+'',id:''+item.id+'',time:''+item.second+''}}">
-                          <i class="iconfont icon-pinglun"></i>
-                          <span>{{item.toAnswer.length}}</span>
-                          <i class="s"></i>
-                      </router-link>   
-                      <li v-if="item.status==2">
-                        <i class="iconfont icon-wode"></i>
+                      </li>
+                      <li>
+                        <i class="iconfont icon-xianshimima"></i>
                         <span>{{item.readNum}}</span>
                         <i class="s"></i>
                       </li>
+                      <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
+                          <i class="iconfont icon-pinglun"></i>
+                          <span>{{item.toAnswer.length}}</span>
+                          <i class="s"></i>
+                      </li>   
                       <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
-                          <i></i>   <span class="counttest">倒计时</span>
-                                    <span>
-                                        <countdown :time="item.second" class="countdown">
-                                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
-                                        </countdown>
-                                    </span>
-                      </li>
-                      <li style="border-bottom-right-radius: 10px;" v-if="item.status==2">
-                        <i class="iconfont icon-pinglun"></i>
-                        <span>{{item.toAnswer.length}}</span>
+                          <i></i>   
+                          <span class="counttest">倒计时</span>
+                          <span>
+                              <countdown :time="item.second" class="countdown">
+                                  <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                              </countdown>
+                          </span>
                       </li>
                   </ul>
               </div>
@@ -72,8 +57,6 @@
         <div class="block">
 
         </div>
-      
-         
       </ul>
     </scroller>
     <router-link tag="div" to="/message" class="my_message ">
@@ -86,6 +69,7 @@
   </div>
 </template>
 <script>
+const $url = 'http://192.168.1.116:1337';
 export default {
   name:"index",
   data(){
@@ -100,13 +84,25 @@ export default {
        countdown:function(){
 
        },
+       countdownend(){
+            this.$emit('countdownend');
+            let title = $("#a_title").text();
+            let status = 2;
+            let data = {
+                title,
+                status
+            }
+            this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+            this.msg = res.data;
+          });
+       },
        getIndexData:function(){
           this.noData='';
           const data = {
             limit : this.page*this.size,
             sort:JSON.stringify({ createdAt:0})
           }
-          this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+          this.$http.get($url+'/topic',{params:data}).then(res=>{
              this.msg = res.data;
           });
        },
@@ -131,9 +127,8 @@ export default {
               limit : this.page*this.size,
               sort:JSON.stringify({ createdAt:0})
             }
-            this.$http.get('//192.168.1.116:1337/topic',{params:data}).then(res=>{
+            this.$http.get($url+'/topic',{params:data}).then(res=>{
                this.msg = res.data;
-              
             });
             const limit = this.page*this.size;
             if(this.msg.length <= limit){
@@ -158,15 +153,26 @@ export default {
             time : time,
             title : title
           }
-          console.log(JSON.stringify(query));
 
           localStorage.setItem("query",JSON.stringify(query));
           this.$router.push('/answerDetail');
+       },
+       goSiglepai:function(event){
+          const topicid = event.currentTarget.dataset.tid;//问题id
+          const title = event.currentTarget.dataset.title;//问题标题
+          const squery = {
+            topicid : topicid,
+            title : title
+          }
+          localStorage.setItem("squery",JSON.stringify(squery));
+          this.$router.push('/singlepai');
        }
   },
   mounted(){
     this.getIndexData();
-  }
+  },
+  
+  
 }
 </script>
 <style lang="scss" scoped>

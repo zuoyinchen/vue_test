@@ -54,20 +54,7 @@ export default {
   data(){
       return {
         pailist:[
-          {
-            nickname:'1111',
-            upVotes:22
-
-          },{
-            nickname:'222',
-            upVotes:20
-          },{
-            nickname:'小小鱼',
-            upVotes:24
-          },{
-            nickname:'骑着扫把的小猪',
-            upVotes:24
-          }
+          
         ],
         iswho:0,
         myavtalUrl:'',
@@ -111,6 +98,7 @@ export default {
     getFriend:function(){
       this.iswho = 1;
       const $url = 'http://192.168.1.120:1337';
+
       //获取好友榜
       const $userid = localStorage.getItem("userid");//userid
       const data ={search: {id:$userid} }
@@ -152,11 +140,15 @@ export default {
       });
     }
   },  
+  mounted:function(){
+    this.myavtalUrl = localStorage.getItem("headimg");
+  },
   beforeCreate:function(){
     const $url = 'http://192.168.1.120:1337';
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
+
     this.$axios.get($url+'/rank').then((res)=>{
         this.pailist =res.data;
         const idarr = [];

@@ -2,20 +2,20 @@
 	<div class="box">
 		<scroller :on-refresh="refresh"
   :on-infinite="infinite" ref="myscroller" class="box-list" v-if="prolist.length>0">
-			<router-link tag="li" v-for="(item,index) in prolist" to="" :key="index">
+			<li v-for="(item,index) in prolist" to="" :key="index">
 				<span class="status-bac status-bac-yellow" v-if="item.status == 1"></span>
 				<span class="status-bac" v-else-if="item.status==2"></span>
 				<span class="status"v-if="item.status == 1">进行中</span>
 				<span class="status"v-else-if="item.status == 2">已结束</span>
 				<span class="status"v-else></span>
-				<router-link tag="p" class="title" :to="{name:'answerDetail',params:{title:''+item.title+'',readNum:''+item.readNum+'',toAnswer:''+item.messageNum+''}}">
-                        {{item.title}}
-                    </router-link>
+                <p class="title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>>
+                	{{item.title}}
+                </p>
 				<ul class="clearfix">
-				  <router-link tag="li" :to="{name:'singlepai',params:{topicid:''+item.id+''}}"v-show="item.status==2">
-				  	<i class="iconfont icon-paihangbang"></i>
-                  	<span>排行榜</span>
-				  </router-link>
+				  <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
+                        <i class="iconfont icon-paihangbang"></i>
+                  		<span>排行榜</span>
+                  </li>
                   <li>
                   	<i class="iconfont icon-xianshimima"></i>
                   	<span>{{item.readNum}}</span>
@@ -34,7 +34,7 @@
                   	</span>
                   </li>
               </ul>
-			</router-link>
+			</li>
 		</scroller>
 		<div v-else class="no_data">
             <img src="../assets/images/canyuchang.png">
@@ -69,7 +69,7 @@
                 	console.log('error');
                 });
 			},
-			refresh (done) {
+			refresh:function(done) {
               setTimeout(() => {
                 this.size = 5;
                 this.page = 1;
@@ -77,7 +77,7 @@
                 done();
               }, 1500);
             },
-            infinite (done) {
+            infinite:function(done) {
               if(this.noData) {
                   setTimeout(()=>{
                       done(true);
@@ -102,7 +102,37 @@
                 }
                  done();
               }, 3000);
-            }
+            },
+            gotoDetail:function(event){
+	          const topicid = event.currentTarget.dataset.tid;//问题id
+	          const readnum = event.currentTarget.dataset.rnum;//阅读数
+	          const answernum = event.currentTarget.dataset.anum;//评论数
+	          const status = event.currentTarget.dataset.status;//状态
+	          const time = event.currentTarget.dataset.time;//倒计时时间
+	          const title = event.currentTarget.dataset.title;//问题标题
+
+	          const query = {
+	            topicid : topicid,
+	            readnum : readnum,
+	            answernum : answernum,
+	            status : status,
+	            time : time,
+	            title : title
+	          }
+
+	          localStorage.setItem("query",JSON.stringify(query));
+	          this.$router.push('/answerDetail');
+	        },
+	        goSiglepai:function(event){
+	          const topicid = event.currentTarget.dataset.tid;//问题id
+	          const title = event.currentTarget.dataset.title;//问题标题
+	          const squery = {
+	            topicid : topicid,
+	            title : title
+	          }
+	          localStorage.setItem("squery",JSON.stringify(squery));
+	          this.$router.push('/singlepai');
+	        }
 		},
 		mounted:function(){
 			this.getInitialData();

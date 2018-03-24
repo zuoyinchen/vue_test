@@ -2,25 +2,25 @@
 	<div class="container">
 			<scroller :on-refresh="refresh"
   :on-infinite="infinite" ref="myscroller"  v-if="prolist.length>0">
-				<router-link tag="li" to="" class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
-					<div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
-						<p class="title">{{item.topic.title}}</p>
-						<p class="t_componet">{{item.body}}</p>
-						<p class="title-infor">
-							<span>
-								<span class="seenum">{{item.comments.length}}</span>
-								人回答
-							</span>
-							<span>
-								<span class="componet-num">{{item.stars.length}}</span>
-								人收藏
-							</span>
-						</p>
-						
-					</div>
-					<div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index" :data-body="item.body" :data-id="item.id">
-		            </div>
-				</router-link>
+                <li class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
+                    <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
+                        <p class="title">{{item.topic.title}}</p>
+                        <p class="t_componet">{{item.body}}</p>
+                        <p class="title-infor">
+                            <span>
+                                <span class="seenum">{{item.comments.length}}</span>
+                                人回答
+                            </span>
+                            <span>
+                                <span class="componet-num">{{item.stars.length}}</span>
+                                人收藏
+                            </span>
+                        </p>
+                        
+                    </div>
+                    <div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index" :data-body="item.body" :data-id="item.id">
+                    </div>
+                </li>
 			</scroller>
 			<div v-else class="no_data">
 	            <img src="../assets/images/shoucang.png">
@@ -44,17 +44,17 @@
         },
         methods : {
             //跳转
-            skip(){
+            skip:function(){
                 if( this.checkSlide() ){
                     this.restSlide();
                 }
             },
             //滑动开始
-            touchStart(e){
+            touchStart:function(e){
                 this.startX = e.touches[0].clientX;
             },
             //滑动结束
-            touchEnd(e){
+            touchEnd:function(e){
 
                 let parentElement = e.currentTarget.parentElement;
                 this.endX = e.changedTouches[0].clientX;
@@ -73,7 +73,7 @@
                 this.endX = 0;
             },
             //判断当前是否有滑块处于滑动状态
-            checkSlide(){
+            checkSlide:function(){
                 let listItems = document.querySelectorAll('.list-item');
                 for( let i = 0 ; i < listItems.length ; i++){
                     if( listItems[i].dataset.type == 1 ) {
@@ -83,14 +83,14 @@
                 return false;
             },
             //一次只能滑动一个
-            restSlide(){
+            restSlide:function(){
                 let listItems = document.querySelectorAll('.list-item');
                 for( let i = 0 ; i < listItems.length ; i++){
                     listItems[i].dataset.type = 0;
                 }
             },
             //删除
-            deleteItem(e){
+            deleteItem:function(e){
                 let index = e.currentTarget.dataset.index;//删除的当前索引值
                 let $body = e.currentTarget.dataset.body;//所删除评论的body
                 let $id = e.currentTarget.dataset.id;//所删除评论的id
@@ -131,7 +131,7 @@
 		          console.log(error);
 		      });
            },
-           refresh (done) {
+           refresh:function(done) {
               setTimeout(() => {
                 this.size = 5;
                 this.page = 1;
@@ -139,7 +139,7 @@
                 done()
               }, 1500)
             },
-            infinite (done) {
+            infinite:function(done) {
               if(this.noData) {
                   setTimeout(()=>{
                       done(true);
