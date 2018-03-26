@@ -22,8 +22,8 @@
   </div>
 </template>
 <script>
- const $url = 'https://www.13cai.com.cn';
-// const $url = 'http://192.168.1.116:1337'
+ const $url = 'https://www.13cai.com.cn/api/v1';
+ //const $url = 'http://192.168.1.116:1337/api/v1'
 export default {
     name:'answerQuestions',
     data(){
@@ -52,8 +52,7 @@ export default {
             this.$http.post($url+'/answer',JSON.stringify(newMsg)).then(res=>{
                if (res.status === 200 || res.status === 201) {
                     
-                    this.$router.push('/answerDetail');
-                    
+                    this.$router.replace('/answerDetail');
                 }
            
             });

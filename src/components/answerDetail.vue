@@ -33,7 +33,7 @@
                   </router-link> -->
                   
               </div>
-              <div class="theme_b_r" v-if="status==2" v-show="false">
+              <div class="theme_b_r" v-if="status==2" v-show="true">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
                        <p>立即抢答</p>
                   </router-link> 
@@ -52,7 +52,7 @@
                   <div>
                       <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
                       <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
-                      <span v-else>{{item.createdBy.username}}</span>
+                      <span v-else class="answer">{{item.createdBy.username}}</span>
                       <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i>
                       <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                       <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
@@ -71,7 +71,7 @@
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
-                          <div @click="slideDown($event)" :data-index="index" :data-id="id">
+                          <div @click="slideDown($event)" :data-index="index" :data-id="item.id">
                               <i class="iconfont icon-pinglun"></i>
                               <span class="comment_num">{{item.comments.length}}</span>
                           </div>
@@ -113,7 +113,8 @@
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
   const $userid = localStorage.getItem("userid");//用户id
-  const $url = 'https://www.13cai.com.cn';
+  const $url = 'https://www.13cai.com.cn/api/v1';
+  //const $url = 'http://192.168.1.116:1337/api/v1'
   // const $userid = '5ab62034992ae628add1f2eb';//用户id
   export default {
       name:"answerDetail",
@@ -221,8 +222,10 @@
         slideDown:function(event){
           const index = event.currentTarget.dataset.index;
           const id = event.currentTarget.dataset.id;
+          const answer = $('.answer').text();
+          localStorage.setItem('answer',answer); 
           localStorage.setItem("oneuser",id);
-          console.log(id)
+          
           this.$router.push('/comments');
         //   $('.pin_list').eq(index).find(".slide").toggle();
         },
@@ -360,9 +363,9 @@
             for(var i=0;i<this.msg.length;i++){
                 this.msg[i].isMe = false;
                 userarr.push(this.msg[i].id);
-                
             }
             this.users = this.msg;
+            // console.log(this.users)
             //判断答题者的id中是否有自己
             if(userarr.indexOf($userid) !== -1){
               console.log(this.users);

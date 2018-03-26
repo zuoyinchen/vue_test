@@ -44,7 +44,7 @@
 	</div>	
 </template>
 <script type="text/javascript">
-	const $url = 'https://www.13cai.com.cn';
+	const $url = 'https://www.13cai.com.cn/api/v1';
 	const $userid = localStorage.getItem("userid");//userid
 	export default{
 		name: 'userproject',

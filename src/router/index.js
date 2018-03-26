@@ -15,7 +15,7 @@ import singlepai from '@/components/singlepai'
 import answerQuestions from '@/components/answerQuestions'
 import Message from '@/components/message'
 import contactUs from '@/components/contactUs'
-import comments from '@/components/comments'
+
 
 
 
@@ -88,11 +88,6 @@ export default new Router({
       path:'/contactUs',
       name:'contactUs',
       component:contactUs
-    },
-    {
-      path:'/comments',
-      name:'comments',
-      component:comments
     }
   ]
 })
