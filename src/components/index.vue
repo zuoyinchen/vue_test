@@ -6,14 +6,14 @@
           <div>
             <span class="counttest">下场开始时间</span>
             <span>
-                <countdown :time="60*60 * 60 * 1000" class="countdown" v-on:countdownend = "countdownend">
+                <countdown :time="60 * 60 * 60 * 1000" class="countdown" v-on:countdownend = "countdownend">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
           </div>
           <div>
               <span><a href="">游戏规则</a></span>
-         </div>
+          </div>
       </div>
       <ul class="btn">
           <li v-for="(item,index) in msg" :key="index">
@@ -69,7 +69,8 @@
   </div>
 </template>
 <script>
-const $url = 'https://www.13cai.com.cn';
+// const $url = 'http://192.168.1.116:1337/api/v1';
+const $url = 'https://www.13cai.com.cn/api/v1';
 export default {
   name:"index",
   data(){
@@ -104,6 +105,7 @@ export default {
           }
           this.$http.get($url+'/topic',{params:data}).then(res=>{
              this.msg = res.data;
+             console.log(this.msg)
              const limit = this.page*this.size;
              if(this.msg.length <= limit){
                 this.noData='没有更多数据';
@@ -168,7 +170,7 @@ export default {
             topicid : topicid,
             title : title
           }
-          localStorage.setItem("squery",JSON.stringify(squery));
+          localStorage.setItem("squery",JSON.stringify(squery)); 
           this.$router.push('/singlepai');
        }
   },
@@ -249,11 +251,19 @@ export default {
         width: 24rem/$x;
     }
     .nav>div:nth-of-type(2){
-         width: 53rem/$x;height: 18rem/$x;font-size: 13rem/$x;letter-spacing: 0.16rem/$x;
-        line-height: 18rem/$x;float: right;margin: 8rem/$x 10rem/$x 0 0;
+         width: 53rem/$x;height: 18rem/$x;
+         font-size: 13rem/$x;
+         letter-spacing: 0.16rem/$x;
+         line-height: 18rem/$x;
+         float: right;
+         margin: 8rem/$x 10rem/$x 0 0;
     }
     .nav>div:nth-of-type(2)>span:nth-child(1)>a{
-        width: 53rem/$x;height: 18rem/$x;font-size: 13rem/$x;line-height: 18rem/$x;color: #FDD545;
+        width: 53rem/$x;
+        height: 18rem/$x;
+        font-size: 13rem/$x;
+        line-height: 18rem/$x;
+        color: #FDD545;
         text-decoration: none;
     }
     ul,li{
@@ -263,11 +273,19 @@ export default {
         padding: 0;
     }
     .btn>li{
-        width: 345rem/$x;height: 105rem/$x;border: 10rem/$x;box-shadow: 0 2px 6px 0 #dddddd;
-        margin: 20rem/$x auto;border-radius: 10rem/$x;overflow: hidden;
+        width: 345rem/$x;
+        height: 105rem/$x;
+        border: 10rem/$x;
+        box-shadow: 0 2px 6px 0 #dddddd;
+        margin: 20rem/$x auto;
+        border-radius: 10rem/$x;
+        overflow: hidden;
     }
     .btn_t1{
-        width: 345rem/$x;height: 105rem/$x;position: relative;overflow: hidden;
+        width: 345rem/$x;
+        height: 105rem/$x;
+        position: relative;
+        overflow: hidden;
         background: #fff;
     }
     .loading{position: absolute;left: 0;top: 0;width: 0;
@@ -283,7 +301,10 @@ export default {
     font-family: STHeitiSC-Medium;
     font-size: 12rem/$x;
     color: #333;
-    letter-spacing: -0.29px;text-align: left;position: absolute;left: 0;top:-45rem/$x;}
+    letter-spacing: -0.29px;
+    text-align: left;
+    position: absolute;
+    left: 0;top:-45rem/$x;}
     .end>p{width: 50rem/$x;
         transform: rotate(-45deg);
     font-family: STHeitiSC-Medium;

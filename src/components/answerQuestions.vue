@@ -22,7 +22,8 @@
   </div>
 </template>
 <script>
-const $url = 'https://www.13cai.com.cn';
+ const $url = 'https://www.13cai.com.cn/api/v1';
+ //const $url = 'http://192.168.1.116:1337/api/v1'
 export default {
     name:'answerQuestions',
     data(){
@@ -38,33 +39,23 @@ export default {
     methods:{
         submit:function(){
             const body = $('#ctn').val();
-            const answer = localStorage.getItem('topicid');
+            const userQuestion = localStorage.getItem("userQuestion");//参数集合
+            const userQuestionobj = JSON.parse(userQuestion);
+            const topic = userQuestionobj.topicid;
             const createdBy = localStorage.getItem('userid');
+            console.log(newMsg)
             const newMsg = {
                 body,
-                answer,
+                topic,
                 createdBy
             }
-            const that = this;
-            this.$http.post($url+'/comment',JSON.stringify(newMsg)).then(res=>{
+            this.$http.post($url+'/answer',JSON.stringify(newMsg)).then(res=>{
                if (res.status === 200 || res.status === 201) {
-                    alert("成功");
-                    this.$router.push('/answerDetail');
-                    //getComment(that, option);
+                    
+                    this.$router.replace('/answerDetail');
                 }
-               console.log(res)
+           
             });
-        //     $.ajax('/comment', JSON.stringify(newMsg), function (res) {
-        //         console.log(res)
-        //     if (res.statusCode === 200 || res.statusCode === 201) {
-        //         wx.showToast({
-        //             title: '评论成功',
-        //             icon: 'success',
-        //             duration: 1500
-        //         })
-        //         getComment(that, option);
-        //     }
-        // }, 'POST');
         }
     },
     mounted(){

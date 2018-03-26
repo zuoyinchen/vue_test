@@ -15,6 +15,7 @@ import singlepai from '@/components/singlepai'
 import answerQuestions from '@/components/answerQuestions'
 import Message from '@/components/message'
 import contactUs from '@/components/contactUs'
+import answerComment from '@/components/answercomment'
 
 
 
@@ -23,6 +24,7 @@ import contactUs from '@/components/contactUs'
 Vue.use(Router)
 
 export default new Router({
+  mode:'history',
   routes: [
     {
       path: '/',
@@ -49,6 +51,11 @@ export default new Router({
       meta:{
         keepAlive:false
       }
+    },
+    {
+      path:'/answercomment',
+      name:'answercomment',
+      component:answerComment
     },
     {
       path:'/answerQuestions',

@@ -30,7 +30,7 @@ new Vue({
     
   },
   mounted:function(){
-    const $url = 'https://www.13cai.com.cn';
+    const $url = 'http://192.168.1.116:1337/api/v1';
     const openid= 'oR7BM5bSwd0SssGhYVs162zKxefQ';
     const nickname= '夏晨阳';
     const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0';
@@ -44,6 +44,11 @@ new Vue({
       localStorage.setItem("userid",res.data);
     }).catch(function(error){
       console.log(error);
+    })
+
+    document.querySelector('body').addEventListener('touchmove',function (ev) {  
+        event.preventDefault();  
+        
     })
   }
   
