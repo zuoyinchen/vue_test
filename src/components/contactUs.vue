@@ -6,15 +6,22 @@
       <ul class="ctn">
           <li>
               <p>客服热线 : 185-1348-2046</p>
-              <div class="btn">
-                  <p>拨打</p>
-              </div>
+              <!-- <div class="btn"> -->
+                  <a href="tel://18513482046" class="call">
+                        <span>
+                        拨打
+                        </span>
+                  </a>
+              <!-- </div> -->
           </li>
           <li>
               <p>客服邮箱 : zg-kefu@zg18.com</p>
-              <div class="btn">
-                  <p>发送</p>
-              </div>
+              <!-- <div class="btn"> -->
+                 <a href="mailto:zg-kefu@zg18.com" class="send">
+                        <span>
+                        发送
+                        </span>
+                 </a>
           </li>
       </ul>
   </div>
@@ -73,15 +80,49 @@ export default {
         border-radius: 24px;
         margin-top: 14rem/$x;
     }
-    .btn>p{
-        position: absolute;
-        left: 18px;
-        top: -14px;
-        font-family: STHeitiSC-Medium;
-        font-size: 13px;
-        color: #333333;
-        letter-spacing: 0.16px;
+    .call{
+        display: inline-block;
+        width: 68rem/$x;
+        height: 33rem/$x;
+        float: right;
+        background: #FDD545;
+        text-align: center;
+        border-radius: 24px;
+        margin-top: 12rem/$x;
+        margin-right: 15rem/$x;
+        color: #000;
+
     }
+    .call>span{
+        display: block;
+        margin-top: -10rem/$x;
+    }
+     .send{
+        display: inline-block;
+        width: 68rem/$x;
+        height: 33rem/$x;
+        float: right;
+        background: #FDD545;
+        text-align: center;
+        border-radius: 24px;
+        margin-top: 12rem/$x;
+        margin-right: 15rem/$x;
+        color: #000;
+
+    }
+    .send>span{
+        display: block;
+        margin-top: -10rem/$x;
+    }
+    // .btn>p{
+    //     position: absolute;
+    //     left: 18px;
+    //     top: -14px;
+    //     font-family: STHeitiSC-Medium;
+    //     font-size: 13px;
+    //     color: #333333;
+    //     letter-spacing: 0.16px;
+    // }
 </style>
 
 
