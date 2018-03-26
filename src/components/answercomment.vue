@@ -28,10 +28,6 @@
               </div>
               <div class="theme_b_r" v-if="status==1">
                   <p @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
-                  <!-- <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
-                       <p>立即抢答</p>
-                  </router-link> -->
-                  
               </div>
               <div class="theme_b_r" v-if="status==2" v-show="false">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
@@ -41,9 +37,10 @@
           </div>
       </div>
       <ul class="ctn">
-          <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id">
+          <li class="clearfix pin_list" v-for="(item,index) in list" >
+          	<div class="answer_wrap">
               <div class="ctn_l">
-                  <i>{{index+1}}</i>
+                  <i>{{answerindex+1}}</i>
                   <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
                   <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
                   <img v-else :src="item.createdBy.avatarUrl" alt="2">
@@ -71,36 +68,63 @@
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
-                          <div @click="slideDown($event)" :data-index="index" :data-id="item.id">
+                          <div @click="slideDown($event)" :data-index="index">
                               <i class="iconfont icon-pinglun"></i>
                               <span class="comment_num">{{item.comments.length}}</span>
                           </div>
                       </div>
                   </div>
               </div>
+          	</div>
+              <div class="slide clearfix" v-for="i in item.comments" :key="i.id">
+                <div class="slide_l">
+                    <img src="" alt="">
+                </div>
+                <div class="slide_r">
+                    <div class="slide_rt clearfix">
+                        <div>
+                            <span v-if="!Boolean(i.username)">{{'匿名用户'}}</span>
+                            <span v-else>{{i.username}}</span>
+                        </div>
+                        <div>
+                            <span v-show="i.isMe" class="delete_pinglun" @click="deletePinlun()" :data-id="i.id" :data-index="index">删除</span>
+                            <span>{{i.createdAt}}</span>
+                        </div>
+                    </div>
+                    <p class="slide_rb">
+                        {{i.body}}
+                    </p>
+                </div>
+              </div>
           </li>
       </ul>
-      <div class="int" v-show="false">
-          <div class="int_l"></div>
-          <form action="">
-            <input type="text" class="int_m">
-          </form>
-          <div class="int_r"></div>
+      <div class="comment_box">
+      	<div class="comment_wrap">
+      		<img src="" alt="" class="comment_img">
+      		<span>|</span>
+      		<input type="text" name="" class="comment_input"n placeholder="请输入评论..." v-model="message">
+      		<span class="send_com" @click="gotoComment($event)" :data-message="message">发送</span>
+      	</div>
       </div>
   </div>
 </template>
 <script>
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
-  const $userid = localStorage.getItem("userid");//用户id
+  // const $userid = localStorage.getItem("userid");//用户id
+  const $userid = '5ab648d863008a6deeac3f32';//用户id
   const $url = 'http://192.168.1.116:1337/api/v1';
   // const $userid = '5ab62034992ae628add1f2eb';//用户id
   export default {
-      name:"answerDetail",
+      name:"answercomment",
       data(){
           return {
-              msg:[],
-              users:[],
+              comments:[],
+              answerindex:0,
+              list:[],//答案数组
+              body:'',//答案
+              answerid:'',//答案ID
+              message:'',
               status:'',
               topicId:'',
               time:0,
@@ -112,29 +136,19 @@
       },
       methods:{
         giveStar:function(event){
-          console.log(event.currentTarget.dataset);
           const answerid = event.currentTarget.dataset.id;
-          console.log('问题id |'+answerid);
           const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
-          const $userid = localStorage.getItem("userid");
-          console.log(this.msg[$index].stars);
-          const stars = this.msg[$index].stars;
+          const stars = this.list[$index].stars;
           const starsid = [];
           //循环当前评论收藏的信息，拿到此条评论的所有id
           for(let i=0;i<stars.length;i++){
             starsid.push(stars[i].id);
           }
-          console.log(this.msg[$index].isStar);
-          console.log('总');
-          console.log(starsid);
-          console.log('位置'+starsid.indexOf($userid));
           if(this.msg[$index].isStar){
-            console.log("取消收藏");
             starsid.splice(starsid.indexOf($userid),1)
             var resultarr = starsid;
             console.log(resultarr);
           }else{
-            console.log("收藏");
             starsid.push($userid);
             var resultarr = [...new Set(starsid)]
             console.log(resultarr);
@@ -145,10 +159,10 @@
           this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
-              if(this.msg[$index].isStar){
-                this.msg[$index].isStar = false;
+              if(this.list[$index].isStar){
+                this.list[$index].isStar = false;
               }else{
-                this.msg[$index].isStar = true;
+                this.list[$index].isStar = true;
               }
             }
           }).catch((error,errorcode)=>{
@@ -156,22 +170,15 @@
           });
         },
         giveLike:function(event){
-          console.log(event.currentTarget.dataset);
           const answerid = event.currentTarget.dataset.id;
-          console.log('点赞id |'+answerid);
           const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
-          const $userid = localStorage.getItem("userid");
-          console.log('点赞用户 |'+$userid);
-          console.log(this.msg[$index].upVotes);
-          const upVotes = this.msg[$index].upVotes;
+          const upVotes = this.list[$index].upVotes;
           const upVotesid = [];
           //循环当前评论收藏的信息，拿到此条评论的所有id
           for(let i=0;i<upVotes.length;i++){
             upVotesid.push(upVotes[i].id);
           }
-          console.log(this.msg[$index].upVote);
-          console.log('当前用户点赞位置'+upVotesid.indexOf($userid));
-          if(this.msg[$index].upVote){
+          if(this.list[$index].upVote){
             upVotesid.splice(upVotesid.indexOf($userid),1)
             var resultarr = upVotesid;
             $(".upVote_num").eq($index).text(resultarr.length);
@@ -186,25 +193,19 @@
           this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
-              if(this.msg[$index].upVote){
-                this.msg[$index].upVote = false;
+              if(this.list[$index].upVote){
+                this.list[$index].upVote = false;
 
               }else{
-                this.msg[$index].upVote = true;
+                this.list[$index].upVote = true;
               }
             }
           }).catch((error,errorcode)=>{
             console.log(error);
           })
         },
-        slideDown:function(event){
-          const index = event.currentTarget.dataset.index;
-          localStorage.setItem("comment_index",index);
-          const answerid = event.currentTarget.dataset.id;
-          this.$router.push('/answercomment');
-        },
         timeReplace:function(str) {
-        return str.replace('T', ' ').slice(0, str.indexOf('.'));
+         return str.replace('T', ' ').slice(0, str.indexOf('.'));
         },
         gotoQuestion:function(event){
           const topicid = event.currentTarget.dataset.tid;//问题id
@@ -226,28 +227,9 @@
           localStorage.setItem("userQuestion",JSON.stringify(userQuestion));
           this.$router.push('/answerQuestions');
         },
-       gotoShare:function(){
-        wx.onMenuShareAppMessage({
-          title: '这是个问题吗', // 分享标题
-          desc: '回答问题', // 分享描述
-          link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: '../assets/images/logo.png', // 分享图标
-          type: '', // 分享类型,music、video或link，不填默认为link
-          dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-          success: function () {
-              // 用户确认分享后执行的回调函数
-              console.log("成功");
-          },
-          cancel: function () {
-            console.log("取消");
-          // 用户取消分享后执行的回调函数
-          }
-        });
-       },
        deleteAnswer:function(){
           console.log("删除答案");
           const answerid = event.currentTarget.dataset.id;
-
           this.$axios.delete($url+'/answer/'+answerid).then((res)=>{
             console.log(res);
             this.answernum -=1;
@@ -263,8 +245,7 @@
           comment_num -=1;
           $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
           this.$axios.delete($url+'/comment/'+commentid).then((res)=>{
-            console.log(res);
-            
+            this.upDatedata();
           }).catch((error,errorcode)=>{
             console.log(error);
           });
@@ -273,44 +254,63 @@
           const query = localStorage.getItem("query");//参数集合
           const queryobj = JSON.parse(query);
           this.topicid = queryobj.topicid;
-          
-          const topicid = this.topicid;//问题id
-          const data ={
-            search:JSON.stringify({topic: topicid}),
-            userid:$userid
-          };
-          this.$http.get($url+'/answer', {params:data}).then(res=>{
-              this.msg = res.data;
-              //拿到所有答题者的id
-              const userarr = [];//答题者id集合
-              for(var i=0;i<this.msg.length;i++){
-                  this.msg[i].isMe = false;
-                  userarr.push(this.msg[i].id);
-                  
-              }
-              this.users = this.msg;
-              //判断答题者的id中是否有自己
-              if(userarr.indexOf($userid) !== -1){
-                console.log(this.users);
-                this.users[userarr.indexOf($userid)].isMe = true;
-                for(var j=0;j<this.users[userarr.indexOf($userid)].comments.length;j++){
-                  this.users[userarr.indexOf($userid)].comments[j].isMe = true;
-                  console.log(this.users[userarr.indexOf($userid)].comments[j]);
-                }
-              }else{
-                $.each(this.users,function(i,v){
-                  $.each(v.comments,function(i,v){
-                    v.isMe = false;
-                    if(v.id == $userid){
-                      v.isMe = true;
-                    };
-                  })
-                });
-                console.log(this.users);
-              }
-          }).catch((error)=>{
-            console.log(error);
-          });
+            const topicid = this.topicid;//问题id
+	        const data ={
+	          search:JSON.stringify({topic: topicid}),
+	          userid:$userid
+	        };
+	        this.$http.get($url+'/answer', {params:data}).then(res=>{
+	            console.log(res.data);
+	            console.log(localStorage.getItem("comment_index"));
+	            const cindex = localStorage.getItem("comment_index");
+	            this.answerindex = Number(cindex);
+	            this.list = res.data.splice(cindex,1);
+	            console.log(this.list);
+	            //拿到所有答题者的id
+	            const userarr = [];//答题者id集合
+	            for(var i=0;i<this.list.length;i++){
+	                this.list[i].isMe = false;
+	                userarr.push(this.list[i].id);
+	                
+	            }
+	            console.log(this.list);
+	            //判断答题者的id中是否有自己
+	            if(userarr.indexOf($userid) !== -1){
+	              console.log(this.list);
+	              this.list[userarr.indexOf($userid)].isMe = true;
+	              for(var j=0;j<this.list[userarr.indexOf($userid)].comments.length;j++){
+	                this.list[userarr.indexOf($userid)].comments[j].isMe = true;
+	                console.log(this.list[userarr.indexOf($userid)].comments[j]);
+	              }
+	            }else{
+	              $.each(this.list,function(i,v){
+	                $.each(v.comments,function(i,v){
+	                  v.isMe = false;
+	                  if(v.id == $userid){
+	                    v.isMe = true;
+	                  };
+	                })
+	              });
+	              console.log(this.list);
+	            }
+	        }).catch((error)=>{
+	          console.log(error);
+	        });
+       },
+       //评论答案
+       gotoComment:function(event){
+       	console.log(event.currentTarget.dataset.message);
+       	const data ={
+       		body: this.message,
+            answer: this.answerid,
+            createdBy: $userid,
+       	}
+       	console.log(data);
+       	this.$axios.post($url+'/comment',data).then((res)=>{
+       		console.log(res.data);
+       	}).catch((error)=>{
+       		console.log(error);
+       	})
        }
       },
       mounted(){
@@ -323,33 +323,42 @@
         this.answernum =  Number(queryobj.answernum);
         this.topicid = queryobj.topicid;
 
-        
         const topicid = this.topicid;//问题id
-        
         const data ={
           search:JSON.stringify({topic: topicid}),
           userid:$userid
         };
         this.$http.get($url+'/answer', {params:data}).then(res=>{
-            this.msg = res.data;
+            console.log(res.data);
+            console.log(localStorage.getItem("comment_index"));
+            const cindex = localStorage.getItem("comment_index");
+            this.answerindex = Number(cindex);
+            console.log(cindex);
+            this.list = res.data.splice(cindex,1);
+            console.log(this.list);
+
             //拿到所有答题者的id
             const userarr = [];//答题者id集合
-            for(var i=0;i<this.msg.length;i++){
-                this.msg[i].isMe = false;
-                userarr.push(this.msg[i].id);
+            for(var i=0;i<this.list.length;i++){
+                this.list[i].isMe = false;
+                userarr.push(this.list[i].id);
+                 this.answerid = this.list[i].id;
+                 this.body = this.list[i].body;
                 
             }
-            this.users = this.msg;
+            console.log(this.answerid);
+            console.log(this.body);
+            console.log(this.list);
             //判断答题者的id中是否有自己
             if(userarr.indexOf($userid) !== -1){
-              console.log(this.users);
-              this.users[userarr.indexOf($userid)].isMe = true;
-              for(var j=0;j<this.users[userarr.indexOf($userid)].comments.length;j++){
-                this.users[userarr.indexOf($userid)].comments[j].isMe = true;
-                console.log(this.users[userarr.indexOf($userid)].comments[j]);
+              console.log(this.list);
+              this.list[userarr.indexOf($userid)].isMe = true;
+              for(var j=0;j<this.list[userarr.indexOf($userid)].comments.length;j++){
+                this.list[userarr.indexOf($userid)].comments[j].isMe = true;
+                console.log(this.list[userarr.indexOf($userid)].comments[j]);
               }
             }else{
-              $.each(this.users,function(i,v){
+              $.each(this.list,function(i,v){
                 $.each(v.comments,function(i,v){
                   v.isMe = false;
                   if(v.id == $userid){
@@ -357,49 +366,62 @@
                   };
                 })
               });
-              console.log(this.users);
+              console.log(this.list);
             }
         }).catch((error)=>{
           console.log(error);
         });
-
-        //微信js-sdk
-        this.$axios.get($url+'/wechat_share',{params:{url:window.location.href}}).then(res=>{
-            console.log(res);
-            const appid = res.data.appId;
-            const nonceStr = res.data.nonceStr;
-            const signature = res.data.signature;
-            const timestamp = res.data.timestamp;
-
-            //配置微信js-sdk
-            wx.config({
-                debug: true, // 
-                appId: appid, // 必填，公众号的唯一标识
-                timestamp: timestamp, // 必填，生成签名的时间戳
-                nonceStr: nonceStr, // 必填，生成签名的随机串
-                signature: signature,// 必填，签名
-                jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
-            });
-
-            wx.ready(function(){
-                console.log("成功");
-            });
-            wx.error(function(res){
-                console.log("失败");
-            });
-
-        }).catch((error)=>{
-          console.log(error);
-        })
-      },
-      beforeCreate:function(){
-       
-        
       }
   }
 </script>
 <style lang="scss" scoped>
     $x:37.5;
+    .comment_box{
+    	width:100%;
+    	height:49rem/$x;
+    	background:#fff;
+    	padding:8rem/$x 15rem/$x;
+    	box-sizing:border-box;
+    	position: fixed;
+    	left:0;
+    	bottom:0;
+    	.comment_wrap{
+    		width:100%;
+    		height:100%;
+    		background: #F4F4F4;
+			border-radius: 100px;
+			padding: 6.5rem/$x 20rem/$x;
+			box-sizing:border-box;
+			display: flex;
+
+			.comment_img{
+				width:24rem/$x;
+				height:18rem/$x;
+				margin-right:10rem/$x;
+			}
+			span{
+				font-size:20px;
+				margin-right: 10rem/$x;
+			}
+			.comment_input{
+				flex:1;
+				background: #F4F4F4;
+				outline:none;
+				border:none;
+				font-family: STHeitiSC-Medium;
+				font-size: 12px;
+				color: #D1D1D1;
+				letter-spacing: 0.14px;
+			}
+			.send_com{
+				float: right;
+				color:blue;
+				font-size: 12px;
+				line-height: 20rem/$x;
+			}
+    	}
+    }
+
     .countdown{font-family: STHeitiSC-Medium;
     font-size: 14px;
     color: #333333;
@@ -410,15 +432,17 @@
       color: #333333;
       letter-spacing: -0.39px;
     }
+    .answer_wrap{
+    	height:auto;
+    	overflow: hidden;
+    }
     .clearfix:after {
     content: "";
     display: block;
     height: 0;
     clear: both;
     }
-    *{
-        margin: 0;padding: 0;
-    }
+    
     .box{
         width: 345rem/$x;margin: 0 auto;
     }
