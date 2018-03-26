@@ -22,6 +22,7 @@
   </div>
 </template>
 <script>
+const $url = 'https://www.13cai.com.cn';
 export default {
     name:'answerQuestions',
     data(){
@@ -45,7 +46,7 @@ export default {
                 createdBy
             }
             const that = this;
-            this.$http.post('//192.168.1.116:1337/comment',JSON.stringify(newMsg)).then(res=>{
+            this.$http.post($url+'/comment',JSON.stringify(newMsg)).then(res=>{
                if (res.status === 200 || res.status === 201) {
                     alert("成功");
                     this.$router.push('/answerDetail');

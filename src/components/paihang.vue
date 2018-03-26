@@ -49,6 +49,7 @@
   
 </template>
 <script>
+const $url = 'https://www.13cai.com.cn';
 export default {
   name:'paihang',
   data(){
@@ -65,7 +66,6 @@ export default {
   methods:{
     getWorld:function(){
       this.iswho = 0;
-      const $url = 'http://192.168.1.120:1337';
       //获取世界榜
       const $userid = localStorage.getItem("userid");//userid
       this.$axios.get($url+'/rank').then((res)=>{
@@ -97,15 +97,13 @@ export default {
     },
     getFriend:function(){
       this.iswho = 1;
-      const $url = 'http://192.168.1.120:1337';
 
       //获取好友榜
       const $userid = localStorage.getItem("userid");//userid
       const data ={search: {id:$userid} }
       this.$axios.get($url+'/friend',{params:data}).then((res)=>{
          if (res.status === 200) {
-            console.log(res.data);
-            if(res.data&&res.data.length){
+            if(res.data.allFriendIds){
               const allFriendIds =JSON.stringify(res.data.allFriendIds);
               const answer ={allFriendIds:allFriendIds};
               console.log(answer);
@@ -144,7 +142,6 @@ export default {
     this.myavtalUrl = localStorage.getItem("headimg");
   },
   beforeCreate:function(){
-    const $url = 'http://192.168.1.120:1337';
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
@@ -182,7 +179,7 @@ export default {
       clear: both;
     }
     .showempty{
-      position: fixed;
+      position: absolute;
       width:100%;
       font-family: STHeitiSC-Medium;
       font-size: 17px;
@@ -198,6 +195,7 @@ export default {
       position: relative;
       box-sizing:border-box;
       padding:0 15rem/$x;
+      display: flex;
     }
     .top{
         width: 120%;
@@ -243,13 +241,10 @@ export default {
     }
     .paihang_list{
       width:100%;
-      height:100%;
+      flex:1;
       box-sizing:border-box;
       padding-top:130rem/$x;
-      padding:130rem/$x 30rem/$x 49rem/$x;
-      overflow-y:scroll;
       position: relative;
-      z-index: 1;
     }
     .ctn{
         width: 345rem/$x;margin: 0 auto;margin-top: 15rem/$x;
