@@ -22,7 +22,8 @@
   </div>
 </template>
 <script>
-const $url = 'https://www.13cai.com.cn';
+// const $url = 'https://www.13cai.com.cn';
+const $url = 'http://192.168.1.116:1337'
 export default {
     name:'answerQuestions',
     data(){
@@ -38,17 +39,20 @@ export default {
     methods:{
         submit:function(){
             const body = $('#ctn').val();
-            const answer = localStorage.getItem('topicid');
+            const userQuestion = localStorage.getItem("userQuestion");//参数集合
+            const userQuestionobj = JSON.parse(userQuestion);
+            const topic = userQuestionobj.topicid;
             const createdBy = localStorage.getItem('userid');
+            console.log(newMsg)
             const newMsg = {
                 body,
-                answer,
+                topic,
                 createdBy
             }
-            const that = this;
+            
             this.$http.post($url+'/comment',JSON.stringify(newMsg)).then(res=>{
                if (res.status === 200 || res.status === 201) {
-                    alert("成功");
+                    // alert("成功");
                     this.$router.push('/answerDetail');
                     //getComment(that, option);
                 }

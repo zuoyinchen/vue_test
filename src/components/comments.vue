@@ -71,7 +71,7 @@
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
-                          <div @click="slideDown($event)" :data-index="index" :data-id="id">
+                          <div @click="slideDown($event)" :data-index="index">
                               <i class="iconfont icon-pinglun"></i>
                               <span class="comment_num">{{item.comments.length}}</span>
                           </div>
@@ -127,7 +127,6 @@
               title:'',
               readnum:'',
               answernum:'',
-              id:'',
               defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
           }
       },
@@ -220,11 +219,7 @@
         },
         slideDown:function(event){
           const index = event.currentTarget.dataset.index;
-          const id = event.currentTarget.dataset.id;
-          localStorage.setItem("oneuser",id);
-          console.log(id)
-          this.$router.push('/comments');
-        //   $('.pin_list').eq(index).find(".slide").toggle();
+          $('.pin_list').eq(index).find(".slide").toggle();
         },
         timeReplace:function(str) {
         return str.replace('T', ' ').slice(0, str.indexOf('.'));
@@ -306,10 +301,13 @@
               this.msg = res.data;
               //拿到所有答题者的id
               const userarr = [];//答题者id集合
+              const oneuser = localStorage.getItem("oneuser");
               for(var i=0;i<this.msg.length;i++){
                   this.msg[i].isMe = false;
                   userarr.push(this.msg[i].id);
-                  
+                  if(oneuser==msg.id){
+                      console.log(this.msg)
+                  }
               }
               this.users = this.msg;
               //判断答题者的id中是否有自己
@@ -362,6 +360,8 @@
                 userarr.push(this.msg[i].id);
                 
             }
+            const id = localStorage.getItem("oneuser");
+            
             this.users = this.msg;
             //判断答题者的id中是否有自己
             if(userarr.indexOf($userid) !== -1){
