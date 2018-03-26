@@ -33,7 +33,7 @@
                   </router-link> -->
                   
               </div>
-              <div class="theme_b_r" v-if="status==2" v-show="true">
+              <div class="theme_b_r" v-if="status==2" v-show="false">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
                        <p>立即抢答</p>
                   </router-link> 
