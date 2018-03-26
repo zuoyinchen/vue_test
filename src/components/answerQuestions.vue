@@ -39,24 +39,35 @@ export default {
     methods:{
         submit:function(){
             const body = $('#ctn').val();
+<<<<<<< HEAD
             const userQuestion = localStorage.getItem("userQuestion");//参数集合
             const userQuestionobj = JSON.parse(userQuestion);
             const topic = userQuestionobj.topicid;
             const createdBy = localStorage.getItem('userid');
             console.log(newMsg)
+=======
+            const all = JSON.parse(localStorage.getItem('userQuestion'));
+            const topic = all.topicid;
+            const createdBy = localStorage.getItem('userid');
+            console.log(createdBy)
+>>>>>>> 8fd54814798f95bcdd0ea41dd73ffbbabb415ea5
             const newMsg = {
                 body,
                 topic,
                 createdBy
             }
+<<<<<<< HEAD
             
             this.$http.post($url+'/comment',JSON.stringify(newMsg)).then(res=>{
+=======
+            this.$http.post('//192.168.1.116:1337/answer',JSON.stringify(newMsg)).then(res=>{
+>>>>>>> 8fd54814798f95bcdd0ea41dd73ffbbabb415ea5
                if (res.status === 200 || res.status === 201) {
                     // alert("成功");
                     this.$router.push('/answerDetail');
                     //getComment(that, option);
                 }
-               console.log(res)
+            //    console.log(res)
             });
         //     $.ajax('/comment', JSON.stringify(newMsg), function (res) {
         //         console.log(res)
