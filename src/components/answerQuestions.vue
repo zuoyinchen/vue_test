@@ -22,8 +22,8 @@
   </div>
 </template>
 <script>
-// const $url = 'https://www.13cai.com.cn';
-const $url = 'http://192.168.1.116:1337'
+ const $url = 'https://www.13cai.com.cn';
+// const $url = 'http://192.168.1.116:1337'
 export default {
     name:'answerQuestions',
     data(){
@@ -39,47 +39,24 @@ export default {
     methods:{
         submit:function(){
             const body = $('#ctn').val();
-<<<<<<< HEAD
             const userQuestion = localStorage.getItem("userQuestion");//参数集合
             const userQuestionobj = JSON.parse(userQuestion);
             const topic = userQuestionobj.topicid;
             const createdBy = localStorage.getItem('userid');
             console.log(newMsg)
-=======
-            const all = JSON.parse(localStorage.getItem('userQuestion'));
-            const topic = all.topicid;
-            const createdBy = localStorage.getItem('userid');
-            console.log(createdBy)
->>>>>>> 8fd54814798f95bcdd0ea41dd73ffbbabb415ea5
             const newMsg = {
                 body,
                 topic,
                 createdBy
             }
-<<<<<<< HEAD
-            
-            this.$http.post($url+'/comment',JSON.stringify(newMsg)).then(res=>{
-=======
-            this.$http.post('//192.168.1.116:1337/answer',JSON.stringify(newMsg)).then(res=>{
->>>>>>> 8fd54814798f95bcdd0ea41dd73ffbbabb415ea5
+            this.$http.post($url+'/answer',JSON.stringify(newMsg)).then(res=>{
                if (res.status === 200 || res.status === 201) {
-                    // alert("成功");
+                    
                     this.$router.push('/answerDetail');
-                    //getComment(that, option);
+                    
                 }
-            //    console.log(res)
+           
             });
-        //     $.ajax('/comment', JSON.stringify(newMsg), function (res) {
-        //         console.log(res)
-        //     if (res.statusCode === 200 || res.statusCode === 201) {
-        //         wx.showToast({
-        //             title: '评论成功',
-        //             icon: 'success',
-        //             duration: 1500
-        //         })
-        //         getComment(that, option);
-        //     }
-        // }, 'POST');
         }
     },
     mounted(){
