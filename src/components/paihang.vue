@@ -103,8 +103,7 @@ export default {
       const data ={search: {id:$userid} }
       this.$axios.get($url+'/friend',{params:data}).then((res)=>{
          if (res.status === 200) {
-            console.log(res.data);
-            if(res.data&&res.data.length){
+            if(res.data.allFriendIds){
               const allFriendIds =JSON.stringify(res.data.allFriendIds);
               const answer ={allFriendIds:allFriendIds};
               console.log(answer);
