@@ -47,7 +47,7 @@ export default {
                 topic,
                 createdBy
             }
-            this.$http.post('/answer',JSON.stringify(newMsg)).then(res=>{
+            this.$axios.post('/answer',JSON.stringify(newMsg)).then(res=>{
                if (res.status === 200 || res.status === 201) {
                     
                     this.$router.replace('/answerDetail');

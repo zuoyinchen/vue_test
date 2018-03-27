@@ -3,17 +3,17 @@
     <scroller class="message_list" :on-refresh="refresh"
   :on-infinite="infinite" ref="myscroller">
       <div class="nav clearfix">
-          <div>
+          <!-- <div> -->
             <span class="counttest">下场开始时间</span>
             <span>
                 <countdown :time="60 * 60 * 60 * 1000" class="countdown" v-on:countdownend = "countdownend">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
-          </div>
-          <div>
-              <span><a href="">游戏规则</a></span>
-          </div>
+          <!-- </div> -->
+          <!-- <div> -->
+              <span>游戏规则</span>
+          <!-- </div> -->
       </div>
       <ul class="btn">
           <li v-for="(item,index) in msg" :key="index">
@@ -238,35 +238,28 @@ export default {
        width: 100%;height: 100%;
     }
     .nav{
-        width: 345rem/$x;height: 35rem/$x;margin:0 auto;border-radius: 100rem/$x;border: 1px solid #FDD545;
+        width: 345rem/$x;
+        height: 35rem/$x;
+        margin:0 auto;
+        margin-top:17rem/$x;
+        border-radius: 100rem/$x;
+        border: 1px solid #FDD545;
+        text-align: center;
+        line-height: 35rem/$x;
+        position: relative;
 
     }
-    .nav>div:nth-of-type(1){
-        width: 120rem/$x;height: 18rem/$x;font-size: 13rem/$x;letter-spacing: 0.16rem/$x;
-        line-height: 18rem/$x;float: left;
-        margin: 8rem/$x 0 0 116rem/$x;
-    }
-    .nav>div:nth-of-type(1)>span:nth-of-type(1){
-        width: 90rem/$x;
-    }
-    .nav>div:nth-of-type(1)>span:nth-of-type(2){
-        width: 24rem/$x;
-    }
-    .nav>div:nth-of-type(2){
-         width: 53rem/$x;height: 18rem/$x;
-         font-size: 13rem/$x;
-         letter-spacing: 0.16rem/$x;
-         line-height: 18rem/$x;
-         float: right;
-         margin: 8rem/$x 10rem/$x 0 0;
-    }
-    .nav>div:nth-of-type(2)>span:nth-child(1)>a{
-        width: 53rem/$x;
-        height: 18rem/$x;
-        font-size: 13rem/$x;
-        line-height: 18rem/$x;
-        color: #FDD545;
-        text-decoration: none;
+    .nav>span:nth-of-type(3){
+      position: absolute;
+      display: block;
+      height:35rem/$x;
+      width:auto;
+      right:15rem/$x;
+      top:0;
+      font-family: PingFangSC-Regular;
+      font-size: 13px;
+      color: #FDD545;
+      letter-spacing: 0.16px;
     }
     ul,li{
         list-style: none;-webkit-padding-start: 0;

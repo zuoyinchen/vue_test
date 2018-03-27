@@ -373,33 +373,33 @@
         });
 
         //微信js-sdk
-        // this.$axios.get('/wechat_share',{params:{url:window.location.href}}).then(res=>{
-        //     console.log(res);
-        //     const appid = res.data.appId;
-        //     const nonceStr = res.data.nonceStr;
-        //     const signature = res.data.signature;
-        //     const timestamp = res.data.timestamp;
+        this.$axios.get('/wechat_share',{params:{url:window.location.href}}).then(res=>{
+            console.log(res);
+            const appid = res.data.appId;
+            const nonceStr = res.data.nonceStr;
+            const signature = res.data.signature;
+            const timestamp = res.data.timestamp;
 
-        //     //配置微信js-sdk
-        //     wx.config({
-        //         debug: true, // 
-        //         appId: appid, // 必填，公众号的唯一标识
-        //         timestamp: timestamp, // 必填，生成签名的时间戳
-        //         nonceStr: nonceStr, // 必填，生成签名的随机串
-        //         signature: signature,// 必填，签名
-        //         jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
-        //     });
+            //配置微信js-sdk
+            wx.config({
+                debug: true, // 
+                appId: appid, // 必填，公众号的唯一标识
+                timestamp: timestamp, // 必填，生成签名的时间戳
+                nonceStr: nonceStr, // 必填，生成签名的随机串
+                signature: signature,// 必填，签名
+                jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+            });
 
-        //     wx.ready(function(){
-        //         console.log("成功");
-        //     });
-        //     wx.error(function(res){
-        //         console.log("失败");
-        //     });
+            wx.ready(function(){
+                console.log("成功");
+            });
+            wx.error(function(res){
+                console.log("失败");
+            });
 
-        // }).catch((error)=>{
-        //   console.log(error);
-        // })
+        }).catch((error)=>{
+          console.log(error);
+        })
       },
       beforeCreate:function(){
        
