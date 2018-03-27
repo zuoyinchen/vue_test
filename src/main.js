@@ -17,7 +17,9 @@ Vue.use(VueScroller);
 Vue.use(VueResource);
 
 //将全局变量挂载到vue实例上
+axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
 Vue.prototype.$axios = axios;
+
 Vue.component("tabnav",tabnav);//全局注册tabnav组件；
 /* eslint-disable no-new */
 Vue.config.productionTip = false
@@ -53,9 +55,11 @@ new Vue({
     }
   },
   mounted:function(){
+    console.log(this.$axios.defaults.baseURL);
      let userobj = this.getQueryStringArgs();
-     if(userobj.id){
-       localStorage.setItem("userid",userobj.id.split("#")[0]);//缓存用户id
+     console.log(userobj);
+     if(userobj.wxUser){
+       localStorage.setItem("userid",userobj.wxUser);//缓存用户id
        localStorage.setItem('headimg',userobj.avatarUrl);//缓存用户头像
      }
     document.querySelector('body').addEventListener('touchmove',function (ev) {  

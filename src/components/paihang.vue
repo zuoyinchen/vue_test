@@ -52,7 +52,6 @@
   
 </template>
 <script>
-const $url = 'https://www.13cai.com.cn/api/v1';
 export default {
   name:'paihang',
   data(){
@@ -71,7 +70,7 @@ export default {
       this.iswho = 0;
       //获取世界榜
       const $userid = localStorage.getItem("userid");//userid
-      this.$axios.get($url+'/rank').then((res)=>{
+      this.$axios.get('/rank').then((res)=>{
           if(res.data && res.data.length){
             this.pailist =res.data;
             const idarr = [];
@@ -104,12 +103,12 @@ export default {
       //获取好友榜
       const $userid = localStorage.getItem("userid");//userid
       const data ={search: {id:$userid} }
-      this.$axios.get($url+'/friend',{params:data}).then((res)=>{
+      this.$axios.get('/friend',{params:data}).then((res)=>{
          if (res.status === 200) {
             if(res.data.allFriendIds){
               const allFriendIds =JSON.stringify(res.data.allFriendIds);
               const answer ={allFriendIds:allFriendIds};
-              this.$axios.get($url+'/answerRank',{params:answer}).then((data)=>{
+              this.$axios.get('/answerRank',{params:answer}).then((data)=>{
                 this.pailist =data.data.createdBys;
                 const idarr = [];
                 for(let i=0;i<this.pailist.length;i++){
@@ -152,7 +151,7 @@ export default {
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
 
-    this.$axios.get($url+'/rank').then((res)=>{
+    this.$axios.get('/rank').then((res)=>{
         this.pailist =res.data;
         const idarr = [];
         for(let i=0;i<this.pailist.length;i++){

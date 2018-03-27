@@ -33,7 +33,6 @@
      </div>
 </template>
 <script>
-    const $url = 'https://www.13cai.com.cn/api/v1';
     const $userid = localStorage.getItem("userid");//userid
     export default{
         name: 'test',
@@ -120,7 +119,7 @@
                     status:$status
                 };
                 console.log(data);
-                this.$http.put($url+'/topic/'+$id,data).then(res=>{
+                this.$http.put('/topic/'+$id,data).then(res=>{
                     if(res.status == 200){
                         this.restSlide();
                         this.prolist.splice(index,1);
@@ -136,7 +135,7 @@
                 sort:JSON.stringify({ createdAt:0}),
                 userid:$userid
               }
-              this.$axios.get($url+'/topics',{params:data}).then(res=>{
+              this.$axios.get('/topics',{params:data}).then(res=>{
                  this.prolist = res.data;
               }).catch((error)=>{
                  console.log('error');
@@ -164,7 +163,7 @@
                   sort:JSON.stringify({ createdAt:0}),
                   userid:$userid
                 }
-                this.$axios.get($url+'/topics',{params:data}).then(res=>{
+                this.$axios.get('/topics',{params:data}).then(res=>{
                    this.prolist = res.data;
                   
                 }).catch((error)=>{

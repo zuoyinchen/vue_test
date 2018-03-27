@@ -41,7 +41,6 @@
 	</div>	
 </template>
 <script type="text/javascript">
-	const $url = 'https://www.13cai.com.cn/api/v1';
 	const $userid = localStorage.getItem("userid");//userid
 	export default{
 		name: 'userproject',
@@ -68,7 +67,7 @@
 	                sort:JSON.stringify({ createdAt:0}),
 	                search: { createdBy:$userid }
 	            }
-	            this.$axios.get($url+'/answers',{params:data}).then((res)=>{
+	            this.$axios.get('/answers',{params:data}).then((res)=>{
 		            this.prolist = res.data;
 		        }).catch((error)=>{
                 	console.log(error);
@@ -96,7 +95,7 @@
 	                sort:JSON.stringify({ createdAt:0}),
 	                search: { createdBy:$userid }
 	            }
-                this.$axios.get($url+'/answers',{params:data}).then((res)=>{
+                this.$axios.get('/answers',{params:data}).then((res)=>{
 		            this.prolist = res.data;
 		        }).catch((error)=>{
                 	console.log('error');

@@ -22,8 +22,6 @@
   </div>
 </template>
 <script>
- // const $url = 'https://www.13cai.com.cn/api/v1';
- const $url = 'https://www.13cai.com.cn/api/v1';
 export default {
     name:'answerQuestions',
     data(){
@@ -49,7 +47,7 @@ export default {
                 topic,
                 createdBy
             }
-            this.$http.post($url+'/answer',JSON.stringify(newMsg)).then(res=>{
+            this.$http.post('/answer',JSON.stringify(newMsg)).then(res=>{
                if (res.status === 200 || res.status === 201) {
                     
                     this.$router.replace('/answerDetail');
@@ -75,7 +73,7 @@ export default {
         //     search:JSON.stringify({topic: topicid}),
         //     userid:$userid
         // };
-        // this.$http.get($url+'/answer', {params:data}).then(res=>{
+        // this.$http.get('/answer', {params:data}).then(res=>{
         //     this.msg = res.data;
         // }).catch((error)=>{
         //     console.log(error);
