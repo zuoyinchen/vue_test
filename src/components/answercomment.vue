@@ -68,7 +68,7 @@
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
-                          <div @click="slideDown($event)" :data-index="index">
+                          <div >
                               <i class="iconfont icon-pinglun"></i>
                               <span class="comment_num">{{item.comments.length}}</span>
                           </div>
@@ -267,6 +267,7 @@
           });
         },
         upDatedata:function(){
+          this.message = '';
           const query = localStorage.getItem("query");//参数集合
           const queryobj = JSON.parse(query);
           this.topicid = queryobj.topicid;
@@ -324,6 +325,7 @@
          	console.log(data);
          	this.$axios.post('/comment',data).then((res)=>{
          		console.log(res.data);
+            this.upDatedata();
          	}).catch((error)=>{
          		console.log(error);
          	})
@@ -403,7 +405,7 @@
 
             //配置微信js-sdk
             wx.config({
-                debug: true, // 
+                debug: false, // 
                 appId: appid, // 必填，公众号的唯一标识
                 timestamp: timestamp, // 必填，生成签名的时间戳
                 nonceStr: nonceStr, // 必填，生成签名的随机串
@@ -495,6 +497,8 @@
     
     .box{
         width: 345rem/$x;margin: 0 auto;
+        padding-top:10rem/$x;
+        box-sizing:border-box;
     }
     .countdown{
         width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;

@@ -382,7 +382,7 @@
 
             //配置微信js-sdk
             wx.config({
-                debug: true, // 
+                debug: false, // 
                 appId: appid, // 必填，公众号的唯一标识
                 timestamp: timestamp, // 必填，生成签名的时间戳
                 nonceStr: nonceStr, // 必填，生成签名的随机串
@@ -430,6 +430,8 @@
     }
     .box{
         width: 345rem/$x;margin: 0 auto;
+        padding-top:10rem/$x;
+        box-sizing:border-box;
     }
     .countdown{
         width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
