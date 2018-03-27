@@ -98,7 +98,7 @@ export default {
           this.noData='';
           const data = {
             limit : this.page*this.size,
-            sort:JSON.stringify({ createdAt:0})
+            sort:JSON.stringify({ time:0})
           }
           this.$axios.get('/topic',{params:data}).then(res=>{
              console.log(res.data.list);
