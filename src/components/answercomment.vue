@@ -102,7 +102,7 @@
       	<div class="comment_wrap">
       		<img src="" alt="" class="comment_img">
       		<span>|</span>
-      		<input type="text" name="" class="comment_input"n placeholder="请输入评论..." v-model="message">
+      		<input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message">
       		<span class="send_com" @click="gotoComment($event)" :data-message="message">发送</span>
       	</div>
       </div>
