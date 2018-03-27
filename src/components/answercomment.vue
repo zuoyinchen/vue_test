@@ -112,7 +112,6 @@
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
   const $userid = localStorage.getItem("userid");//用户id
-  const $url = 'https://www.13cai.com.cn/api/v1';
   export default {
       name:"answercomment",
       data(){
@@ -154,7 +153,7 @@
           const data = {
             'stars' : resultarr
           }
-          this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
+          this.$axios.put('/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.list[$index].isStar){
@@ -188,7 +187,7 @@
           const data = {
             'upVotes' : resultarr
           }
-          this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
+          this.$axios.put('/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.list[$index].upVote){
@@ -228,7 +227,7 @@
        deleteAnswer:function(){
           console.log("删除答案");
           const answerid = event.currentTarget.dataset.id;
-          this.$axios.delete($url+'/answer/'+answerid).then((res)=>{
+          this.$axios.delete('/answer/'+answerid).then((res)=>{
             console.log(res);
             this.answernum -=1;
             localStorage.setItem("answernum",this.answernum);
@@ -243,7 +242,7 @@
           let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
           comment_num -=1;
           $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
-          this.$axios.delete($url+'/comment/'+commentid).then((res)=>{
+          this.$axios.delete('/comment/'+commentid).then((res)=>{
             this.upDatedata();
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -258,7 +257,7 @@
 	          search:JSON.stringify({topic: topicid}),
 	          userid:$userid
 	        };
-	        this.$http.get($url+'/answer', {params:data}).then(res=>{
+	        this.$http.get('/answer', {params:data}).then(res=>{
 	            console.log(res.data);
 	            console.log(localStorage.getItem("comment_index"));
 	            const cindex = localStorage.getItem("comment_index");
@@ -305,7 +304,7 @@
             createdBy: $userid,
        	}
        	console.log(data);
-       	this.$axios.post($url+'/comment',data).then((res)=>{
+       	this.$axios.post('/comment',data).then((res)=>{
        		console.log(res.data);
        	}).catch((error)=>{
        		console.log(error);
@@ -332,7 +331,7 @@
           search:JSON.stringify({topic: topicid}),
           userid:$userid
         };
-        this.$http.get($url+'/answer', {params:data}).then(res=>{
+        this.$http.get('/answer', {params:data}).then(res=>{
             console.log(res.data);
             console.log(localStorage.getItem("comment_index"));
             const cindex = localStorage.getItem("comment_index");

@@ -41,7 +41,6 @@
 	</div>
 </template>
 <script type="text/javascript">
-  const $url = 'https://www.13cai.com.cn/api/v1';
   const $userid = localStorage.getItem("userid");//userid
 	export default {
 		name : 'singlepai',
@@ -65,7 +64,7 @@
 		    const data = {
 		    	topicid : this.topicid
 		    }
-		    this.$axios.get($url+'/singleRank',{params:data}).then((res)=>{
+		    this.$axios.get('/singleRank',{params:data}).then((res)=>{
 		        if(res.data && res.data.length){
 		            this.pailist =res.data;
 		            const idarr = [];

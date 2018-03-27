@@ -92,7 +92,6 @@
 <script>
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
-  const $url = 'https://www.13cai.com.cn/api/v1';
   const $userid = localStorage.getItem("userid");//用户id
   export default {
       name:"answerDetail",
@@ -142,7 +141,7 @@
           const data = {
             'stars' : resultarr
           }
-          this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
+          this.$axios.put('/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.msg[$index].isStar){
@@ -183,7 +182,7 @@
           const data = {
             'upVotes' : resultarr
           }
-          this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
+          this.$axios.put('/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.msg[$index].upVote){
@@ -248,7 +247,7 @@
           console.log("删除答案");
           const answerid = event.currentTarget.dataset.id;
 
-          this.$axios.delete($url+'/answer/'+answerid).then((res)=>{
+          this.$axios.delete('/answer/'+answerid).then((res)=>{
             console.log(res);
             this.answernum -=1;
             localStorage.setItem("answernum",this.answernum);
@@ -263,7 +262,7 @@
           let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
           comment_num -=1;
           $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
-          this.$axios.delete($url+'/comment/'+commentid).then((res)=>{
+          this.$axios.delete('/comment/'+commentid).then((res)=>{
             console.log(res);
             
           }).catch((error,errorcode)=>{
@@ -280,7 +279,7 @@
             search:JSON.stringify({topic: topicid}),
             userid:$userid
           };
-          this.$http.get($url+'/answer', {params:data}).then(res=>{
+          this.$axios.get('/answer', {params:data}).then(res=>{
               this.msg = res.data;
               //拿到所有答题者的id
               const userarr = [];//答题者id集合
@@ -338,7 +337,9 @@
           search:JSON.stringify({topic: topicid}),
           userid:$userid
         };
-        this.$http.get($url+'/answer', {params:data}).then(res=>{
+        console.log(data);
+        
+        this.$axios.get('/answer', {params:data}).then(res=>{
             this.msg = res.data;
             //拿到所有答题者的id
             const userarr = [];//答题者id集合
@@ -372,33 +373,33 @@
         });
 
         //微信js-sdk
-        this.$axios.get($url+'/wechat_share',{params:{url:window.location.href}}).then(res=>{
-            console.log(res);
-            const appid = res.data.appId;
-            const nonceStr = res.data.nonceStr;
-            const signature = res.data.signature;
-            const timestamp = res.data.timestamp;
+        // this.$axios.get('/wechat_share',{params:{url:window.location.href}}).then(res=>{
+        //     console.log(res);
+        //     const appid = res.data.appId;
+        //     const nonceStr = res.data.nonceStr;
+        //     const signature = res.data.signature;
+        //     const timestamp = res.data.timestamp;
 
-            //配置微信js-sdk
-            wx.config({
-                debug: true, // 
-                appId: appid, // 必填，公众号的唯一标识
-                timestamp: timestamp, // 必填，生成签名的时间戳
-                nonceStr: nonceStr, // 必填，生成签名的随机串
-                signature: signature,// 必填，签名
-                jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
-            });
+        //     //配置微信js-sdk
+        //     wx.config({
+        //         debug: true, // 
+        //         appId: appid, // 必填，公众号的唯一标识
+        //         timestamp: timestamp, // 必填，生成签名的时间戳
+        //         nonceStr: nonceStr, // 必填，生成签名的随机串
+        //         signature: signature,// 必填，签名
+        //         jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+        //     });
 
-            wx.ready(function(){
-                console.log("成功");
-            });
-            wx.error(function(res){
-                console.log("失败");
-            });
+        //     wx.ready(function(){
+        //         console.log("成功");
+        //     });
+        //     wx.error(function(res){
+        //         console.log("失败");
+        //     });
 
-        }).catch((error)=>{
-          console.log(error);
-        })
+        // }).catch((error)=>{
+        //   console.log(error);
+        // })
       },
       beforeCreate:function(){
        
