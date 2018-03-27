@@ -6,17 +6,14 @@
       <ul class="ctn">
           <li>
               <p>客服热线 : 185-1348-2046</p>
-              <!-- <div class="btn"> -->
                   <a href="tel://18513482046" class="call">
                         <span>
                         拨打
                         </span>
                   </a>
-              <!-- </div> -->
           </li>
           <li>
               <p>客服邮箱 : zg-kefu@zg18.com</p>
-              <!-- <div class="btn"> -->
                  <a href="mailto:zg-kefu@zg18.com" class="send">
                         <span>
                         发送
