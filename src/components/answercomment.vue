@@ -112,7 +112,6 @@
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
   const $userid = localStorage.getItem("userid");//用户id
-  const $url = 'https://www.13cai.com.cn/api/v1';
   export default {
       name:"answercomment",
       data(){
@@ -154,7 +153,7 @@
           const data = {
             'stars' : resultarr
           }
-          this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
+          this.$axios.put('/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.list[$index].isStar){
@@ -188,7 +187,7 @@
           const data = {
             'upVotes' : resultarr
           }
-          this.$axios.put($url+'/answer/'+answerid,data).then((res)=>{
+          this.$axios.put('/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.list[$index].upVote){
@@ -204,6 +203,24 @@
         },
         timeReplace:function(str) {
          return str.replace('T', ' ').slice(0, str.indexOf('.'));
+        },
+        gotoShare:function(){
+          wx.onMenuShareAppMessage({
+            title: '这是个问题吗', // 分享标题
+            desc: '回答问题', // 分享描述
+            link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: '../assets/images/logo.png', // 分享图标
+            type: '', // 分享类型,music、video或link，不填默认为link
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+            success: function () {
+                // 用户确认分享后执行的回调函数
+                console.log("成功");
+            },
+            cancel: function () {
+              console.log("取消");
+            // 用户取消分享后执行的回调函数
+            }
+          });
         },
         gotoQuestion:function(event){
           const topicid = event.currentTarget.dataset.tid;//问题id
@@ -225,10 +242,10 @@
           localStorage.setItem("userQuestion",JSON.stringify(userQuestion));
           this.$router.push('/answerQuestions');
         },
-       deleteAnswer:function(){
+        deleteAnswer:function(){
           console.log("删除答案");
           const answerid = event.currentTarget.dataset.id;
-          this.$axios.delete($url+'/answer/'+answerid).then((res)=>{
+          this.$axios.delete('/answer/'+answerid).then((res)=>{
             console.log(res);
             this.answernum -=1;
             localStorage.setItem("answernum",this.answernum);
@@ -236,20 +253,20 @@
           }).catch((error,errorcode)=>{
             console.log(error);
           })
-       },
-       deletePinlun:function(){
+        },
+        deletePinlun:function(){
           const commentid = event.currentTarget.dataset.id;
           const answerindex = event.currentTarget.dataset.index;//所评论的问题索引
           let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
           comment_num -=1;
           $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
-          this.$axios.delete($url+'/comment/'+commentid).then((res)=>{
+          this.$axios.delete('/comment/'+commentid).then((res)=>{
             this.upDatedata();
           }).catch((error,errorcode)=>{
             console.log(error);
           });
-       },
-       upDatedata:function(){
+        },
+        upDatedata:function(){
           const query = localStorage.getItem("query");//参数集合
           const queryobj = JSON.parse(query);
           this.topicid = queryobj.topicid;
@@ -258,7 +275,7 @@
 	          search:JSON.stringify({topic: topicid}),
 	          userid:$userid
 	        };
-	        this.$http.get($url+'/answer', {params:data}).then(res=>{
+	        this.$axios.get('/answer', {params:data}).then(res=>{
 	            console.log(res.data);
 	            console.log(localStorage.getItem("comment_index"));
 	            const cindex = localStorage.getItem("comment_index");
@@ -295,22 +312,22 @@
 	        }).catch((error)=>{
 	          console.log(error);
 	        });
-       },
-       //评论答案
-       gotoComment:function(event){
-       	console.log(event.currentTarget.dataset.message);
-       	const data ={
-       		body: this.message,
-            answer: this.answerid,
-            createdBy: $userid,
-       	}
-       	console.log(data);
-       	this.$axios.post($url+'/comment',data).then((res)=>{
-       		console.log(res.data);
-       	}).catch((error)=>{
-       		console.log(error);
-       	})
-       }
+        },
+        //评论答案
+        gotoComment:function(event){
+         	console.log(event.currentTarget.dataset.message);
+         	const data ={
+         		body: this.message,
+              answer: this.answerid,
+              createdBy: $userid,
+         	}
+         	console.log(data);
+         	this.$axios.post('/comment',data).then((res)=>{
+         		console.log(res.data);
+         	}).catch((error)=>{
+         		console.log(error);
+         	})
+        }
       },
       mounted(){
         const query = localStorage.getItem("query");//参数集合
@@ -332,7 +349,7 @@
           search:JSON.stringify({topic: topicid}),
           userid:$userid
         };
-        this.$http.get($url+'/answer', {params:data}).then(res=>{
+        this.$axios.get('/answer', {params:data}).then(res=>{
             console.log(res.data);
             console.log(localStorage.getItem("comment_index"));
             const cindex = localStorage.getItem("comment_index");
@@ -375,6 +392,35 @@
         }).catch((error)=>{
           console.log(error);
         });
+
+        //微信js-sdk
+        this.$axios.get('/wechat_share',{params:{url:window.location.href}}).then(res=>{
+            console.log(res);
+            const appid = res.data.appId;
+            const nonceStr = res.data.nonceStr;
+            const signature = res.data.signature;
+            const timestamp = res.data.timestamp;
+
+            //配置微信js-sdk
+            wx.config({
+                debug: true, // 
+                appId: appid, // 必填，公众号的唯一标识
+                timestamp: timestamp, // 必填，生成签名的时间戳
+                nonceStr: nonceStr, // 必填，生成签名的随机串
+                signature: signature,// 必填，签名
+                jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+            });
+
+            wx.ready(function(){
+                console.log("成功");
+            });
+            wx.error(function(res){
+                console.log("失败");
+            });
+
+        }).catch((error)=>{
+          console.log(error);
+        })
       }
   }
 </script>

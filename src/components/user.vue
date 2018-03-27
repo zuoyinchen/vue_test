@@ -1,6 +1,10 @@
 <template>
 	<div class="userbody">
-		<div class="userpic clearfix"></div>
+		<div class="userpic clearfix">
+			<img :src="avtalUrl" class="avtalimg" v-if="avtalUrl">
+			<img src="../assets/images/logo.png" class="avtalimg" v-else>
+			<p class="nickname">{{nickname}}</p>
+		</div>
 		<ul class="user-visit">
 			<router-link tag="li" to="/userproject">
 				<i class="iconlist-left iconfont icon-cnlonghubang"></i>
@@ -25,7 +29,17 @@
 <script type="text/javascript">
 	
 	export default{
-		name:'user'
+		name:'user',
+		data:function(){
+			return {
+				avtalUrl:'',
+				nickname:''
+			}
+		},
+		mounted:function(){
+			this.avtalUrl = localStorage.getItem("headimg");
+			this.nickname = localStorage.getItem("nickname")? localStorage.getItem("nickname") : '11';
+		}
 	}
 </script>
 <style scoped lang='scss'>
@@ -37,6 +51,19 @@
 		height:100%;
 	}
 	$unit:37.5;
+	.avtalimg{
+        width: 76rem/$unit;
+        height: 76rem/$unit;
+        background: #FDD545;
+        border-radius: 50%;
+        margin:46rem/$unit auto 0;
+    }
+    .nickname{
+    	width:100%;
+    	text-align: center;
+    	margin-top:20rem/$unit;
+    	font-size:18px;
+    }
 	.userbody{
 		width:100%;
 		height:100%;
@@ -45,7 +72,7 @@
 	.userpic{
 		width:100%;
 		height:190rem/$unit;
-		background:url(../assets/img/userpic.png) no-repeat;
+		background:url(../assets/images/userbac.png) no-repeat;
 		background-size:cover;
 		margin:0 auto;
 
