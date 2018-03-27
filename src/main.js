@@ -18,6 +18,8 @@ Vue.use(VueResource);
 
 //将全局变量挂载到vue实例上
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
+//axios.defaults.baseURL = 'http://192.168.1.116:1337/api/v1';
+
 Vue.prototype.$axios = axios;
 
 Vue.component("tabnav",tabnav);//全局注册tabnav组件；

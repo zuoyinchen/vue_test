@@ -81,9 +81,6 @@ export default {
       }
   },
   methods:{
-       countdown:function(){
-
-       },
        countdownend(){
             this.$emit('countdownend');
             let title = $("#a_title").text();
@@ -93,7 +90,7 @@ export default {
                 status
             }
             this.$axios.get('/topic',{params:data}).then(res=>{
-            this.msg = res.data;
+            this.msg = res.data.list;
           });
        },
        getIndexData:function(){
@@ -103,9 +100,10 @@ export default {
             sort:JSON.stringify({ createdAt:0})
           }
           this.$axios.get('/topic',{params:data}).then(res=>{
-             console.log(res.list);
-             this.countdown =  res.list.countDown;
-             this.msg = res.list.data;
+             console.log(res.data.list);
+             console.log(res.data.countDown);
+             this.countdown =  Math.abs(res.data.countDown);
+             this.msg = res.data.list;
              const limit = this.page*this.size;
              if(this.msg.length <= limit){
                 this.noData='没有更多数据';
@@ -134,8 +132,8 @@ export default {
               sort:JSON.stringify({ createdAt:0})
             }
             this.$axios.get('/topic',{params:data}).then(res=>{
-               this.msg = res.list.data;
-               this.countdown =  res.list.countDown;
+               this.msg = res.data.list;
+               this.countdown =  Math.abs(res.data.countDown);
             });
             const limit = this.page*this.size;
             if(this.msg.length <= limit){
