@@ -306,14 +306,14 @@ export default {
     position: absolute;
     left: 0;top:-45rem/$x;}
     .end>p{width: 50rem/$x;
-        transform: rotate(-45deg);
+    transform: rotate(-45deg);
     font-family: STHeitiSC-Medium;
     font-size: 12rem/$x;
     color: #fff;
     letter-spacing: -0.29px;text-align: left;position: absolute;left: 0;top:-45rem/$x;}
 
     .btn_t1>p{font-size: 18rem/$x;color: #333333;height: 60rem/$x;width: 256rem/$x;margin: 0 auto;margin-top: 10rem/$x;
-   text-align: left;
+    text-align: left;
     }
 
     .btn_t1>ul{
