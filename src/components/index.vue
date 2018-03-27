@@ -6,7 +6,7 @@
           <div>
             <span class="counttest">下场开始时间</span>
             <span>
-                <countdown :time="60 * 60 * 60 * 1000" class="countdown" v-on:countdownend = "countdownend">
+                <countdown :time="countdown" class="countdown" v-on:countdownend = "countdownend">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
@@ -126,19 +126,15 @@ export default {
               });
             return;
           }
-          this.page++;
-          const data = {
-            limit : this.page*this.size,
-            sort:JSON.stringify({ createdAt:0})
-          }
-          console.log(this.page);
-          let timer = setTimeout(() => {
+          setTimeout(() => {
+            this.page++;
+            const data = {
+              limit : this.page*this.size,
+              sort:JSON.stringify({ time:0})
+            }
             this.$axios.get('/topic',{params:data}).then(res=>{
                this.msg = res.data.list;
                this.countdown =  Math.abs(res.data.countDown);
-            }).catch((error)=>{
-               console.log(error);
-               clearTimeout(timer);
             });
             const limit = this.page*this.size;
             if(this.msg.length <= limit){
