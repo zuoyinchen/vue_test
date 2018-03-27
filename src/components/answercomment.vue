@@ -499,6 +499,7 @@
         width: 345rem/$x;margin: 0 auto;
         padding-top:10rem/$x;
         box-sizing:border-box;
+        padding-bottom: 49rem/$x;
     }
     .countdown{
         width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
@@ -553,11 +554,13 @@
     }
     ul,li{list-style: none;}
     .ctn>li{
-        width: 345rem/$x;height:100%;
+        width: 345rem/$x;
+        height:100%;
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
         margin-top: 15rem/$x;
+        
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}
     .ctn_l>i{width: 17rem/$x;height: 17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;

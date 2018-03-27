@@ -14,7 +14,7 @@
           </div>
 
       </div>
-      <scroller class="list_wrap">
+      <scroller class="list_wrap" v-if="pailist.length > 1">
         <ul class="paihang_list">
             <li class="ctn clearfix" v-for="(item,index) in pailist">
                     <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
@@ -32,7 +32,7 @@
         </ul>
         
       </scroller>  
-            <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
+            <span class="showempty" v-else>暂无用户上榜</span>
       <div class="my_listbox">
         <div class="my_list clearfix">
             <div class="my_list_l">
@@ -152,6 +152,7 @@ export default {
     const data ={userid:$userid} 
 
     this.$axios.get('/rank').then((res)=>{
+      conso
         this.pailist =res.data;
         const idarr = [];
         for(let i=0;i<this.pailist.length;i++){
