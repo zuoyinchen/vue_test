@@ -6,7 +6,7 @@
           <div>
             <span class="counttest">下场开始时间</span>
             <span>
-                <countdown :time="60 * 60 * 60 * 1000" class="countdown" v-on:countdownend = "countdownend">
+                <countdown :time="countdown" class="countdown" v-on:countdownend = "countdownend">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
@@ -77,7 +77,8 @@ export default {
           msg:[],
           limit:'',
           page:1,
-          size:5
+          size:5,
+          countdown
       }
   },
   methods:{
