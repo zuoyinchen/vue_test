@@ -3,17 +3,17 @@
     <scroller class="message_list" :on-refresh="refresh"
   :on-infinite="infinite" ref="myscroller">
       <div class="nav clearfix">
-          <!-- <div> -->
+          <div>
             <span class="counttest">下场开始时间</span>
             <span>
                 <countdown :time="countdown" class="countdown" v-on:countdownend = "countdownend">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
-          <!-- </div> -->
-          <!-- <div> -->
-              <span>游戏规则</span>
-          <!-- </div> -->
+          </div>
+          <div>
+              <span><a href="">游戏规则</a></span>
+          </div>
       </div>
       <ul class="btn">
           <li v-for="(item,index) in msg" :key="index">
@@ -69,6 +69,7 @@
   </div>
 </template>
 <script>
+const $url = 'https://www.13cai.com.cn/api/v1';
 export default {
   name:"index",
   data(){
@@ -77,13 +78,10 @@ export default {
           limit:'',
           page:1,
           size:5,
-          countdown:0
+          countdown
       }
   },
   methods:{
-       countdown:function(){
-
-       },
        countdownend(){
             this.$emit('countdownend');
             let title = $("#a_title").text();
@@ -93,19 +91,20 @@ export default {
                 status
             }
             this.$axios.get('/topic',{params:data}).then(res=>{
-            this.msg = res.data;
+            this.msg = res.data.list;
           });
        },
        getIndexData:function(){
           this.noData='';
           const data = {
             limit : this.page*this.size,
-            sort:JSON.stringify({ createdAt:0})
+            sort:JSON.stringify({ time:0})
           }
           this.$axios.get('/topic',{params:data}).then(res=>{
-             console.log(res.list);
-             this.countdown =  res.list.countDown;
-             this.msg = res.list.data;
+             console.log(res.data.list);
+             console.log(res.data.countDown);
+             this.countdown =  Math.abs(res.data.countDown);
+             this.msg = res.data.list;
              const limit = this.page*this.size;
              if(this.msg.length <= limit){
                 this.noData='没有更多数据';
@@ -131,11 +130,11 @@ export default {
             this.page++;
             const data = {
               limit : this.page*this.size,
-              sort:JSON.stringify({ createdAt:0})
+              sort:JSON.stringify({ time:0})
             }
             this.$axios.get('/topic',{params:data}).then(res=>{
-               this.msg = res.list.data;
-               this.countdown =  res.list.countDown;
+               this.msg = res.data.list;
+               this.countdown =  Math.abs(res.data.countDown);
             });
             const limit = this.page*this.size;
             if(this.msg.length <= limit){
@@ -182,8 +181,6 @@ export default {
      localStorage.removeItem("answernum");
     }
   },
-  
-  
 }
 </script>
 <style lang="scss" scoped>
@@ -241,28 +238,35 @@ export default {
        width: 100%;height: 100%;
     }
     .nav{
-        width: 345rem/$x;
-        height: 35rem/$x;
-        margin:0 auto;
-        margin-top:17rem/$x;
-        border-radius: 100rem/$x;
-        border: 1px solid #FDD545;
-        text-align: center;
-        line-height: 35rem/$x;
-        position: relative;
+        width: 345rem/$x;height: 35rem/$x;margin:0 auto;border-radius: 100rem/$x;border: 1px solid #FDD545;
 
     }
-    .nav>span:nth-of-type(3){
-      position: absolute;
-      display: block;
-      height:35rem/$x;
-      width:auto;
-      right:15rem/$x;
-      top:0;
-      font-family: PingFangSC-Regular;
-      font-size: 13px;
-      color: #FDD545;
-      letter-spacing: 0.16px;
+    .nav>div:nth-of-type(1){
+        width: 120rem/$x;height: 18rem/$x;font-size: 13rem/$x;letter-spacing: 0.16rem/$x;
+        line-height: 18rem/$x;float: left;
+        margin: 8rem/$x 0 0 116rem/$x;
+    }
+    .nav>div:nth-of-type(1)>span:nth-of-type(1){
+        width: 90rem/$x;
+    }
+    .nav>div:nth-of-type(1)>span:nth-of-type(2){
+        width: 24rem/$x;
+    }
+    .nav>div:nth-of-type(2){
+         width: 53rem/$x;height: 18rem/$x;
+         font-size: 13rem/$x;
+         letter-spacing: 0.16rem/$x;
+         line-height: 18rem/$x;
+         float: right;
+         margin: 8rem/$x 10rem/$x 0 0;
+    }
+    .nav>div:nth-of-type(2)>span:nth-child(1)>a{
+        width: 53rem/$x;
+        height: 18rem/$x;
+        font-size: 13rem/$x;
+        line-height: 18rem/$x;
+        color: #FDD545;
+        text-decoration: none;
     }
     ul,li{
         list-style: none;-webkit-padding-start: 0;
@@ -304,14 +308,14 @@ export default {
     position: absolute;
     left: 0;top:-45rem/$x;}
     .end>p{width: 50rem/$x;
-        transform: rotate(-45deg);
+    transform: rotate(-45deg);
     font-family: STHeitiSC-Medium;
     font-size: 12rem/$x;
     color: #fff;
     letter-spacing: -0.29px;text-align: left;position: absolute;left: 0;top:-45rem/$x;}
 
     .btn_t1>p{font-size: 18rem/$x;color: #333333;height: 60rem/$x;width: 256rem/$x;margin: 0 auto;margin-top: 10rem/$x;
-   text-align: left;
+    text-align: left;
     }
 
     .btn_t1>ul{
