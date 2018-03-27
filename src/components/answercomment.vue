@@ -111,10 +111,8 @@
 <script>
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
-  // const $userid = localStorage.getItem("userid");//用户id
-  const $userid = '5ab648d863008a6deeac3f32';//用户id
-  const $url = 'http://192.168.1.116:1337/api/v1';
-  // const $userid = '5ab62034992ae628add1f2eb';//用户id
+  const $userid = localStorage.getItem("userid");//用户id
+  const $url = 'https://www.13cai.com.cn/api/v1';
   export default {
       name:"answercomment",
       data(){
