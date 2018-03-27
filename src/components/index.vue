@@ -94,6 +94,7 @@ export default {
             }
             this.$http.get($url+'/topic',{params:data}).then(res=>{
             this.msg = res.data;
+            console.log(this.msg.second)
           });
        },
        getIndexData:function(){
@@ -180,8 +181,6 @@ export default {
      localStorage.removeItem("answernum");
     }
   },
-  
-  
 }
 </script>
 <style lang="scss" scoped>
