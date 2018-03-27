@@ -6,7 +6,7 @@
           <!-- <div> -->
             <span class="counttest">下场开始时间</span>
             <span>
-                <countdown :time="60 * 60 * 60 * 1000" class="countdown" v-on:countdownend = "countdownend">
+                <countdown :time="countdown" class="countdown" v-on:countdownend = "countdownend">
                     <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
@@ -76,7 +76,8 @@ export default {
           msg:[],
           limit:'',
           page:1,
-          size:5
+          size:5,
+          countdown:0
       }
   },
   methods:{
@@ -102,8 +103,9 @@ export default {
             sort:JSON.stringify({ createdAt:0})
           }
           this.$axios.get('/topic',{params:data}).then(res=>{
-             this.msg = res.data;
-             console.log(this.msg)
+             console.log(res.list);
+             this.countdown =  res.list.countDown;
+             this.msg = res.list.data;
              const limit = this.page*this.size;
              if(this.msg.length <= limit){
                 this.noData='没有更多数据';
@@ -132,7 +134,8 @@ export default {
               sort:JSON.stringify({ createdAt:0})
             }
             this.$axios.get('/topic',{params:data}).then(res=>{
-               this.msg = res.data;
+               this.msg = res.list.data;
+               this.countdown =  res.list.countDown;
             });
             const limit = this.page*this.size;
             if(this.msg.length <= limit){
