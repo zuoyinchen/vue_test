@@ -233,6 +233,7 @@
           this.$axios.delete($url+'/answer/'+answerid).then((res)=>{
             console.log(res);
             this.answernum -=1;
+            localStorage.setItem("answernum",this.answernum);
             this.upDatedata();
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -320,7 +321,12 @@
         this.time = Number(queryobj.time);
         this.status = queryobj.status;
         this.readnum = Number(queryobj.readnum);
-        this.answernum =  Number(queryobj.answernum);
+        if(localStorage.getItem("answernum")){
+           this.answernum = localStorage.getItem("answernum");
+        }else{
+          localStorage.setItem("answernum",Number(queryobj.answernum));
+          this.answernum = localStorage.getItem("answernum");
+        }
         this.topicid = queryobj.topicid;
 
         const topicid = this.topicid;//问题id

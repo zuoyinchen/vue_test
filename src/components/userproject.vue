@@ -17,7 +17,7 @@
                   	<i class="iconfont icon-xianshimima"></i>
                   	<span>{{item.readNum?item.readNum:0}}</span>
                   </li>
-                  <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.time">
+                  <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.messageNum?item.messageNum :0" :data-status="item.status" :data-tid="item.id" :data-time="item.time">
                   	<i class="iconfont icon-pinglun"></i>
                   	<span>{{item.messageNum?item.messageNum :0}}</span>
                   </li>

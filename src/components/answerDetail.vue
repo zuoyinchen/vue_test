@@ -33,7 +33,7 @@
                   </router-link> -->
                   
               </div>
-              <div class="theme_b_r" v-if="status==2" v-show="true">
+              <div class="theme_b_r" v-if="status==2" v-show="false">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
                        <p>立即抢答</p>
                   </router-link> 
@@ -92,10 +92,8 @@
 <script>
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
+  const $url = 'http://192.168.1.116:1337/api/v1';
   const $userid = localStorage.getItem("userid");//用户id
-  // const $url = 'http://192.168.1.116:1337/api/v1';
-  const $url = 'https://www.13cai.com.cn/api/v1';
-  // const $userid = '5ab62034992ae628add1f2eb';//用户id
   export default {
       name:"answerDetail",
       data(){
@@ -253,6 +251,7 @@
           this.$axios.delete($url+'/answer/'+answerid).then((res)=>{
             console.log(res);
             this.answernum -=1;
+            localStorage.setItem("answernum",this.answernum);
             this.upDatedata();
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -321,8 +320,15 @@
         this.title = queryobj.title;
         this.time = Number(queryobj.time);
         this.status = queryobj.status;
-        this.readnum = Number(queryobj.readnum);
-        this.answernum =  Number(queryobj.answernum);
+        
+        if(localStorage.getItem("answernum")){
+           this.answernum = localStorage.getItem("answernum");
+        }else{
+          localStorage.setItem("answernum",Number(queryobj.answernum));
+          this.answernum = localStorage.getItem("answernum");
+        }
+       
+        this.readnum =  Number(queryobj.readnum);
         this.topicid = queryobj.topicid;
 
         
