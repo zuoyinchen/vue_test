@@ -69,8 +69,7 @@
   </div>
 </template>
 <script>
-const $url = 'http://192.168.1.116:1337/api/v1';
-// const $url = 'https://www.13cai.com.cn/api/v1';
+const $url = 'https://www.13cai.com.cn/api/v1';
 export default {
   name:"index",
   data(){
