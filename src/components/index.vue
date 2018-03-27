@@ -78,7 +78,7 @@ export default {
           limit:'',
           page:1,
           size:5,
-          countdown:0,
+          countdown:0
       }
   },
   methods:{
