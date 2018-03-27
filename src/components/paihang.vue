@@ -14,35 +14,38 @@
           </div>
 
       </div>
-      
-      <ul class="paihang_list">
-          <li class="ctn clearfix" v-for="(item,index) in pailist">
-              <div class="ctn_l clearfix">
-                  <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
-                  <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
-                  <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
-                  <span class="indexname" v-else>{{index+1}}</span>
-                  <img :src="item.avatarUrl" alt="" class="avtalimg">
-                  <span class="nickname">{{item.nickName}}</span>
-              </div>
-              <div class="ctn_r">
-                  <i class="iconfont icon-dianzan1"></i>
-                  <span>{{item.upVotes}}</span>
-              </div>
-          </li>
-          <div class="my_list clearfix">
-              <div class="my_list_l">
-                    <i>{{myGrade}}</i>
-                    <img :src="myavtalUrl" alt="">
-                    <span>我的排名</span>
-              </div>
-              <div class="my_list_r">
-                  <i class="iconfont icon-dianzan1"></i>
-                  <span>{{myStar}}</span>
-              </div>
-          </div>
-          <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
-      </ul>
+      <scroller class="list_wrap">
+        <ul class="paihang_list">
+            <li class="ctn clearfix" v-for="(item,index) in pailist">
+                    <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
+                    <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
+                    <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
+                    <span class="indexname" v-else>{{index+1}}</span>
+                    <img :src="item.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.avatarUrl)">
+                    <img :src="myavtalUrl" alt="" class="avtalimg" v-else>
+                    <span class="nickname">{{item.username}}</span>
+                    <p class="upVotes_box">
+                      <i class="iconfont icon-dianzan1"></i>
+                      <span>{{item.upVotes}}</span>
+                    </p>
+            </li>
+        </ul>
+        
+      </scroller>  
+            <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
+      <div class="my_listbox">
+        <div class="my_list clearfix">
+            <div class="my_list_l">
+                  <i>{{myGrade}}</i>
+                  <img :src="myavtalUrl" alt="">
+                  <span>我的排名</span>
+            </div>
+            <div class="my_list_r">
+                <i class="iconfont icon-dianzan1"></i>
+                <span>{{myStar}}</span>
+            </div>
+        </div>
+      </div>
       
       <tabnav></tabnav>
   </div>
@@ -79,7 +82,7 @@ export default {
               const myindex = idarr.indexOf($userid);
               this.myGrade = Number(idarr.indexOf($userid))+1;
               this.myStar = this.pailist[myindex].upVotes;
-              this.myavtalUrl = this.pailist[myindex].avatarUrl;
+              this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
             }else{
               this.myGrade ='-';
               this.myStar = 0;
@@ -106,7 +109,6 @@ export default {
             if(res.data.allFriendIds){
               const allFriendIds =JSON.stringify(res.data.allFriendIds);
               const answer ={allFriendIds:allFriendIds};
-              console.log(answer);
               this.$axios.get($url+'/answerRank',{params:answer}).then((data)=>{
                 this.pailist =data.data.createdBys;
                 const idarr = [];
@@ -117,7 +119,10 @@ export default {
                   const myindex = idarr.indexOf($userid);
                   this.myGrade = Number(idarr.indexOf($userid))+1;
                   this.myStar = this.pailist[myindex].upVotes;
-                  this.myavtalUrl = this.pailist[myindex].avatarUrl;
+                  if(this.pailist[myindex].avatarUrl){
+                    console.log('www');
+                  }
+                  this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
                 }else{
                   this.myGrade ='-';
                   this.myStar = 0;
@@ -142,6 +147,7 @@ export default {
     this.myavtalUrl = localStorage.getItem("headimg");
   },
   beforeCreate:function(){
+    console.log(1);
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
@@ -152,13 +158,11 @@ export default {
         for(let i=0;i<this.pailist.length;i++){
           idarr.push(this.pailist[i].id);
         }
-        console.log(idarr);
-        console.log($userid);
         if(idarr.indexOf($userid) != -1){
           const myindex = idarr.indexOf($userid);
           this.myGrade = Number(idarr.indexOf($userid))+1;
           this.myStar = this.pailist[myindex].upVotes;
-          this.myavtalUrl = this.pailist[myindex].avatarUrl;
+          this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl:localStorage.getItem("headimg");
         }else{
           this.myGrade ='-';
           this.myStar = 0;
@@ -178,8 +182,9 @@ export default {
       height: 0;
       clear: both;
     }
+    
     .showempty{
-      position: absolute;
+      position: fixed;
       width:100%;
       font-family: STHeitiSC-Medium;
       font-size: 17px;
@@ -195,6 +200,8 @@ export default {
       position: relative;
       box-sizing:border-box;
       padding:0 15rem/$x;
+      box-sizing:border-box;
+      padding-top:130rem/$x;
       display: flex;
     }
     .top{
@@ -239,26 +246,33 @@ export default {
       text-align: center;
       line-height: 20rem/$x;
     }
+    .list_wrap{
+      padding-top:130rem/$x;
+      box-sizing:border-box;
+    }
     .paihang_list{
       width:100%;
       flex:1;
-      box-sizing:border-box;
-      padding-top:130rem/$x;
       position: relative;
+      ._v-content{
+        height:100%;
+      }
     }
     .ctn{
-        width: 345rem/$x;margin: 0 auto;margin-top: 15rem/$x;
+        width: 100%;
+        padding:0 30rem/$x;
+        height:48rem/$x;
+        line-height: 48rem/$x;
+        margin: 10rem/$x auto;
+        box-sizing:border-box;
     }
-    .ctn_l{
-        width: 200rem/$x;float: left;
-    }
-    .ctn_l .paiimg{
+    .paiimg{
         width: 20rem/$x;
         height: 32rem/$x;
         float: left;
         padding: 8rem/$x 0;
     }
-    .ctn_l .avtalimg{
+    .avtalimg{
         width: 48rem/$x;
         height: 48rem/$x;
         float: left;
@@ -266,15 +280,14 @@ export default {
         border-radius: 50%;
         margin: 0 10rem/$x;
     }
-    .ctn_l .nickname{
+    .nickname{
         font-family: STHeitiSC-Medium;
         font-size: 14px;
         color: #333333;
         letter-spacing: 0.17px;
         float: left;
-        padding: 17rem/$x 0;
     }
-    .ctn_l .indexname{
+    .indexname{
       width: 20rem/$x;
       height: 32rem/$x;
       float: left;
@@ -285,22 +298,33 @@ export default {
       color: #333333;
       letter-spacing: 0.22px;
     }
-    .ctn_r{
-        float: right;width: 145rem/$x;padding: 15rem/$x 0;text-indent: 50rem/$x;
+    .upVotes_box{
+        float: right;
+        font-family: STHeitiSC-Medium;
+        font-size: 14px;
+        color: #333333;
+        letter-spacing: 0.17px;
     }
-    .ctn_r>i{color: #FDD545;}
+    .upVotes_box>i{color: #FDD545;}
     
+    .my_listbox{
+      width:100%;
+      padding:0 15rem/$x;
+      height:80rem/$x;
+      box-sizing:border-box;
+      margin-top: 15rem/$x;
+      position: absolute;
+      bottom:59rem/$x;
+      left:0;
+    }
     .my_list{
         width: 100%;
-        height: 80rem/$x;
+        height: 100%;
         background: #FDD545;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
         margin: 0 auto;
-        margin-top: 15rem/$x;
-        position: absolute;
-        bottom:59rem/$x;
-        left:0;
+        
     }
     .my_list_l{
         width: 200rem/$x;float: left;text-align: left;

@@ -1,16 +1,13 @@
 <template>
 	<div class="box">
-		<scroller :on-refresh="refresh"
-  :on-infinite="infinite" ref="myscroller" class="box-list" v-if="prolist.length>0">
+		<ul class="box-list" v-if="prolist.length>0">
 			<li v-for="(item,index) in prolist" to="" :key="index">
 				<span class="status-bac status-bac-yellow" v-if="item.status == 1"></span>
 				<span class="status-bac" v-else-if="item.status==2"></span>
 				<span class="status"v-if="item.status == 1">进行中</span>
 				<span class="status"v-else-if="item.status == 2">已结束</span>
 				<span class="status"v-else></span>
-                <p class="title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>>
-                	{{item.title}}
-                </p>
+                <p class="title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.time">{{item.title}}</p>
 				<ul class="clearfix">
 				  <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
                         <i class="iconfont icon-paihangbang"></i>
@@ -18,24 +15,24 @@
                   </li>
                   <li>
                   	<i class="iconfont icon-xianshimima"></i>
-                  	<span>{{item.readNum}}</span>
+                  	<span>{{item.readNum?item.readNum:0}}</span>
                   </li>
-                  <li>
+                  <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.messageNum?item.messageNum :0" :data-status="item.status" :data-tid="item.id" :data-time="item.time">
                   	<i class="iconfont icon-pinglun"></i>
-                  	<span>{{item.messageNum}}</span>
+                  	<span>{{item.messageNum?item.messageNum :0}}</span>
                   </li>
                   <li class="time" v-show="item.status==1">
                   	<i></i>
                   	<span>倒计时</span>
                   	<span>
-                  		<countdown :time="item.second" class="countdown">
+                  		<countdown :time="item.time" class="countdown">
                             <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
                         </countdown>
                   	</span>
                   </li>
               </ul>
 			</li>
-		</scroller>
+		</ul>
 		<div v-else class="no_data">
             <img src="../assets/images/canyuchang.png">
             <p>您还没有参与的场次</p>
@@ -50,7 +47,15 @@
 		name: 'userproject',
 		data(){
 			return {
-				prolist:[],
+				prolist:[
+					{
+						status:1,
+						title:'你还好吗？',
+						messageNum:122,
+						readNum:12,
+						time:1580000
+					}
+				],
 				page:1,
 				size:5
 			}
@@ -66,7 +71,7 @@
 	            this.$axios.get($url+'/answers',{params:data}).then((res)=>{
 		            this.prolist = res.data;
 		        }).catch((error)=>{
-                	console.log('error');
+                	console.log(error);
                 });
 			},
 			refresh:function(done) {
@@ -150,6 +155,7 @@
 			margin:0 auto;
 			list-style: none;
 			padding-top:15rem/$unit;
+			overflow: hidden;
 
 		}
 		.box-list>li{
@@ -157,10 +163,11 @@
 		    height:105rem/$unit;
 		    background: #FFFFFF;
 			box-shadow: 0 2px 6px 0 #DDDDDD;
-			border-radius: 10px;
+			border-radius: 10rem/$unit;
 			float: left;
 			position:relative;
 			margin-bottom:15rem/$unit;
+			overflow: hidden;
 			.status-bac{
 				display:inline-block;
 				width:0;
@@ -195,14 +202,20 @@
 			}
 			.title{
 				width:256rem/$unit;
-				height:44rem/$unit;
+				height:auto;
 				font-family: STHeitiSC-Medium;
 				line-height: 19rem/$unit;
 				font-size: 18px;
 				color: #333333;
 				letter-spacing: 0.22px;
-				margin:15rem/$unit auto 10rem/$unit;
+				margin:15rem/$unit auto 20rem/$unit;
+				border-radius: 10rem/$unit;
 				text-align:left;
+				overflow:hidden;
+                text-overflow:ellipsis;
+                display:-webkit-box;
+                -webkit-line-clamp:2;
+                -webkit-box-orient:vertical;
 			}
 			.title-infor{
 				width:100%;
@@ -235,6 +248,9 @@
         height: 35rem/$unit;
         padding: 0;
         border-radius: 10rem/$unit;
+        position: absolute;
+        left:0;
+        bottom:0;
     }
     .box-list ul>li{
     	width: 115rem/$unit;

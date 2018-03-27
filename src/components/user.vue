@@ -17,8 +17,8 @@
 				<span>联系我们</span>
 				<i class="iconlist-right iconfont icon-youjiantou"></i>
 			</router-link>
-
 		</ul>
+			
 		<tabnav></tabnav> 
 	</div>
 </template>
@@ -40,7 +40,7 @@
 	.userbody{
 		width:100%;
 		height:100%;
-		overflow: hidden;
+		overflow-y:scroll; 
 	}
 	.userpic{
 		width:100%;
@@ -48,6 +48,7 @@
 		background:url(../assets/img/userpic.png) no-repeat;
 		background-size:cover;
 		margin:0 auto;
+
 	}
 	.user-visit{
 		width:100%;
