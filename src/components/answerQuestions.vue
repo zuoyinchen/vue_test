@@ -24,71 +24,73 @@
 </template>
 
 <script>
-    export default {
-        name: 'answerQuestions',
-        data() {
-            return {
-                status: '',
-                topicid: '',
-                time: 0,
-                title: '',
-                readnum: '',
-                answernum: '',
-                message: ''
+export default {
+    name:'answerQuestions',
+    data(){
+        return {
+            status:'',
+            topicid:'',
+            time:0,
+            title:'',
+            readnum:'',
+            answernum:'',
+            message:''
+        }
+    },
+    methods:{
+        submit:function(event){
+            console.log(event.currentTarget.dataset);
+            const message = event.currentTarget.dataset.message;
+            const userQuestion = localStorage.getItem("userQuestion");//参数集合
+            const userQuestionobj = JSON.parse(userQuestion);
+            const topicid= userQuestionobj.topicid;
+            const createdBy = localStorage.getItem('userid');
+            const newMsg = {
+                body:message,
+                topic:topicid,
+                createdBy:localStorage.getItem('userid')
             }
-        },
-        methods: {
-            submit: function(event) {
-                console.log(event.currentTarget.dataset);
-                const message = event.currentTarget.dataset.message;
-                const userQuestion = localStorage.getItem("userQuestion"); //参数集合
-                const userQuestionobj = JSON.parse(userQuestion);
-                const topicid = userQuestionobj.topicid;
-                const createdBy = localStorage.getItem('userid');
-                const newMsg = {
-                    body: message,
-                    topic: topicid,
-                    createdBy: localStorage.getItem('userid')
+            console.log(newMsg)
+
+            this.$axios.post('/answer',newMsg).then(res=>{
+                console.log(res);
+               if (res.status === 200 || res.status === 201) {
+                    
+                    localStorage.setItem("answernum",this.answernum+1);
+                    this.$router.replace('/answerDetail');
                 }
                 console.log(newMsg)
     
-                this.$axios.post('/answer', newMsg).then(res => {
-                    console.log(res);
-                    if (res.status === 200 || res.status === 201) {
+                
     
-                        localStorage.setItem("answernum", this.answernum + 1);
-                        this.$router.replace('/answerDetail');
-                    }
-    
-    
-                });
-            },
-            mounted() {
-                const userQuestion = localStorage.getItem("userQuestion"); //参数集合
-                const userQuestionobj = JSON.parse(userQuestion);
-                this.title = userQuestionobj.title;
-                this.time = Number(userQuestionobj.time);
-                this.status = userQuestionobj.status;
-                this.readnum = Number(userQuestionobj.readnum);
-                this.answernum = Number(userQuestionobj.answernum);
-                this.topicid = userQuestionobj.topicid;
-                console.log(this.title);
-                // const $url = 'http://192.168.1.116:1337';
-                // const topicid = this.topicid;//问题id
-    
-                // const data ={
-                //     search:JSON.stringify({topic: topicid}),
-                //     userid:$userid
-                // };
-                // this.$http.get('/answer', {params:data}).then(res=>{
-                //     this.msg = res.data;
-                // }).catch((error)=>{
-                //     console.log(error);
-                // });
-    
-            }
+            });
         }
+    },
+    mounted() {
+        const userQuestion = localStorage.getItem("userQuestion"); //参数集合
+        const userQuestionobj = JSON.parse(userQuestion);
+        this.title = userQuestionobj.title;
+        this.time = Number(userQuestionobj.time);
+        this.status = userQuestionobj.status;
+        this.readnum = Number(userQuestionobj.readnum);
+        this.answernum = Number(userQuestionobj.answernum);
+        this.topicid = userQuestionobj.topicid;
+        console.log(this.title);
+        // const $url = 'http://192.168.1.116:1337';
+        // const topicid = this.topicid;//问题id
+
+        // const data ={
+        //     search:JSON.stringify({topic: topicid}),
+        //     userid:$userid
+        // };
+        // this.$http.get('/answer', {params:data}).then(res=>{
+        //     this.msg = res.data;
+        // }).catch((error)=>{
+        //     console.log(error);
+        // });
+
     }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -197,11 +199,11 @@
         line-height: 60rem/$x;
         ;
     }
-    
-    .int_sub {
+    .int_sub{
         width: 345rem/$x;
         height: 42rem/$x;
         margin-top: 20rem/$x;
+        border:none;
         background: #FDD545;
         border-radius: 4px;
         font-family: STHeitiSC-Medium;
@@ -209,23 +211,11 @@
         color: #333333;
         line-height: 42rem/$x;
     }
-    
+    input,
+    select,
     textarea {
         -webkit-appearance: none;
         appearance: none;
-    }
-    
-    .int_sub {
-        width: 345rem/$x;
-        height: 42rem/$x;
-        margin-top: 20rem/$x;
-        border: none;
-        background: #FDD545;
-        border-radius: 4px;
-        font-family: STHeitiSC-Medium;
-        font-size: 17rem/$x;
-        color: #333333;
-        line-height: 42rem/$x;
     }
 </style>
 
