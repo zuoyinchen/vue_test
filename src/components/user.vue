@@ -1,47 +1,44 @@
 <template>
 	<div class="userbody">
-		<div class="userpic clearfix"></div>
+		<div class="userpic clearfix">
+			<img :src="avtalUrl" class="avtalimg" v-if="avtalUrl">
+			<img src="../assets/images/logo.png" class="avtalimg" v-else>
+			<p class="nickname">{{nickname}}</p>
+		</div>
 		<ul class="user-visit">
 			<router-link tag="li" to="/userproject">
 				<i class="iconlist-left iconfont icon-cnlonghubang"></i>
 				<span>我参与的场</span>
 				<i class="iconlist-right iconfont icon-youjiantou"></i>
 			</router-link>
-			<router-link tag="li" to="/usercollect">
+			<router-link tag="li" to="/usercollect/answer">
 				<i class="iconlist-left iconstar iconfont icon-shoucang"></i>
 				<span>我的收藏</span>
 				<i class="iconlist-right iconfont icon-youjiantou"></i>
 			</router-link>
-			<router-link tag="li" to="">
+			<router-link tag="li" to="/contactUs">
 				<i class="iconlist-left iconcall iconfont icon-kefu-xuanzhong"></i>
 				<span>联系我们</span>
 				<i class="iconlist-right iconfont icon-youjiantou"></i>
 			</router-link>
-
 		</ul>
-
-
+			
 		<tabnav></tabnav> 
 	</div>
 </template>
 <script type="text/javascript">
-const openid= 'o6_bmjrPTlm6_2sgVt7hMZOPfL2M';
-const nickname= 'tomcat';
-const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0';
+	
 	export default{
 		name:'user',
+		data:function(){
+			return {
+				avtalUrl:'',
+				nickname:''
+			}
+		},
 		mounted:function(){
-			const user_data = {
-				"openid":openid,
-				"nickName":nickname,
-				"avtarUrl":headimgurl
-			};
-			this.$axios.post('http://192.168.1.148:1337/wxuserinfo',user_data).then(function(res){
-				console.log(res);
-
-			}).catch(function(error){
-				console.log(error);
-			})
+			this.avtalUrl = localStorage.getItem("headimg");
+			this.nickname = localStorage.getItem("nickname")? localStorage.getItem("nickname") : '11';
 		}
 	}
 </script>
@@ -54,21 +51,35 @@ const headimgurl= 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56
 		height:100%;
 	}
 	$unit:37.5;
+	.avtalimg{
+        width: 76rem/$unit;
+        height: 76rem/$unit;
+        background: #FDD545;
+        border-radius: 50%;
+        margin:46rem/$unit auto 0;
+    }
+    .nickname{
+    	width:100%;
+    	text-align: center;
+    	margin-top:20rem/$unit;
+    	font-size:18px;
+		color:#333333;
+    }
 	.userbody{
 		width:100%;
 		height:100%;
-		overflow: hidden;
-		padding-bottom:49rem/$unit;
+		overflow-y:scroll; 
 	}
 	.userpic{
-		width:375rem/$unit;
+		width:100%;
 		height:190rem/$unit;
-		background:url(../assets/img/userpic.png) no-repeat;
+		background:url(../assets/images/userbac.png) no-repeat;
 		background-size:cover;
 		margin:0 auto;
+
 	}
 	.user-visit{
-		width:375rem/$unit;
+		width:100%;
 		height:auto;
 		list-style: none;
 		margin:0 auto;
