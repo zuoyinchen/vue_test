@@ -527,7 +527,7 @@
         width: 345rem/$x;margin: 0 auto;
         padding-top:10rem/$x;
         box-sizing:border-box;
-        padding-bottom: 49rem/$x;
+        padding-bottom: 65rem/$x;
     }
     .countdown{
         width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
@@ -706,6 +706,9 @@
         background: #f4f4f4;
         width: 46rem/$x;
         height: 35rem/$x;
+    }
+    .block{
+        width: 375rem/$x;height: 50rem/$x;
     }
 </style>
 

@@ -20,7 +20,6 @@ import answerComment from '@/components/answercomment'
 
 
 
-
 Vue.use(Router)
 
 export default new Router({

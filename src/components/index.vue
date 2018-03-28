@@ -43,7 +43,7 @@
                           <span class="counttest">倒计时</span>
                           <span>
                               <countdown :time="item.second" class="countdown">
-                                  <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                                  <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }} </template>
                               </countdown>
                           </span>
                       </li>
@@ -86,6 +86,7 @@ export default {
                 title,
                 status
             }
+            console.log("显示页面是否刷新请求数据了")
             this.$axios.get('/topic',{params:data}).then(res=>{
             this.msg = res.data.list;
           });
@@ -97,9 +98,8 @@ export default {
             sort:JSON.stringify({ time:0})
           }
           this.$axios.get('/topic',{params:data}).then(res=>{
-             console.log(res.data.list);
-             console.log(res.data.countDown);
              this.countdown =  Math.abs(res.data.countDown);
+             console.log(this.countdown)
              this.msg = res.data.list;
              const limit = this.page*this.size;
              if(this.msg.length <= limit){
@@ -155,7 +155,6 @@ export default {
             time : time,
             title : title
           }
-
           localStorage.setItem("query",JSON.stringify(query));
           this.$router.push('/answerDetail');
        },
@@ -180,19 +179,27 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+    $x:37.5;
+    .box{
+        overflow: hidden;
+    }
+    .nav{
+        margin-top: 15rem/$x;
+    }
     .countdown{
       font-family: STHeitiSC-Medium;
-      font-size: 14px;
+      font-size: 13px;
       color: #333333;
       letter-spacing: -0.39px;
+      padding-right: 5rem/$x;
     }
     .counttest{
       font-family: STHeitiSC-Medium;
-      font-size: 14px;
+      font-size: 13px;
       color: #333333;
       letter-spacing: -0.39px;
+      text-align: left;
     }
-    $x:37.5;
     .my_message{
       position: fixed;
       width:40rem/$x;
