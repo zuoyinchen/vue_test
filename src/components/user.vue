@@ -63,6 +63,7 @@
     	text-align: center;
     	margin-top:20rem/$unit;
     	font-size:18px;
+		color:#333333;
     }
 	.userbody{
 		width:100%;

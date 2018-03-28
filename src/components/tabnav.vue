@@ -2,7 +2,7 @@
 	<div class="nav-wrap" v-if="barshow">
 		<ul class="tabnav">
 			<router-link tag="li" to="/">
-				<i class="iconfont icon-pan_icon"></i>
+				<i class="iconfont icon-pan_icon defaultColor"></i>
 				<span>首页</span>
 			</router-link>
 			<router-link tag="li" to="/paihang">
@@ -57,6 +57,7 @@
 				font-size: 10px;
 				color: #333333;
 				letter-spacing: 0.12px;
+				padding-top: 3px;
 			}
 			i{
 				width:100%;
@@ -70,6 +71,8 @@
 		li.router-link-exact-active i{
 			color:#FFB74D;
 		}
-
+	}
+	.defaultColor{
+		color: #FFB74D;
 	}
 </style>
