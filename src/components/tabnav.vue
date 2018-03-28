@@ -57,6 +57,7 @@
 				font-size: 10px;
 				color: #333333;
 				letter-spacing: 0.12px;
+				padding-top: 3px;
 			}
 			i{
 				width:100%;

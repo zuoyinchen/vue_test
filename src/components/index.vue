@@ -4,10 +4,11 @@
             <div class="nav clearfix">
                 <span class="counttest">下场开始时间</span>
                 <span>
-                    <countdown :time="countdown" class="countdown" v-on:countdownend = "countdownend">
-                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}</template>
-                    </countdown>
-                </span>
+                    <countdown :key="countdown" :time="countdown" class="countdown" v-on:countdownend = "countdownend">
+                        <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+</template>
+                </countdown>
+            </span>
             <span>游戏规则</span>
       </div>
       <ul class="btn">
@@ -39,7 +40,6 @@
                           <i class="iconfont icon-pinglun"></i>
                           <span>{{item.toAnswer.length}}</span>
                           <i class="s"></i>
-
                       </li>   
                       <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
                           <i></i>   

@@ -1,5 +1,6 @@
 <template>
   <div class="box">
+    <scroller>
       <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
@@ -100,12 +101,14 @@
           </li>
       </ul>
       <p v-else class="error_tip">网络错误，请刷新</p>
+      <div class="block"></div>
+    </scroller>
       <div class="comment_box">
       	<div class="comment_wrap">
       		<img src="" alt="" class="comment_img">
       		<span>|</span>
       		<input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message">
-      		<span class="send_com" @click="gotoComment($event)" :data-message="message">发送</span>
+      		<span class="send_com" @click="gotoComment($event)" :data-message="message" >发送</span>
       	</div>
       </div>
   </div>
@@ -143,7 +146,7 @@
           for(let i=0;i<stars.length;i++){
             starsid.push(stars[i].id);
           }
-          if(this.msg[$index].isStar){
+          if(this.list[$index].isStar){
             starsid.splice(starsid.indexOf($userid),1)
             var resultarr = starsid;
             console.log(resultarr);
@@ -163,6 +166,7 @@
               }else{
                 this.list[$index].isStar = true;
               }
+              this.upDatedata();
             }
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -202,6 +206,7 @@
               }else{
                 this.list[$index].upVote = true;
               }
+              this.upDatedata();
             }
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -294,10 +299,11 @@
 	            for(var i=0;i<this.list.length;i++){
 	                this.list[i].isMe = false;
 	                userarr.push(this.list[i].createdBy.id);
-	                
+                 this.answerid = this.list[i].id;
+                 this.body = this.list[i].body;
 	            }
 	            console.log(this.list);
-              console.log(userarr);
+              console.log(this.answerid);
 	             //判断答题者的id中是否有自己
               if(userarr.indexOf($userid) !== -1){
                 this.list[userarr.indexOf($userid)].isMe = true;
@@ -387,6 +393,7 @@
                  this.body = this.list[i].body;
                 
             }
+            console.log(this.answerid);
             //判断答题者的id中是否有自己
             if(userarr.indexOf($userid) !== -1){
               this.list[userarr.indexOf($userid)].isMe = true;
@@ -502,10 +509,13 @@
     	}
     }
 
-    .countdown{font-family: STHeitiSC-Medium;
+    .countdown{
+      font-family: STHeitiSC-Medium;
     font-size: 14px;
     color: #333333;
-    letter-spacing: -0.39px;}
+    letter-spacing: -0.39px;
+    margin:10rem/$x 0 10rem/$x 15rem/$x;
+  }
     .counttest{
       font-family: STHeitiSC-Medium;
       font-size: 14px;
@@ -540,8 +550,13 @@
         font-size: 14rem/$x;letter-spacing: -0.39rem/$x;
     }
     .theme{
-        width: 345rem/$x;height: 100%;background: #FFFFFF;box-shadow: 0 2px 6px 0 #DDDDDD;border-radius: 10px;
+        width: 345rem/$x;
+        height: 100%;
+        background: #FFFFFF;
+        box-shadow: 0 2px 6px 0 #DDDDDD;
+        border-radius: 10px;
         overflow: hidden;margin-top: 15rem/$x;
+        margin: 0 auto;
     }
     .theme_t{
        font-family: STHeitiSC-Medium;font-size: 18rem/$x;letter-spacing: 0.22rem/$x;color-interpolation-filters: #333;
@@ -587,7 +602,9 @@
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
+        margin:0 auto;
         margin-top: 15rem/$x;
+        margin-bottom: 55rem/$x;
         
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}

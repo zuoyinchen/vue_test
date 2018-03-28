@@ -1,10 +1,12 @@
 <template>
   <div class="box">
+    <scroller>
       <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
                 <countdown :time="time" class="countdown">
-                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                    </template>
                 </countdown>
             </span>
       </div>
@@ -28,10 +30,6 @@
               </div>
               <div class="theme_b_r" v-if="status==1">
                   <p @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
-                  <!-- <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
-                       <p>立即抢答</p>
-                  </router-link> -->
-                  
               </div>
               <div class="theme_b_r" v-if="status==2" v-show="false">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
@@ -40,52 +38,64 @@
               </div>
           </div>
       </div>
-      <ul class="ctn">
-          <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id">
-              <div class="ctn_l">
-                  <i>{{index+1}}</i>
-                  <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
-                  <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
-                  <img v-else :src="item.createdBy.avatarUrl" alt="2">
-              </div>
-              <div class="ctn_r">
-                  <div>
-                      <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
-                      <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
-                      <span v-else class="answer">{{item.createdBy.username}}</span>
-                      <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i>
-                      <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                  </div>
-                  <p>
-                      {{item.body}}
-                  </p>
-                  <div class="clearfix">
-                      <div>
-                          <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
-                          <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
-                      </div>
-                      <div class="clearfix">
-                          <div>
-                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <span class="upVote_num">{{item.upVotes.length}}</span>
-                          </div>
-                          <div @click="slideDown($event)" :data-index="index" :data-id="item.id">
-                              <i class="iconfont icon-pinglun"></i>
-                              <span class="comment_num">{{item.comments.length}}</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </li>
-      </ul>
-      <div class="">
-
+      
+        <ul class="ctn">
+            <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id"  @click="slideDown($event)" :data-index="index" :data-id="item.id">
+                <div class="ctn_l">
+                    <i>{{index+1}}</i>
+                    <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
+                    <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
+                    <img v-else :src="item.createdBy.avatarUrl" alt="2">
+                </div>
+                <div class="ctn_r">
+                    <div>
+                        <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
+                        <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
+                        <span v-else class="answer">{{item.createdBy.username}}</span>
+                        <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i>
+                        <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                        <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                    </div>
+                    <p>
+                        {{item.body}}
+                    </p>
+                    <div class="clearfix">
+                        <div>
+                            <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
+                            <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
+                        </div>
+                        <div class="clearfix">
+                            <div>
+                                <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                                <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                                <span class="upVote_num">{{item.upVotes.length}}</span>
+                            </div>
+                            <div>
+                                <i class="iconfont icon-pinglun"></i>
+                                <span class="comment_num">{{item.comments.length}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="block"></div>
+      </scroller>
+      
+      <div class="mylist">
+          <i class="iconfont icon-suoding"></i>
+          <span>123</span>
+          <span>我的排名</span>
+          <i class="iconfont icon-dianzan"></i>
+          <span>131</span>
+          <i class="iconfont icon-pinglun"></i>
+          <span>133</span>
       </div>
   </div>
 </template>
+
 <script>
+
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
   const $userid = localStorage.getItem("userid");//用户id
@@ -107,9 +117,8 @@
       },
       methods:{
         giveStar:function(event){
-          console.log(event.currentTarget.dataset);
+          event.stopPropagation();
           const answerid = event.currentTarget.dataset.id;
-          console.log('问题id |'+answerid);
           const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
           const $userid = localStorage.getItem("userid");
           console.log(this.msg[$index].stars);
@@ -120,9 +129,6 @@
             starsid.push(stars[i].id);
           }
           console.log(this.msg[$index].isStar);
-          console.log('总');
-          console.log(starsid);
-          console.log('位置'+starsid.indexOf($userid));
           if(this.msg[$index].isStar){
             console.log("取消收藏");
             starsid.splice(starsid.indexOf($userid),1)
@@ -145,12 +151,14 @@
               }else{
                 this.msg[$index].isStar = true;
               }
+              this.upDatedata();
             }
-          }).catch((error,errorcode)=>{
+          }).catch((error)=>{
             console.log(error);
-          });
+          })
         },
         giveLike:function(event){
+          event.stopPropagation();
           console.log(event.currentTarget.dataset);
           const answerid = event.currentTarget.dataset.id;
           console.log('点赞id |'+answerid);
@@ -187,16 +195,17 @@
               }else{
                 this.msg[$index].upVote = true;
               }
+              this.upDatedata();
             }
-          }).catch((error,errorcode)=>{
-            console.log(error);
-          })
+          }).catch((error, errorcode) => {
+              console.log(error);
+          });
         },
-        slideDown:function(event){
-          const index = event.currentTarget.dataset.index;
-          localStorage.setItem("comment_index",index);
-          const answerid = event.currentTarget.dataset.id;
-          this.$router.push('/answercomment');
+        slideDown: function(event) {
+            const index = event.currentTarget.dataset.index;
+            localStorage.setItem("comment_index", index);
+            const answerid = event.currentTarget.dataset.id;
+            this.$router.push('/answercomment');
         },
         timeReplace:function(str) {
         return str.replace('T', ' ').slice(0, str.indexOf('.'));
@@ -281,7 +290,7 @@
               const userarr = [];//答题者id集合
               for(var i=0;i<this.msg.length;i++){
                   this.msg[i].isMe = false;
-                  userarr.push(this.msg[i].id);
+                  userarr.push(this.msg[i].createdBy.id);
                   
               }
               this.users = this.msg;
@@ -336,51 +345,91 @@
               console.log(this.users);
               this.users[userarr.indexOf($userid)].isMe = true;
             }
-        }).catch((error)=>{
-          console.log(error);
-        });
-
-        //微信js-sdk
-        this.$axios.get('/wechat_share',{params:{url:window.location.href}}).then(res=>{
-            console.log(res);
-            const appid = res.data.appId;
-            const nonceStr = res.data.nonceStr;
-            const signature = res.data.signature;
-            const timestamp = res.data.timestamp;
-
-            //配置微信js-sdk
-            wx.config({
-                debug: false, // 
-                appId: appid, // 必填，公众号的唯一标识
-                timestamp: timestamp, // 必填，生成签名的时间戳
-                nonceStr: nonceStr, // 必填，生成签名的随机串
-                signature: signature,// 必填，签名
-                jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+    
+            this.readnum = Number(queryobj.readnum);
+            this.topicid = queryobj.topicid;
+    
+    
+            const topicid = this.topicid; //问题id
+    
+            const data = {
+                search: JSON.stringify({
+                    topic: topicid
+                }),
+                userid: $userid
+            };
+            console.log(data);
+    
+            this.$axios.get('/answer', {
+                params: data
+            }).then(res => {
+                this.msg = res.data;
+                //拿到所有答题者的id
+                const userarr = []; //答题者id集合
+                for (var i = 0; i < this.msg.length; i++) {
+                    this.msg[i].isMe = false;
+                    userarr.push(this.msg[i].id);
+                }
+                this.users = this.msg;
+                // console.log(this.users)
+                //判断答题者的id中是否有自己
+                if (userarr.indexOf($userid) !== -1) {
+                    console.log(this.users);
+                    this.users[userarr.indexOf($userid)].isMe = true;
+                }
+            }).catch((error) => {
+                console.log(error);
             });
-
-            wx.ready(function(){
-                console.log("成功");
-            });
-            wx.error(function(res){
-                console.log("失败");
-            });
-
-        }).catch((error)=>{
+    
+            //微信js-sdk
+            this.$axios.get('/wechat_share', {
+                params: {
+                    url: window.location.href
+                }
+            }).then(res => {
+                console.log(res);
+                const appid = res.data.appId;
+                const nonceStr = res.data.nonceStr;
+                const signature = res.data.signature;
+                const timestamp = res.data.timestamp;
+    
+                //配置微信js-sdk
+                wx.config({
+                    debug: false, // 
+                    appId: appid, // 必填，公众号的唯一标识
+                    timestamp: timestamp, // 必填，生成签名的时间戳
+                    nonceStr: nonceStr, // 必填，生成签名的随机串
+                    signature: signature, // 必填，签名
+                    jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+                });
+    
+                wx.ready(function() {
+                    console.log("成功");
+                });
+                wx.error(function(res) {
+                    console.log("失败");
+                });
+    
+            }).catch((error) => {
+                console.log(error);
+            })
+        }).catch(error=>{
           console.log(error);
         })
-      },
-      beforeCreate:function(){
-       
-        
-      }
+    }
   }
 </script>
 <style lang="scss" scoped>
     $x:37.5;
-    .countdown{font-family: STHeitiSC-Medium;
-    font-size: 14px;
-    color: #333333;
-    letter-spacing: -0.39px;}
+    .block{
+        width: 375rem/$x;height: 50rem/$x;
+    }
+    .countdown{
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
+    }
     .counttest{
       font-family: STHeitiSC-Medium;
       font-size: 14px;
@@ -397,89 +446,215 @@
         margin: 0;padding: 0;
     }
     .box{
-        width: 345rem/$x;margin: 0 auto;
+        width: 345rem/$x;
+        height:100%;
+        margin: 0 auto;
         padding-top:10rem/$x;
         box-sizing:border-box;
     }
-    .countdown{
-        width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
+    
+    .counttest {
+        font-family: STHeitiSC-Medium;
+        font-size: 14px;
+        color: #333333;
+        letter-spacing: -0.39px;
+    }
+    
+    .clearfix:after {
+        content: "";
+        display: block;
+        height: 0;
+        clear: both;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .box {
+        width: 345rem/$x;
+        margin: 0 auto;
+        padding-top: 10rem/$x;
+        box-sizing: border-box;
+    }
+    
+    .countdown {
+        width: 106rem/$x;
+        height: 30rem/$x;
+        border-radius: 100rem/$x;
+        background: #fdd545;
         line-height: 30rem/$x;
+        margin-left: 15rem/$x;
+        margin-top: 10rem/$x;
     }
-    .countdown>span:nth-of-type(1){
-        font-size: 14rem/$x;letter-spacing: -0.39rem/$x;
+    
+    .countdown>span:nth-of-type(1) {
+        font-size: 14rem/$x;
+        letter-spacing: -0.39rem/$x;
     }
-    .countdown>span:nth-of-type(2){
-        font-size: 14rem/$x;letter-spacing: -0.39rem/$x;
+    
+    .countdown>span:nth-of-type(2) {
+        font-size: 14rem/$x;
+        letter-spacing: -0.39rem/$x;
     }
-    .theme{
-        width: 345rem/$x;height: 100%;background: #FFFFFF;box-shadow: 0 2px 6px 0 #DDDDDD;border-radius: 10px;
-        overflow: hidden;margin-top: 15rem/$x;
-    }
-    .theme_t{
-       font-family: STHeitiSC-Medium;font-size: 18rem/$x;letter-spacing: 0.22rem/$x;color-interpolation-filters: #333;
-       text-align: left;margin-left: 15rem/$x;margin-top: 15rem/$x;font-weight: 500;
-    }
-    .theme_b{
-        width: 345rem/$x;margin-left: 15rem/$x;margin-bottom: 15rem/$x;margin-top: 15rem/$x;
-    }
-    .theme_b_l{
-        width: 100rem/$x;float: left;height: 24rem/$x;color: #BDBDBD; 
-    }
-    .theme_b_l>div:nth-of-type(1){
-        width: 45rem/$x;float: left;line-height: 24rem/$x;
-    }
-    .theme_b_l>div:nth-of-type(2){
-        width: 45rem/$x;float: left;line-height: 24rem/$x;
-    }
-    .theme_b_r{
-        width: 76rem/$x;float: right;height: 24rem/$x;margin-right: 30rem/$x;
-        background: #FDD545;
-        border-radius: 4px;
-    }
-    .theme_b_r > p{
-        font-family: STHeitiSC-Medium;font-size: 14px;color: #333333;letter-spacing: 0.17px;padding: 4rem/$x 9rem/$x 6 rem/$x 10rem/$x;
-        line-height: 24rem/$x;
-    }
-    .theme_b_l>div:nth-of-type(2){
-        margin-left: 10rem/$x;
-    }
-    .icon-wode{
-        font-size: 12px;color: #BDBDBD;
-    }
-    .icon-pinglun{
-        font-size: 12px;color: #BDBDBD; 
-    }
-    .icon-dianzan,.icon-dianzan1{
-        font-size: 12px;color: #BDBDBD;
-    }
-    ul,li{list-style: none;}
-    .ctn>li{
-        width: 345rem/$x;height:100%;
+    .theme {
+        width: 345rem/$x;
+        height: 100%;
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
+        overflow: hidden;
         margin-top: 15rem/$x;
     }
-    .ctn_l{position: relative;width: 62rem/$x;float: left;}
-    .ctn_l>i{width: 17rem/$x;height: 17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;
-    top:10rem/$x;left: 12rem/$x;line-height: 18rem/$x;}
-    .ctn_l>img{width: 32rem/$x;height: 32rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;margin-left: 15rem/$x;margin-top: 15rem/$x;}
-    .ctn_r{
-        width: 283rem/$x;float: left;text-align: left;overflow: hidden;margin-top: 15rem/$x;
+    
+    .theme_t {
+        font-family: STHeitiSC-Medium;
+        font-size: 18rem/$x;
+        letter-spacing: 0.22rem/$x;
+        color-interpolation-filters: #333;
+        text-align: left;
+        margin-left: 15rem/$x;
+        margin-top: 15rem/$x;
+        font-weight: 500;
     }
-    .ctn_r>div:nth-of-type(1)>span{
+    
+    .theme_b {
+        width: 345rem/$x;
+        margin-left: 15rem/$x;
+        margin-bottom: 15rem/$x;
+        margin-top: 15rem/$x;
+    }
+    
+    .theme_b_l {
+        width: 100rem/$x;
+        float: left;
+        height: 24rem/$x;
+        color: #BDBDBD;
+    }
+    
+    .theme_b_l>div:nth-of-type(1) {
+        width: 45rem/$x;
+        float: left;
+        line-height: 24rem/$x;
+    }
+    
+    .theme_b_l>div:nth-of-type(2) {
+        width: 45rem/$x;
+        float: left;
+        line-height: 24rem/$x;
+    }
+    
+    .theme_b_r {
+        width: 76rem/$x;
+        float: right;
+        height: 24rem/$x;
+        margin-right: 30rem/$x;
+        background: #FDD545;
+        border-radius: 4px;
+    }
+    
+    .theme_b_r>p {
+        font-family: STHeitiSC-Medium;
+        font-size: 14px;
+        color: #333333;
+        letter-spacing: 0.17px;
+        padding: 4rem/$x 9rem/$x 6 rem/$x 10rem/$x;
+        line-height: 24rem/$x;
+    }
+    
+    .theme_b_l>div:nth-of-type(2) {
+        margin-left: 10rem/$x;
+    }
+    
+    .icon-wode {
+        font-size: 12px;
+        color: #BDBDBD;
+    }
+    
+    .icon-pinglun {
+        font-size: 12px;
+        color: #BDBDBD;
+    }
+    
+    .icon-dianzan,
+    .icon-dianzan1 {
+        font-size: 12px;
+        color: #BDBDBD;
+    }
+    
+    ul,
+    li {
+        list-style: none;
+    }
+    
+    .ctn>li {
+        width: 345rem/$x;
+        height: 100%;
+        background: #FFFFFF;
+        box-shadow: 0 2px 6px 0 #DDDDDD;
+        border-radius: 10px;
+        margin: 0 auto;
+        margin-top: 15rem/$x;
+    }
+    
+    .ctn_l {
+        position: relative;
+        width: 62rem/$x;
+        float: left;
+    }
+    
+    .ctn_l>i {
+        width: 17rem/$x;
+        height: 17rem/$x;
+        background: #FDD545;
+        display: inline-block;
+        border-radius: 50%;
+        position: absolute;
+        top: 10rem/$x;
+        left: 12rem/$x;
+        line-height: 18rem/$x;
+    }
+    
+    .ctn_l>img {
+        width: 32rem/$x;
+        height: 32rem/$x;
+        background: #FDD545;
+        display: inline-block;
+        border-radius: 50%;
+        margin-left: 15rem/$x;
+        margin-top: 15rem/$x;
+    }
+    
+    .ctn_r {
+        width: 283rem/$x;
+        float: left;
+        text-align: left;
+        overflow: hidden;
+        margin-top: 15rem/$x;
+    }
+    
+    .ctn_r>div:nth-of-type(1)>span {
         font-family: STHeitiSC-Medium;
         font-size: 16rem/$x;
         color: #333333;
         letter-spacing: 0.19px;
     }
-    .ctn_r>div:nth-of-type(1)>i{
-        float: right;color: #fdd545;margin-right: 15rem/$x;
+    
+    .ctn_r>div:nth-of-type(1)>i {
+        float: right;
+        color: #fdd545;
+        margin-right: 15rem/$x;
+        padding: 2rem/$x;
     }
-    .ctn_r>div:nth-of-type(1)>i:nth-of-type(2){
-        float: right;color: #fdd545;margin-right: 5rem/$x;
+    
+    .ctn_r>div:nth-of-type(1)>i:nth-of-type(2) {
+        float: right;
+        color: #fdd545;
+        margin-right: 5rem/$x;
     }
-    .ctn_r>p:nth-of-type(1){
+    
+    .ctn_r>p:nth-of-type(1) {
         width: 268rem/$x;
         font-family: STHeitiSC-Medium;
         font-size: 14px;
@@ -487,48 +662,83 @@
         letter-spacing: 0.17px;
         margin-top: 10rem/$x;
     }
-    .ctn_r>div:nth-of-type(2){
+    
+    .ctn_r>div:nth-of-type(2) {
         margin-top: 16rem/$x;
     }
-    .ctn_r>div:nth-of-type(2)>div:nth-of-type(1){
-        float: left;font-family: STHeitiSC-Medium;
+    
+    .ctn_r>div:nth-of-type(2)>div:nth-of-type(1) {
+        float: left;
+        font-family: STHeitiSC-Medium;
         font-size: 12rem/$x;
         color: #BDBDBD;
         letter-spacing: 0.14rem/$x;
         padding-bottom: 15rem/$x;
     }
-    .ctn_r>div:nth-of-type(2)>div:nth-of-type(2){
-            float: right;
+    
+    .ctn_r>div:nth-of-type(2)>div:nth-of-type(2) {
+        float: right;
     }
-    .ctn_r>div:nth-of-type(2)>div:nth-of-type(2)>div{float: left;margin-right: 15rem/$x;color: #BDBDBD;}
-    .countend{
-        background: #666666;border-radius: 100rem/$x;
+    
+    .ctn_r>div:nth-of-type(2)>div:nth-of-type(2)>div {
+        float: left;
+        margin-right: 15rem/$x;
+        color: #BDBDBD;
+        width: 36rem/$x;
     }
-    .countend>span{
-        font-family: STHeitiSC-Medium;font-size: 14px;color: #FFFFFF;letter-spacing: -0.39px;
+    
+    .countend {
+        background: #666666;
+        border-radius: 100rem/$x;
     }
-    .slide{
-        margin-top: 0;border-radius: 0;background: #FAFAFA;
+    
+    .countend>span {
+        font-family: STHeitiSC-Medium;
+        font-size: 14px;
+        color: #FFFFFF;
+        letter-spacing: -0.39px;
     }
-    .slide_l{
-        float: left;text-align: left;width: 62rem/$x;
+    
+    .slide {
+        margin-top: 0;
+        border-radius: 0;
+        background: #FAFAFA;
     }
-    .slide_l>img{width: 32rem/$x;height: 32rem/$x;background: #FDD545;display: inline-block;
-    border-radius: 50%;margin: 15rem/$x;}
-    .slide_r{
-        float: left;width: 283rem/$x;
+    
+    .slide_l {
+        float: left;
+        text-align: left;
+        width: 62rem/$x;
     }
-    .slide_rt{
-        width: 283rem/$x;margin-top: 15rem/$x;
+    
+    .slide_l>img {
+        width: 32rem/$x;
+        height: 32rem/$x;
+        background: #FDD545;
+        display: inline-block;
+        border-radius: 50%;
+        margin: 15rem/$x;
     }
-    .slide_rt>div:nth-of-type(1){
+    
+    .slide_r {
+        float: left;
+        width: 283rem/$x;
+    }
+    
+    .slide_rt {
+        width: 283rem/$x;
+        margin-top: 15rem/$x;
+    }
+    
+    .slide_rt>div:nth-of-type(1) {
         font-family: STHeitiSC-Medium;
         font-size: 12px;
         color: #333333;
         letter-spacing: 0.14px;
         float: left;
     }
-    .slide_rt>div:nth-of-type(2){
+    
+    .slide_rt>div:nth-of-type(2) {
         font-family: STHeitiSC-Medium;
         font-size: 12px;
         color: #BDBDBD;
@@ -536,46 +746,118 @@
         float: right;
         margin-right: 15rem/$x;
     }
-    .slide_rb{
-        text-align: left;font-family: STHeitiSC-Medium;font-size: 12px;color: #666666;
-        letter-spacing: 0.14px;margin-top: 10rem/$x;
+    
+    .slide_rb {
+        text-align: left;
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #666666;
+        letter-spacing: 0.14px;
+        margin-top: 10rem/$x;
     }
-    .hide{
+    
+    .hide {
         display: none;
     }
-    .delete_pinglun{
-      font-family: STHeitiSC-Medium;
-      font-size: 12px;
-      color: #1E88E5;
-      letter-spacing: 0.14px;
+    
+    .delete_pinglun {
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #1E88E5;
+        letter-spacing: 0.14px;
     }
-    .int{
+    
+    .int {
         width: 345rem/$x;
         height: 33rem/$x;
         position: fixed;
         bottom: 33rem/$x;
         left: 15rem/$x;
     }
-    .int_l{
+    
+    .int_l {
         float: left;
         background: #f4f4f4;
         // border-right:1px solid #000;
         width: 54rem/$x;
         height: 33rem/$x;
     }
-    .int_m{
+    
+    .int_m {
         float: left;
         width: 207rem/$x;
         background: #f4f4f4;
         height: 33rem/$x;
-        outline:medium
-        
+        outline: medium
     }
-    .int_r{
+    
+    .int_r {
         float: left;
         background: #f4f4f4;
         width: 46rem/$x;
         height: 35rem/$x;
+    }
+    
+    .mylist {
+        background: #FDD545;
+        box-shadow: 0 2px 6px 0 #DDDDDD;
+        border-radius: 10px;
+        width: 345rem/$x;
+        height: 46rem/$x;
+        position: fixed;
+        bottom: 20rem/$x;
+        margin: 0 auto;
+        line-height: 46rem/$x;
+        text-align: left;
+    }
+    
+    .mylist>:nth-child(1) {
+        color: #333333;
+        font-size: 24rem/$x;
+        margin-left: 15rem/$x;
+        vertical-align: middle;
+    }
+    
+    .mylist>:nth-child(2) {
+        color: #333333;
+        font-size: 24rem/$x;
+        vertical-align: middle;
+        font-family: STHeitiSC-Medium;
+        font-size: 18px;
+        color: #333333;
+        letter-spacing: 0.22px;
+        padding: 10rem/$x;
+    }
+    
+    .mylist>:nth-child(3) {
+        font-family: STHeitiSC-Medium;
+        font-size: 14px;
+        color: #333333;
+        letter-spacing: 0.17px;
+        padding-right: 80rem/$x;
+    }
+    
+    .mylist>:nth-child(4) {
+        color: #333333;
+    }
+    
+    .mylist>:nth-child(5) {
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #333333;
+        letter-spacing: -0.26px;
+    }
+    
+    .mylist>:nth-child(6) {
+        color: #333333;
+        padding-left: 22rem/$x;
+    }
+    
+    .mylist>:nth-child(7) {
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #333333;
+        letter-spacing: -0.26px;
     }
 </style>
 
