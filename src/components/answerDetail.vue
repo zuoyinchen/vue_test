@@ -1,12 +1,12 @@
 <template>
-    <div class="box">
-        
-        <div class="countdown" v-if="status==1">
+  <div class="box">
+    <scroller>
+      <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                                <countdown :time="time" class="countdown">
-                                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
-</template>
+                <countdown :time="time" class="countdown">
+                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                    </template>
                 </countdown>
             </span>
       </div>
@@ -30,10 +30,6 @@
               </div>
               <div class="theme_b_r" v-if="status==1">
                   <p @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
-                  <!-- <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
-                       <p>立即抢答</p>
-                  </router-link> -->
-                  
               </div>
               <div class="theme_b_r" v-if="status==2" v-show="false">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
@@ -42,46 +38,50 @@
               </div>
           </div>
       </div>
-      <ul class="ctn">
-          <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id">
-              <div class="ctn_l">
-                  <i>{{index+1}}</i>
-                  <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
-                  <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
-                  <img v-else :src="item.createdBy.avatarUrl" alt="2">
-              </div>
-              <div class="ctn_r">
-                  <div>
-                      <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
-                      <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
-                      <span v-else class="answer">{{item.createdBy.username}}</span>
-                      <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i>
-                      <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                  </div>
-                  <p>
-                      {{item.body}}
-                  </p>
-                  <div class="clearfix">
-                      <div>
-                          <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
-                          <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
-                      </div>
-                      <div class="clearfix">
-                          <div>
-                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <span class="upVote_num">{{item.upVotes.length}}</span>
-                          </div>
-                          <div @click="slideDown($event)" :data-index="index" :data-id="item.id">
-                              <i class="iconfont icon-pinglun"></i>
-                              <span class="comment_num">{{item.comments.length}}</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </li>
-      </ul>
+      
+        <ul class="ctn">
+            <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id"  @click="slideDown($event)" :data-index="index" :data-id="item.id">
+                <div class="ctn_l">
+                    <i>{{index+1}}</i>
+                    <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
+                    <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
+                    <img v-else :src="item.createdBy.avatarUrl" alt="2">
+                </div>
+                <div class="ctn_r">
+                    <div>
+                        <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
+                        <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
+                        <span v-else class="answer">{{item.createdBy.username}}</span>
+                        <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i>
+                        <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                        <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                    </div>
+                    <p>
+                        {{item.body}}
+                    </p>
+                    <div class="clearfix">
+                        <div>
+                            <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
+                            <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
+                        </div>
+                        <div class="clearfix">
+                            <div>
+                                <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                                <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                                <span class="upVote_num">{{item.upVotes.length}}</span>
+                            </div>
+                            <div>
+                                <i class="iconfont icon-pinglun"></i>
+                                <span class="comment_num">{{item.comments.length}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="block"></div>
+      </scroller>
+      
       <div class="mylist">
           <i class="iconfont icon-suoding"></i>
           <span>123</span>
@@ -95,231 +95,255 @@
 </template>
 
 <script>
-    //引入微信js-sdk
-    import wx from 'weixin-js-sdk'
-    const $userid = localStorage.getItem("userid"); //用户id
-    export default {
-        name: "answerDetail",
-        data() {
-            return {
-                msg: [],
-                users: [],
-                status: '',
-                topicId: '',
-                time: 0,
-                title: '',
-                readnum: '',
-                answernum: '',
-                id: '',
-                defaulturl: 'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
+
+  //引入微信js-sdk
+ import wx from 'weixin-js-sdk'
+  const $userid = localStorage.getItem("userid");//用户id
+  export default {
+      name:"answerDetail",
+      data(){
+          return {
+              msg:[],
+              users:[],
+              status:'',
+              topicId:'',
+              time:0,
+              title:'',
+              readnum:'',
+              answernum:'',
+              id:'',
+              defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
+          }
+      },
+      methods:{
+        giveStar:function(event){
+          event.stopPropagation();
+          const answerid = event.currentTarget.dataset.id;
+          const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
+          const $userid = localStorage.getItem("userid");
+          console.log(this.msg[$index].stars);
+          const stars = this.msg[$index].stars;
+          const starsid = [];
+          //循环当前评论收藏的信息，拿到此条评论的所有id
+          for(let i=0;i<stars.length;i++){
+            starsid.push(stars[i].id);
+          }
+          console.log(this.msg[$index].isStar);
+          if(this.msg[$index].isStar){
+            console.log("取消收藏");
+            starsid.splice(starsid.indexOf($userid),1)
+            var resultarr = starsid;
+            console.log(resultarr);
+          }else{
+            console.log("收藏");
+            starsid.push($userid);
+            var resultarr = [...new Set(starsid)]
+            console.log(resultarr);
+          }
+          const data = {
+            'stars' : resultarr
+          }
+          this.$axios.put('/answer/'+answerid,data).then((res)=>{
+            console.log(res);
+            if(res.status == 200){
+              if(this.msg[$index].isStar){
+                this.msg[$index].isStar = false;
+              }else{
+                this.msg[$index].isStar = true;
+              }
+              this.upDatedata();
             }
+          }).catch((error)=>{
+            console.log(error);
+          })
         },
-        methods: {
-            giveStar: function(event) {
-                console.log(event.currentTarget.dataset);
-                const answerid = event.currentTarget.dataset.id;
-                console.log('问题id |' + answerid);
-                const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
-                const $userid = localStorage.getItem("userid");
-                console.log(this.msg[$index].stars);
-                const stars = this.msg[$index].stars;
-                const starsid = [];
-                //循环当前评论收藏的信息，拿到此条评论的所有id
-                for (let i = 0; i < stars.length; i++) {
-                    starsid.push(stars[i].id);
-                }
-                console.log(this.msg[$index].isStar);
-                console.log('总');
-                console.log(starsid);
-                console.log('位置' + starsid.indexOf($userid));
-                if (this.msg[$index].isStar) {
-                    console.log("取消收藏");
-                    starsid.splice(starsid.indexOf($userid), 1)
-                    var resultarr = starsid;
-                    console.log(resultarr);
-                } else {
-                    console.log("收藏");
-                    starsid.push($userid);
-                    var resultarr = [...new Set(starsid)]
-                    console.log(resultarr);
-                }
-                const data = {
-                    'stars': resultarr
-                }
-                this.$axios.put('/answer/' + answerid, data).then((res) => {
-                    console.log(res);
-                    if (res.status == 200) {
-                        if (this.msg[$index].isStar) {
-                            this.msg[$index].isStar = false;
-                        } else {
-                            this.msg[$index].isStar = true;
-                        }
-                    }
-                }).catch((error, errorcode) => {
-                    console.log(error);
-                });
-            },
-            giveLike: function(event) {
-                console.log(event.currentTarget.dataset);
-                const answerid = event.currentTarget.dataset.id;
-                console.log('点赞id |' + answerid);
-                const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
-                const $userid = localStorage.getItem("userid");
-                console.log('点赞用户 |' + $userid);
-                console.log(this.msg[$index].upVotes);
-                const upVotes = this.msg[$index].upVotes;
-                const upVotesid = [];
-                //循环当前评论收藏的信息，拿到此条评论的所有id
-                for (let i = 0; i < upVotes.length; i++) {
-                    upVotesid.push(upVotes[i].id);
-                }
-                console.log(this.msg[$index].upVote);
-                console.log('当前用户点赞位置' + upVotesid.indexOf($userid));
-                if (this.msg[$index].upVote) {
-                    upVotesid.splice(upVotesid.indexOf($userid), 1)
-                    var resultarr = upVotesid;
-                    $(".upVote_num").eq($index).text(resultarr.length);
-                } else {
-                    upVotesid.push($userid);
-                    var resultarr = [...new Set(upVotesid)];
-                    $(".upVote_num").eq($index).text(resultarr.length);
-                }
-                const data = {
-                    'upVotes': resultarr
-                }
-                this.$axios.put('/answer/' + answerid, data).then((res) => {
-                    console.log(res);
-                    if (res.status == 200) {
-                        if (this.msg[$index].upVote) {
-                            this.msg[$index].upVote = false;
-    
-                        } else {
-                            this.msg[$index].upVote = true;
-                        }
-                    }
-                }).catch((error, errorcode) => {
-                    console.log(error);
-                })
-            },
-            slideDown: function(event) {
-                const index = event.currentTarget.dataset.index;
-                localStorage.setItem("comment_index", index);
-                const answerid = event.currentTarget.dataset.id;
-                this.$router.push('/answercomment');
-            },
-            timeReplace: function(str) {
-                return str.replace('T', ' ').slice(0, str.indexOf('.'));
-            },
-            gotoQuestion: function(event) {
-                const topicid = event.currentTarget.dataset.tid; //问题id
-                const readnum = event.currentTarget.dataset.rnum; //阅读数
-                const answernum = event.currentTarget.dataset.anum; //评论数
-                const status = event.currentTarget.dataset.status; //状态
-                // const time = event.currentTarget.dataset.time;//倒计时时间
-                const title = event.currentTarget.dataset.title; //问题标题
-                const userQuestion = {
-                    topicid: topicid,
-                    readnum: readnum,
-                    answernum: answernum,
-                    status: status,
-                    time: this.time,
-                    title: title
-                }
-                console.log(JSON.stringify(userQuestion));
-    
-                localStorage.setItem("userQuestion", JSON.stringify(userQuestion));
-                this.$router.push('/answerQuestions');
-            },
-            gotoShare: function() {
-                wx.onMenuShareAppMessage({
-                    title: '这是个问题吗', // 分享标题
-                    desc: '回答问题', // 分享描述
-                    link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: '../assets/images/logo.png', // 分享图标
-                    type: '', // 分享类型,music、video或link，不填默认为link
-                    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-                    success: function() {
-                        // 用户确认分享后执行的回调函数
-                        console.log("成功");
-                    },
-                    cancel: function() {
-                        console.log("取消");
-                        // 用户取消分享后执行的回调函数
-                    }
-                });
-            },
-            deleteAnswer: function() {
-                console.log("删除答案");
-                const answerid = event.currentTarget.dataset.id;
-    
-                this.$axios.delete('/answer/' + answerid).then((res) => {
-                    console.log(res);
-                    this.answernum -= 1;
-                    localStorage.setItem("answernum", this.answernum);
-                    this.upDatedata();
-                }).catch((error, errorcode) => {
-                    console.log(error);
-                })
-            },
-            deletePinlun: function() {
-                const commentid = event.currentTarget.dataset.id;
-                const answerindex = event.currentTarget.dataset.index; //所评论的问题索引
-                let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
-                comment_num -= 1;
-                $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
-                this.$axios.delete('/comment/' + commentid).then((res) => {
-                    console.log(res);
-    
-                }).catch((error, errorcode) => {
-                    console.log(error);
-                });
-            },
-            upDatedata: function() {
-                const query = localStorage.getItem("query"); //参数集合
-                const queryobj = JSON.parse(query);
-                this.topicid = queryobj.topicid;
-    
-                const topicid = this.topicid; //问题id
-                const data = {
-                    search: JSON.stringify({
-                        topic: topicid
-                    }),
-                    userid: $userid
-                };
-                this.$axios.get('/answer', {
-                    params: data
-                }).then(res => {
-                    this.msg = res.data;
-                    //拿到所有答题者的id
-                    const userarr = []; //答题者id集合
-                    for (var i = 0; i < this.msg.length; i++) {
-                        this.msg[i].isMe = false;
-                        userarr.push(this.msg[i].id);
-    
-                    }
-                    this.users = this.msg;
-                    //判断答题者的id中是否有自己
-                    if (userarr.indexOf($userid) !== -1) {
-                        console.log(this.users);
-                        this.users[userarr.indexOf($userid)].isMe = true;
-                    }
-                }).catch((error) => {
-                    console.log(error);
-                });
+        giveLike:function(event){
+          event.stopPropagation();
+          console.log(event.currentTarget.dataset);
+          const answerid = event.currentTarget.dataset.id;
+          console.log('点赞id |'+answerid);
+          const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
+          const $userid = localStorage.getItem("userid");
+          console.log('点赞用户 |'+$userid);
+          console.log(this.msg[$index].upVotes);
+          const upVotes = this.msg[$index].upVotes;
+          const upVotesid = [];
+          //循环当前评论收藏的信息，拿到此条评论的所有id
+          for(let i=0;i<upVotes.length;i++){
+            upVotesid.push(upVotes[i].id);
+          }
+          console.log(this.msg[$index].upVote);
+          console.log('当前用户点赞位置'+upVotesid.indexOf($userid));
+          if(this.msg[$index].upVote){
+            upVotesid.splice(upVotesid.indexOf($userid),1)
+            var resultarr = upVotesid;
+            $(".upVote_num").eq($index).text(resultarr.length);
+          }else{
+            upVotesid.push($userid);
+            var resultarr = [...new Set(upVotesid)];
+            $(".upVote_num").eq($index).text(resultarr.length);
+          }
+          const data = {
+            'upVotes' : resultarr
+          }
+          this.$axios.put('/answer/'+answerid,data).then((res)=>{
+            console.log(res);
+            if(res.status == 200){
+              if(this.msg[$index].upVote){
+                this.msg[$index].upVote = false;
+
+              }else{
+                this.msg[$index].upVote = true;
+              }
+              this.upDatedata();
             }
+          }).catch((error, errorcode) => {
+              console.log(error);
+          });
         },
-        mounted() {
-            const query = localStorage.getItem("query"); //参数集合
-            const queryobj = JSON.parse(query);
-            this.title = queryobj.title;
-            this.time = Number(queryobj.time);
-            this.status = queryobj.status;
-    
-            if (localStorage.getItem("answernum")) {
-                this.answernum = localStorage.getItem("answernum");
-            } else {
-                localStorage.setItem("answernum", Number(queryobj.answernum));
-                this.answernum = localStorage.getItem("answernum");
+        slideDown: function(event) {
+            const index = event.currentTarget.dataset.index;
+            localStorage.setItem("comment_index", index);
+            const answerid = event.currentTarget.dataset.id;
+            this.$router.push('/answercomment');
+        },
+        timeReplace:function(str) {
+        return str.replace('T', ' ').slice(0, str.indexOf('.'));
+        },
+        gotoQuestion:function(event){
+          const topicid = event.currentTarget.dataset.tid;//问题id
+          const readnum = event.currentTarget.dataset.rnum;//阅读数
+          const answernum = event.currentTarget.dataset.anum;//评论数
+          const status = event.currentTarget.dataset.status;//状态
+          // const time = event.currentTarget.dataset.time;//倒计时时间
+          const title = event.currentTarget.dataset.title;//问题标题
+          const userQuestion = {
+            topicid : topicid,
+            readnum : readnum,
+            answernum : answernum,
+            status : status,
+            time : this.time,
+            title : title
+          }
+          console.log(JSON.stringify(userQuestion));
+
+          localStorage.setItem("userQuestion",JSON.stringify(userQuestion));
+          this.$router.push('/answerQuestions');
+        },
+       gotoShare:function(){
+        wx.onMenuShareAppMessage({
+          title: '这是个问题吗', // 分享标题
+          desc: '回答问题', // 分享描述
+          link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: '../assets/images/logo.png', // 分享图标
+          type: '', // 分享类型,music、video或link，不填默认为link
+          dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+          success: function () {
+              // 用户确认分享后执行的回调函数
+              console.log("成功");
+          },
+          cancel: function () {
+            console.log("取消");
+          // 用户取消分享后执行的回调函数
+          }
+        });
+       },
+       deleteAnswer:function(){
+          console.log("删除答案");
+          const answerid = event.currentTarget.dataset.id;
+
+          this.$axios.delete('/answer/'+answerid).then((res)=>{
+            console.log(res);
+            this.answernum -=1;
+            localStorage.setItem("answernum",this.answernum);
+            this.upDatedata();
+          }).catch((error,errorcode)=>{
+            console.log(error);
+          })
+       },
+       deletePinlun:function(){
+          const commentid = event.currentTarget.dataset.id;
+          const answerindex = event.currentTarget.dataset.index;//所评论的问题索引
+          let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
+          comment_num -=1;
+          $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
+          this.$axios.delete('/comment/'+commentid).then((res)=>{
+            console.log(res);
+            
+          }).catch((error,errorcode)=>{
+            console.log(error);
+          });
+       },
+       upDatedata:function(){
+          const query = localStorage.getItem("query");//参数集合
+          const queryobj = JSON.parse(query);
+          this.topicid = queryobj.topicid;
+          
+          const topicid = this.topicid;//问题id
+          const data ={
+            search:JSON.stringify({topic: topicid}),
+            userid:$userid
+          };
+          this.$axios.get('/answer', {params:data}).then(res=>{
+              this.msg = res.data;
+              //拿到所有答题者的id
+              const userarr = [];//答题者id集合
+              for(var i=0;i<this.msg.length;i++){
+                  this.msg[i].isMe = false;
+                  userarr.push(this.msg[i].createdBy.id);
+                  
+              }
+              this.users = this.msg;
+              //判断答题者的id中是否有自己
+              if(userarr.indexOf($userid) !== -1){
+                console.log(this.users);
+                this.users[userarr.indexOf($userid)].isMe = true;
+              }
+          }).catch((error)=>{
+            console.log(error);
+          });
+       }
+      },
+      mounted(){
+        const query = localStorage.getItem("query");//参数集合
+        const queryobj = JSON.parse(query);
+        this.title = queryobj.title;
+        this.time = Number(queryobj.time);
+        this.status = queryobj.status;
+        
+        if(localStorage.getItem("answernum")){
+           this.answernum = localStorage.getItem("answernum");
+        }else{
+          localStorage.setItem("answernum",Number(queryobj.answernum));
+          this.answernum = localStorage.getItem("answernum");
+        }
+       
+        this.readnum =  Number(queryobj.readnum);
+        this.topicid = queryobj.topicid;
+
+        
+        const topicid = this.topicid;//问题id
+        
+        const data ={
+          search:JSON.stringify({topic: topicid}),
+          userid:$userid
+        };
+        console.log(data);
+        
+        this.$axios.get('/answer', {params:data}).then(res=>{
+            this.msg = res.data;
+            //拿到所有答题者的id
+            const userarr = [];//答题者id集合
+            for(var i=0;i<this.msg.length;i++){
+                this.msg[i].isMe = false;
+                userarr.push(this.msg[i].id);
+            }
+            this.users = this.msg;
+            // console.log(this.users)
+            //判断答题者的id中是否有自己
+            if(userarr.indexOf($userid) !== -1){
+              console.log(this.users);
+              this.users[userarr.indexOf($userid)].isMe = true;
             }
     
             this.readnum = Number(queryobj.readnum);
@@ -389,21 +413,44 @@
             }).catch((error) => {
                 console.log(error);
             })
-        },
-        beforeCreate: function() {
-    
-    
-        }
+        }).catch(error=>{
+          console.log(error);
+        })
     }
+  }
 </script>
-
 <style lang="scss" scoped>
     $x:37.5;
-    .countdown {
-        font-family: STHeitiSC-Medium;
-        font-size: 14px;
-        color: #333333;
-        letter-spacing: -0.39px;
+    .block{
+        width: 375rem/$x;height: 50rem/$x;
+    }
+    .countdown{
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
+    }
+    .counttest{
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
+    }
+    .clearfix:after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    }
+    *{
+        margin: 0;padding: 0;
+    }
+    .box{
+        width: 345rem/$x;
+        height:100%;
+        margin: 0 auto;
+        padding-top:10rem/$x;
+        box-sizing:border-box;
     }
     
     .counttest {
@@ -438,6 +485,8 @@
         border-radius: 100rem/$x;
         background: #fdd545;
         line-height: 30rem/$x;
+        margin-left: 15rem/$x;
+        margin-top: 10rem/$x;
     }
     
     .countdown>span:nth-of-type(1) {
@@ -449,7 +498,6 @@
         font-size: 14rem/$x;
         letter-spacing: -0.39rem/$x;
     }
-    
     .theme {
         width: 345rem/$x;
         height: 100%;
@@ -546,6 +594,7 @@
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
+        margin: 0 auto;
         margin-top: 15rem/$x;
     }
     

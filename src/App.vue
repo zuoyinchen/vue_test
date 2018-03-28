@@ -27,7 +27,7 @@ export default {
 
 html,body{
   height:100%;
-  background:#e8e8e8;
+  background: #FFFEF7;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -36,7 +36,7 @@ html,body{
   text-align: center;
   color: #2c3e50;
   /* height:100%; */
-  background: #FFFEF7;
+  
   /*margin-top: 60px;*/
 }
 html,
