@@ -1,5 +1,6 @@
 <template>
   <div class="box">
+    <scroller>
       <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
@@ -28,10 +29,6 @@
               </div>
               <div class="theme_b_r" v-if="status==1">
                   <p @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
-                  <!-- <router-link tag="p" :to="{name:'answerQuestions',params:{title:''+title+'',readNum:''+readNum+'',toAnswer:''+toAnswer+'',time:''+time+''}}">
-                       <p>立即抢答</p>
-                  </router-link> -->
-                  
               </div>
               <div class="theme_b_r" v-if="status==2" v-show="false">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
@@ -40,46 +37,49 @@
               </div>
           </div>
       </div>
-      <ul class="ctn">
-          <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id">
-              <div class="ctn_l">
-                  <i>{{index+1}}</i>
-                  <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
-                  <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
-                  <img v-else :src="item.createdBy.avatarUrl" alt="2">
-              </div>
-              <div class="ctn_r">
-                  <div>
-                      <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
-                      <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
-                      <span v-else class="answer">{{item.createdBy.username}}</span>
-                      <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i>
-                      <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                  </div>
-                  <p>
-                      {{item.body}}
-                  </p>
-                  <div class="clearfix">
-                      <div>
-                          <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
-                          <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
-                      </div>
-                      <div class="clearfix">
-                          <div>
-                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <span class="upVote_num">{{item.upVotes.length}}</span>
-                          </div>
-                          <div @click="slideDown($event)" :data-index="index" :data-id="item.id">
-                              <i class="iconfont icon-pinglun"></i>
-                              <span class="comment_num">{{item.comments.length}}</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </li>
-      </ul>
+      
+        <ul class="ctn">
+            <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id"  @click="slideDown($event)" :data-index="index" :data-id="item.id">
+                <div class="ctn_l">
+                    <i>{{index+1}}</i>
+                    <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
+                    <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
+                    <img v-else :src="item.createdBy.avatarUrl" alt="2">
+                </div>
+                <div class="ctn_r">
+                    <div>
+                        <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
+                        <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
+                        <span v-else class="answer">{{item.createdBy.username}}</span>
+                        <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i>
+                        <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                        <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                    </div>
+                    <p>
+                        {{item.body}}
+                    </p>
+                    <div class="clearfix">
+                        <div>
+                            <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
+                            <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
+                        </div>
+                        <div class="clearfix">
+                            <div>
+                                <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                                <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                                <span class="upVote_num">{{item.upVotes.length}}</span>
+                            </div>
+                            <div>
+                                <i class="iconfont icon-pinglun"></i>
+                                <span class="comment_num">{{item.comments.length}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="block"></div>
+      </scroller>
       <div class="int" v-show="false">
           <div class="int_l"></div>
           <form action="">
@@ -111,9 +111,8 @@
       },
       methods:{
         giveStar:function(event){
-          console.log(event.currentTarget.dataset);
+          event.stopPropagation();
           const answerid = event.currentTarget.dataset.id;
-          console.log('问题id |'+answerid);
           const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
           const $userid = localStorage.getItem("userid");
           console.log(this.msg[$index].stars);
@@ -124,9 +123,6 @@
             starsid.push(stars[i].id);
           }
           console.log(this.msg[$index].isStar);
-          console.log('总');
-          console.log(starsid);
-          console.log('位置'+starsid.indexOf($userid));
           if(this.msg[$index].isStar){
             console.log("取消收藏");
             starsid.splice(starsid.indexOf($userid),1)
@@ -149,12 +145,14 @@
               }else{
                 this.msg[$index].isStar = true;
               }
+              this.upDatedata();
             }
           }).catch((error,errorcode)=>{
             console.log(error);
           });
         },
         giveLike:function(event){
+          event.stopPropagation();
           console.log(event.currentTarget.dataset);
           const answerid = event.currentTarget.dataset.id;
           console.log('点赞id |'+answerid);
@@ -191,6 +189,7 @@
               }else{
                 this.msg[$index].upVote = true;
               }
+              this.upDatedata();
             }
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -285,7 +284,7 @@
               const userarr = [];//答题者id集合
               for(var i=0;i<this.msg.length;i++){
                   this.msg[i].isMe = false;
-                  userarr.push(this.msg[i].id);
+                  userarr.push(this.msg[i].createdBy.id);
                   
               }
               this.users = this.msg;
@@ -381,10 +380,15 @@
 </script>
 <style lang="scss" scoped>
     $x:37.5;
-    .countdown{font-family: STHeitiSC-Medium;
-    font-size: 14px;
-    color: #333333;
-    letter-spacing: -0.39px;}
+    .block{
+        width: 375rem/$x;height: 50rem/$x;
+    }
+    .countdown{
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: -0.39px;
+    }
     .counttest{
       font-family: STHeitiSC-Medium;
       font-size: 14px;
@@ -401,13 +405,17 @@
         margin: 0;padding: 0;
     }
     .box{
-        width: 345rem/$x;margin: 0 auto;
+        width: 345rem/$x;
+        height:100%;
+        margin: 0 auto;
         padding-top:10rem/$x;
         box-sizing:border-box;
     }
     .countdown{
         width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
         line-height: 30rem/$x;
+        margin-left: 15rem/$x;
+        margin-top: 10rem/$x;
     }
     .countdown>span:nth-of-type(1){
         font-size: 14rem/$x;letter-spacing: -0.39rem/$x;
@@ -417,7 +425,9 @@
     }
     .theme{
         width: 345rem/$x;height: 100%;background: #FFFFFF;box-shadow: 0 2px 6px 0 #DDDDDD;border-radius: 10px;
-        overflow: hidden;margin-top: 15rem/$x;
+        overflow: hidden;
+        margin:0 auto;
+        margin-top: 15rem/$x;
     }
     .theme_t{
        font-family: STHeitiSC-Medium;font-size: 18rem/$x;letter-spacing: 0.22rem/$x;color-interpolation-filters: #333;
@@ -462,6 +472,7 @@
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
+        margin: 0 auto;
         margin-top: 15rem/$x;
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}
