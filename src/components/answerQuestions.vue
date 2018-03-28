@@ -4,7 +4,7 @@
             <span class="counttest">倒计时</span>
             <span>
                                     <countdown :time="time" class="countdown">
-                                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                                            <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
           </span>
