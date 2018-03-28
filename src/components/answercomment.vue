@@ -177,11 +177,15 @@
           }
           if(this.list[$index].upVote){
             upVotesid.splice(upVotesid.indexOf($userid),1)
+            console.log("取消点赞");
             var resultarr = upVotesid;
+            console.log(resultarr);
             $(".upVote_num").eq($index).text(resultarr.length);
           }else{
             upVotesid.push($userid);
+            console.log("点赞");
             var resultarr = [...new Set(upVotesid)];
+            console.log(resultarr);
             $(".upVote_num").eq($index).text(resultarr.length);
           }
           const data = {
@@ -287,10 +291,11 @@
 	            const userarr = [];//答题者id集合
 	            for(var i=0;i<this.list.length;i++){
 	                this.list[i].isMe = false;
-	                userarr.push(this.list[i].id);
+	                userarr.push(this.list[i].createdBy.id);
 	                
 	            }
 	            console.log(this.list);
+              console.log(userarr);
 	            //判断答题者的id中是否有自己
 	            if(userarr.indexOf($userid) !== -1){
 	              console.log(this.list);
@@ -303,7 +308,7 @@
 	              $.each(this.list,function(i,v){
 	                $.each(v.comments,function(i,v){
 	                  v.isMe = false;
-	                  if(v.id == $userid){
+	                  if(v.createdBy == $userid){
 	                    v.isMe = true;
 	                  };
 	                })
@@ -364,7 +369,7 @@
             const userarr = [];//答题者id集合
             for(var i=0;i<this.list.length;i++){
                 this.list[i].isMe = false;
-                userarr.push(this.list[i].id);
+                userarr.push(this.list[i].createdBy.id);
                  this.answerid = this.list[i].id;
                  this.body = this.list[i].body;
                 
@@ -384,7 +389,7 @@
               $.each(this.list,function(i,v){
                 $.each(v.comments,function(i,v){
                   v.isMe = false;
-                  if(v.id == $userid){
+                  if(v.createdBy == $userid){
                     v.isMe = true;
                   };
                 })
@@ -499,6 +504,7 @@
         width: 345rem/$x;margin: 0 auto;
         padding-top:10rem/$x;
         box-sizing:border-box;
+        padding-bottom: 49rem/$x;
     }
     .countdown{
         width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
@@ -553,11 +559,13 @@
     }
     ul,li{list-style: none;}
     .ctn>li{
-        width: 345rem/$x;height:100%;
+        width: 345rem/$x;
+        height:100%;
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
         margin-top: 15rem/$x;
+        
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}
     .ctn_l>i{width: 17rem/$x;height: 17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;
