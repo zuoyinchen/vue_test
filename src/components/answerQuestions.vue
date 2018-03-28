@@ -3,8 +3,8 @@
         <div class="countdown" v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                            <countdown :time="time" class="countdown">
-                                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                                    <countdown :time="time" class="countdown">
+                                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
           </span>
@@ -17,7 +17,7 @@
           </div>
       </div>
       <div>
-        <textarea name="" class="int" id="ctn" v-model="message"></textarea>
+        <textarea name="" class="int" id="ctn" v-model="message" placeholder="请输入..."></textarea>
         <button type="button"class="int_sub"@click="submit($event)" :data-message="message">提交</button>
       </div>
   </div>
@@ -59,6 +59,7 @@ export default {
                     localStorage.setItem("answernum",this.answernum+1);
                     this.$router.replace('/answerDetail');
                 }
+                console.log(newMsg)
     
                 
     
@@ -160,6 +161,7 @@ export default {
         color: #333333;
         letter-spacing: 0.22px;
         margin: 15rem/$x;
+        font-weight: 500;
     }
     
     .btn>p:nth-of-type(1)>div {
@@ -193,9 +195,9 @@ export default {
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
-        font-size: 18px;
+        font-size: 14px;
         text-indent: 20rem/$x;
-        line-height: 60rem/$x;;
+        line-height: 50rem/$x;;
     }
     .int_sub{
         width: 345rem/$x;
