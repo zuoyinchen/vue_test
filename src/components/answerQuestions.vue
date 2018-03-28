@@ -3,8 +3,8 @@
         <div class="countdown" v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                            <countdown :time="time" class="countdown">
-                                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                                    <countdown :time="time" class="countdown">
+                                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
           </span>
@@ -59,6 +59,7 @@ export default {
                     localStorage.setItem("answernum",this.answernum+1);
                     this.$router.replace('/answerDetail');
                 }
+                console.log(newMsg)
     
                 
     
