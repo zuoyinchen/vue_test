@@ -243,6 +243,7 @@ export default {
         margin-top:17rem/$x;
         text-align: center;
         position: relative;
+        background: #FFFFFF;
 
     }
     .nav>span:nth-of-type(3){

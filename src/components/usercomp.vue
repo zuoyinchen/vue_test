@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 			<scroller :on-refresh="refresh"
-  :on-infinite="infinite" ref="myscroller"  v-if="prolist.length>0">
+  :on-infinite="infinite" ref="myscroller" class="myscroller"  v-if="prolist.length>0">
                 <ul>
                     <li class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
                         <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
@@ -112,7 +112,7 @@
                     stars:stars,
                     body:$body,
                 };
-                this.$http.put('/answer/'+$id,data).then(res=>{
+                this.$axios.put('/answer/'+$id,data).then(res=>{
                     console.log(res);
                     if(res.status == 200){
                     	this.restSlide();
@@ -184,6 +184,10 @@
         list-style: none;
         padding-top:70rem/$unit;
         box-sizing:border-box;
+        .myscroller{
+            padding-top: 1.86667rem;
+            box-sizing: border-box;
+        }
 	    ul{
 	        height:100%;
 	        padding:0 15rem/$unit;
