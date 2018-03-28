@@ -106,6 +106,9 @@
       		<span class="send_com" @click="gotoComment($event)" :data-message="message">发送</span>
       	</div>
       </div>
+      <div class="block">
+
+        </div>
   </div>
 </template>
 <script>
@@ -675,6 +678,9 @@
         background: #f4f4f4;
         width: 46rem/$x;
         height: 35rem/$x;
+    }
+    .block{
+        width: 375rem/$x;height: 50rem/$x;
     }
 </style>
 
