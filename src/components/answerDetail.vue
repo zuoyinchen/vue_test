@@ -62,7 +62,7 @@
                   </p>
                   <div class="clearfix">
                       <div>
-                          <span>{{item.createdAt}}</span>
+                          <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
                           <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
                       </div>
                       <div class="clearfix">
@@ -293,20 +293,6 @@
               if(userarr.indexOf($userid) !== -1){
                 console.log(this.users);
                 this.users[userarr.indexOf($userid)].isMe = true;
-                for(var j=0;j<this.users[userarr.indexOf($userid)].comments.length;j++){
-                  this.users[userarr.indexOf($userid)].comments[j].isMe = true;
-                  console.log(this.users[userarr.indexOf($userid)].comments[j]);
-                }
-              }else{
-                $.each(this.users,function(i,v){
-                  $.each(v.comments,function(i,v){
-                    v.isMe = false;
-                    if(v.id == $userid){
-                      v.isMe = true;
-                    };
-                  })
-                });
-                console.log(this.users);
               }
           }).catch((error)=>{
             console.log(error);
@@ -353,20 +339,6 @@
             if(userarr.indexOf($userid) !== -1){
               console.log(this.users);
               this.users[userarr.indexOf($userid)].isMe = true;
-              for(var j=0;j<this.users[userarr.indexOf($userid)].comments.length;j++){
-                this.users[userarr.indexOf($userid)].comments[j].isMe = true;
-                console.log(this.users[userarr.indexOf($userid)].comments[j]);
-              }
-            }else{
-              $.each(this.users,function(i,v){
-                $.each(v.comments,function(i,v){
-                  v.isMe = false;
-                  if(v.id == $userid){
-                    v.isMe = true;
-                  };
-                })
-              });
-              console.log(this.users);
             }
         }).catch((error)=>{
           console.log(error);

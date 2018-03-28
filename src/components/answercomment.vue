@@ -36,7 +36,7 @@
               </div>
           </div>
       </div>
-      <ul class="ctn">
+      <ul class="ctn" v-if="list.length>0">
           <li class="clearfix pin_list" v-for="(item,index) in list" >
           	<div class="answer_wrap">
               <div class="ctn_l">
@@ -59,7 +59,7 @@
                   </p>
                   <div class="clearfix">
                       <div>
-                          <span>{{item.createdAt}}</span>
+                          <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
                           <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
                       </div>
                       <div class="clearfix">
@@ -76,28 +76,30 @@
                   </div>
               </div>
           	</div>
-              <div class="slide clearfix" v-for="i in item.comments" :key="i.id">
-                <div class="slide_l">
-                    <img src="" alt="">
-                </div>
-                <div class="slide_r">
-                    <div class="slide_rt clearfix">
-                        <div>
-                            <span v-if="!Boolean(i.username)">{{'匿名用户'}}</span>
-                            <span v-else>{{i.username}}</span>
-                        </div>
-                        <div>
-                            <span v-show="i.isMe" class="delete_pinglun" @click="deletePinlun()" :data-id="i.id" :data-index="index">删除</span>
-                            <span>{{i.createdAt}}</span>
-                        </div>
-                    </div>
-                    <p class="slide_rb">
-                        {{i.body}}
-                    </p>
-                </div>
+            <div class="slide clearfix" v-for="i in comments" :key="i.id">
+              <div class="slide_l">
+                  <img v-if="Boolean(i.createdBy.avatarUrl)" :src="i.createdBy.avatarUrl" alt="">
+                  <img v-else src="../assets/images/logo.png" alt="">
               </div>
+              <div class="slide_r">
+                  <div class="slide_rt clearfix">
+                      <div>
+                          <span v-if="!Boolean(i.createdBy.username)">{{'匿名用户'}}</span>
+                          <span v-else>{{i.createdBy.username}}</span>
+                      </div>
+                      <div>
+                          <span v-show="i.isMe" class="delete_pinglun" @click="deletePinlun()" :data-id="i.id" :data-index="index">删除</span>
+                          <span>{{new Date(i.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(i.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
+                      </div>
+                  </div>
+                  <p class="slide_rb">
+                      {{i.body}}
+                  </p>
+              </div>
+            </div>
           </li>
       </ul>
+      <p v-else class="error_tip">网络错误，请刷新</p>
       <div class="comment_box">
       	<div class="comment_wrap">
       		<img src="" alt="" class="comment_img">
@@ -180,11 +182,15 @@
           }
           if(this.list[$index].upVote){
             upVotesid.splice(upVotesid.indexOf($userid),1)
+            console.log("取消点赞");
             var resultarr = upVotesid;
+            console.log(resultarr);
             $(".upVote_num").eq($index).text(resultarr.length);
           }else{
             upVotesid.push($userid);
+            console.log("点赞");
             var resultarr = [...new Set(upVotesid)];
+            console.log(resultarr);
             $(".upVote_num").eq($index).text(resultarr.length);
           }
           const data = {
@@ -290,29 +296,39 @@
 	            const userarr = [];//答题者id集合
 	            for(var i=0;i<this.list.length;i++){
 	                this.list[i].isMe = false;
-	                userarr.push(this.list[i].id);
+	                userarr.push(this.list[i].createdBy.id);
 	                
 	            }
 	            console.log(this.list);
-	            //判断答题者的id中是否有自己
-	            if(userarr.indexOf($userid) !== -1){
-	              console.log(this.list);
-	              this.list[userarr.indexOf($userid)].isMe = true;
-	              for(var j=0;j<this.list[userarr.indexOf($userid)].comments.length;j++){
-	                this.list[userarr.indexOf($userid)].comments[j].isMe = true;
-	                console.log(this.list[userarr.indexOf($userid)].comments[j]);
-	              }
-	            }else{
-	              $.each(this.list,function(i,v){
-	                $.each(v.comments,function(i,v){
-	                  v.isMe = false;
-	                  if(v.id == $userid){
-	                    v.isMe = true;
-	                  };
-	                })
-	              });
-	              console.log(this.list);
-	            }
+              console.log(userarr);
+	             //判断答题者的id中是否有自己
+              if(userarr.indexOf($userid) !== -1){
+                this.list[userarr.indexOf($userid)].isMe = true;
+              }
+                //根据答案ID获取评论
+                const search_comment ={
+                  search:{
+                    answer:this.answerid
+                  },
+                  sort:{
+                    createdAt:0
+                  }
+                }
+                this.$axios.get('/comment',{params:search_comment}).then((res)=>{
+                  if(res.status == 200){
+                    
+                    $.each(res.data,function(i,v){//循环评论判断评论者的ID 是否是自己
+                      v.isMe = false;
+                      if(v.createdBy.id == $userid){
+                         v.isMe = true;
+                      };
+                    });
+                    this.comments = res.data;
+                    console.log(this.comments);
+                  }
+                }).catch((error)=>{
+
+                });
 	        }).catch((error)=>{
 	          console.log(error);
 	        });
@@ -321,9 +337,10 @@
         gotoComment:function(event){
          	console.log(event.currentTarget.dataset.message);
          	const data ={
-         		body: this.message,
+         		  body: this.message,
               answer: this.answerid,
               createdBy: $userid,
+              sort:{createdAt:0}
          	}
          	console.log(data);
          	this.$axios.post('/comment',data).then((res)=>{
@@ -354,6 +371,7 @@
           search:JSON.stringify({topic: topicid}),
           userid:$userid
         };
+        //获取所要评论的答案
         this.$axios.get('/answer', {params:data}).then(res=>{
             console.log(res.data);
             console.log(localStorage.getItem("comment_index"));
@@ -367,36 +385,43 @@
             const userarr = [];//答题者id集合
             for(var i=0;i<this.list.length;i++){
                 this.list[i].isMe = false;
-                userarr.push(this.list[i].id);
+                userarr.push(this.list[i].createdBy.id);
                  this.answerid = this.list[i].id;
                  this.body = this.list[i].body;
                 
             }
-            console.log(this.answerid);
-            console.log(this.body);
-            console.log(this.list);
             //判断答题者的id中是否有自己
             if(userarr.indexOf($userid) !== -1){
-              console.log(this.list);
               this.list[userarr.indexOf($userid)].isMe = true;
-              for(var j=0;j<this.list[userarr.indexOf($userid)].comments.length;j++){
-                this.list[userarr.indexOf($userid)].comments[j].isMe = true;
-                console.log(this.list[userarr.indexOf($userid)].comments[j]);
-              }
-            }else{
-              $.each(this.list,function(i,v){
-                $.each(v.comments,function(i,v){
-                  v.isMe = false;
-                  if(v.id == $userid){
-                    v.isMe = true;
-                  };
-                })
-              });
-              console.log(this.list);
             }
+              //根据答案ID获取评论
+              const search_comment ={
+                search:{
+                  answer:this.answerid
+                },
+                sort:{
+                  createdAt:0
+                }
+              }
+              this.$axios.get('/comment',{params:search_comment}).then((res)=>{
+                if(res.status == 200){
+                  
+                  $.each(res.data,function(i,v){//循环评论判断评论者的ID 是否是自己
+                    v.isMe = false;
+                    if(v.createdBy.id == $userid){
+                       v.isMe = true;
+                    };
+                  });
+                  this.comments = res.data;
+                  console.log(this.comments);
+                }
+              }).catch((error)=>{
+
+              });
         }).catch((error)=>{
           console.log(error);
         });
+
 
         //微信js-sdk
         this.$axios.get('/wechat_share',{params:{url:window.location.href}}).then(res=>{
@@ -431,6 +456,9 @@
 </script>
 <style lang="scss" scoped>
     $x:37.5;
+    .error_tip{
+      margin-top: 20rem/$x;
+    }
     .comment_box{
     	width:100%;
     	height:49rem/$x;
@@ -502,6 +530,7 @@
         width: 345rem/$x;margin: 0 auto;
         padding-top:10rem/$x;
         box-sizing:border-box;
+        padding-bottom: 49rem/$x;
     }
     .countdown{
         width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
@@ -556,11 +585,13 @@
     }
     ul,li{list-style: none;}
     .ctn>li{
-        width: 345rem/$x;height:100%;
+        width: 345rem/$x;
+        height:100%;
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
         margin-top: 15rem/$x;
+        
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}
     .ctn_l>i{width: 17rem/$x;height: 17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;

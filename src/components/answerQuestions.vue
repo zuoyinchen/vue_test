@@ -3,8 +3,8 @@
         <div class="countdown" v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                            <countdown :time="time" class="countdown">
-                                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                                    <countdown :time="time" class="countdown">
+                                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
           </span>
@@ -16,11 +16,10 @@
               <div><i class="iconfont icon-pinglun"></i><span>{{answernum}}</span></div>
           </div>
       </div>
-     
-        
-        <textarea name="" class="int" id="ctn"></textarea>
-        <input  type="button" name="button" value="提交" class="int_sub" @click="submit"/> 
-      
+      <div>
+        <textarea name="" class="int" id="ctn" v-model="message"></textarea>
+        <button type="button"class="int_sub"@click="submit($event)" :data-message="message">提交</button>
+      </div>
   </div>
 </template>
 
@@ -35,55 +34,59 @@
                 title: '',
                 readnum: '',
                 answernum: '',
+                message: ''
             }
         },
         methods: {
-            submit: function() {
-                const body = $('#ctn').val();
+            submit: function(event) {
+                console.log(event.currentTarget.dataset);
+                const message = event.currentTarget.dataset.message;
                 const userQuestion = localStorage.getItem("userQuestion"); //参数集合
                 const userQuestionobj = JSON.parse(userQuestion);
-                const topic = userQuestionobj.topicid;
+                const topicid = userQuestionobj.topicid;
                 const createdBy = localStorage.getItem('userid');
-    
                 const newMsg = {
-                    body,
-                    topic,
-                    createdBy
+                    body: message,
+                    topic: topicid,
+                    createdBy: localStorage.getItem('userid')
                 }
+                console.log(newMsg)
     
-                this.$axios.post('/answer', JSON.stringify(newMsg)).then(res => {
-    
+                this.$axios.post('/answer', newMsg).then(res => {
+                    console.log(res);
                     if (res.status === 200 || res.status === 201) {
     
+                        localStorage.setItem("answernum", this.answernum + 1);
                         this.$router.replace('/answerDetail');
                     }
     
+    
                 });
+            },
+            mounted() {
+                const userQuestion = localStorage.getItem("userQuestion"); //参数集合
+                const userQuestionobj = JSON.parse(userQuestion);
+                this.title = userQuestionobj.title;
+                this.time = Number(userQuestionobj.time);
+                this.status = userQuestionobj.status;
+                this.readnum = Number(userQuestionobj.readnum);
+                this.answernum = Number(userQuestionobj.answernum);
+                this.topicid = userQuestionobj.topicid;
+                console.log(this.title);
+                // const $url = 'http://192.168.1.116:1337';
+                // const topicid = this.topicid;//问题id
+    
+                // const data ={
+                //     search:JSON.stringify({topic: topicid}),
+                //     userid:$userid
+                // };
+                // this.$http.get('/answer', {params:data}).then(res=>{
+                //     this.msg = res.data;
+                // }).catch((error)=>{
+                //     console.log(error);
+                // });
+    
             }
-        },
-        mounted() {
-            const userQuestion = localStorage.getItem("userQuestion"); //参数集合
-            const userQuestionobj = JSON.parse(userQuestion);
-            this.title = userQuestionobj.title;
-            this.time = Number(userQuestionobj.time);
-            this.status = userQuestionobj.status;
-            this.readnum = Number(userQuestionobj.readnum);
-            this.answernum = Number(userQuestionobj.answernum);
-            this.topicid = userQuestionobj.topicid;
-            console.log(this.title);
-            // const $url = 'http://192.168.1.116:1337';
-            // const topicid = this.topicid;//问题id
-    
-            // const data ={
-            //     search:JSON.stringify({topic: topicid}),
-            //     userid:$userid
-            // };
-            // this.$http.get('/answer', {params:data}).then(res=>{
-            //     this.msg = res.data;
-            // }).catch((error)=>{
-            //     console.log(error);
-            // });
-    
         }
     }
 </script>
@@ -191,7 +194,8 @@
         border-radius: 10px;
         font-size: 18px;
         text-indent: 20rem/$x;
-        line-height: 60rem/$x;;
+        line-height: 60rem/$x;
+        ;
     }
     
     .int_sub {
@@ -206,11 +210,22 @@
         line-height: 42rem/$x;
     }
     
-    input,
-    select,
     textarea {
         -webkit-appearance: none;
         appearance: none;
+    }
+    
+    .int_sub {
+        width: 345rem/$x;
+        height: 42rem/$x;
+        margin-top: 20rem/$x;
+        border: none;
+        background: #FDD545;
+        border-radius: 4px;
+        font-family: STHeitiSC-Medium;
+        font-size: 17rem/$x;
+        color: #333333;
+        line-height: 42rem/$x;
     }
 </style>
 

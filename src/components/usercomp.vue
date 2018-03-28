@@ -1,26 +1,28 @@
 <template>
 	<div class="container">
 			<scroller :on-refresh="refresh"
-  :on-infinite="infinite" ref="myscroller"  v-if="prolist.length>0">
-                <li class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
-                    <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
-                        <p class="title">{{item.topic.title}}</p>
-                        <p class="t_componet">{{item.body}}</p>
-                        <p class="title-infor">
-                            <span>
-                                <span class="seenum">{{item.comments.length}}</span>
-                                人回答
-                            </span>
-                            <span>
-                                <span class="componet-num">{{item.stars.length}}</span>
-                                人收藏
-                            </span>
-                        </p>
-                        
-                    </div>
-                    <div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index" :data-body="item.body" :data-id="item.id">
-                    </div>
-                </li>
+  :on-infinite="infinite" ref="myscroller" class="myscroller"  v-if="prolist.length>0">
+                <ul>
+                    <li class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
+                        <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
+                            <p class="title">{{item.topic.title}}</p>
+                            <p class="t_componet">{{item.body}}</p>
+                            <p class="title-infor">
+                                <span>
+                                    <span class="seenum">{{item.comments.length}}</span>
+                                    人回答
+                                </span>
+                                <span>
+                                    <span class="componet-num">{{item.stars.length}}</span>
+                                    人收藏
+                                </span>
+                            </p>
+                            
+                        </div>
+                        <div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index" :data-body="item.body" :data-id="item.id">
+                        </div>
+                    </li>
+                </ul>
 			</scroller>
 			<div v-else class="no_data">
 	            <img src="../assets/images/shoucang.png">
@@ -38,6 +40,9 @@
                 prolist : [],
                 startX : 0 ,
                 endX : 0 ,
+                noData:'',
+                page:1,
+                size:5,
                 noData:''
             }
         },
@@ -107,7 +112,7 @@
                     stars:stars,
                     body:$body,
                 };
-                this.$http.put('/answer/'+$id,data).then(res=>{
+                this.$axios.put('/answer/'+$id,data).then(res=>{
                     console.log(res);
                     if(res.status == 200){
                     	this.restSlide();
@@ -179,6 +184,10 @@
         list-style: none;
         padding-top:70rem/$unit;
         box-sizing:border-box;
+        .myscroller{
+            padding-top: 1.86667rem;
+            box-sizing: border-box;
+        }
 	    ul{
 	        height:100%;
 	        padding:0 15rem/$unit;

@@ -1,7 +1,8 @@
 <template>
     <div class="container">
         <scroller :on-refresh="refresh"
-  :on-infinite="infinite" ref="myscroller" v-if="prolist.length>0">
+  :on-infinite="infinite" ref="myscroller" v-if="prolist.length>0" class="myscroller">
+          <ul>
             <li class="list-item" v-for="(item,index) in prolist " data-type="0">
                 <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
                     <span class="status-bac status-bac-yellow" v-if="item.status== 1"></span>
@@ -23,6 +24,7 @@
                 <div class="delete iconfont icon-shanchu" @click="deleteItem" :data-index="index" :data-id="item.id" :data-title="item.title" :data-status="item.status">
                 </div>
             </li>
+          </ul>
         </scroller>
         <div v-else class="no_data">
             <img src="../assets/images/shoucang.png">
@@ -214,6 +216,10 @@
         list-style: none;
         padding-top:70rem/$unit;
         box-sizing:border-box;
+    }
+    .myscroller{
+        padding-top: 1.86667rem;
+        box-sizing: border-box;
     }
     ul{
         height:100%;
