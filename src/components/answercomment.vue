@@ -177,11 +177,15 @@
           }
           if(this.list[$index].upVote){
             upVotesid.splice(upVotesid.indexOf($userid),1)
+            console.log("取消点赞");
             var resultarr = upVotesid;
+            console.log(resultarr);
             $(".upVote_num").eq($index).text(resultarr.length);
           }else{
             upVotesid.push($userid);
+            console.log("点赞");
             var resultarr = [...new Set(upVotesid)];
+            console.log(resultarr);
             $(".upVote_num").eq($index).text(resultarr.length);
           }
           const data = {
@@ -287,10 +291,11 @@
 	            const userarr = [];//答题者id集合
 	            for(var i=0;i<this.list.length;i++){
 	                this.list[i].isMe = false;
-	                userarr.push(this.list[i].id);
+	                userarr.push(this.list[i].createdBy.id);
 	                
 	            }
 	            console.log(this.list);
+              console.log(userarr);
 	            //判断答题者的id中是否有自己
 	            if(userarr.indexOf($userid) !== -1){
 	              console.log(this.list);
@@ -303,7 +308,7 @@
 	              $.each(this.list,function(i,v){
 	                $.each(v.comments,function(i,v){
 	                  v.isMe = false;
-	                  if(v.id == $userid){
+	                  if(v.createdBy == $userid){
 	                    v.isMe = true;
 	                  };
 	                })
@@ -364,7 +369,7 @@
             const userarr = [];//答题者id集合
             for(var i=0;i<this.list.length;i++){
                 this.list[i].isMe = false;
-                userarr.push(this.list[i].id);
+                userarr.push(this.list[i].createdBy.id);
                  this.answerid = this.list[i].id;
                  this.body = this.list[i].body;
                 
@@ -384,7 +389,7 @@
               $.each(this.list,function(i,v){
                 $.each(v.comments,function(i,v){
                   v.isMe = false;
-                  if(v.id == $userid){
+                  if(v.createdBy == $userid){
                     v.isMe = true;
                   };
                 })
