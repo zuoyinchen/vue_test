@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <scroller :on-refresh="refresh"
-  :on-infinite="infinite" ref="myscroller" v-if="prolist.length>0">
+  :on-infinite="infinite" ref="myscroller" v-if="prolist.length>0" class="myscroller">
           <ul>
             <li class="list-item" v-for="(item,index) in prolist " data-type="0">
                 <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
@@ -216,6 +216,10 @@
         list-style: none;
         padding-top:70rem/$unit;
         box-sizing:border-box;
+    }
+    .myscroller{
+        padding-top: 1.86667rem;
+        box-sizing: border-box;
     }
     ul{
         height:100%;

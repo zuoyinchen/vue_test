@@ -14,7 +14,7 @@
           </div>
 
       </div>
-      <scroller class="list_wrap" v-if="pailist.length > 1">
+      <scroller class="list_wrap" v-if="pailist.length > 0">
         <ul class="paihang_list">
             <li class="ctn clearfix" v-for="(item,index) in pailist">
                     <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
@@ -22,7 +22,7 @@
                     <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
                     <span class="indexname" v-else>{{index+1}}</span>
                     <img :src="item.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.avatarUrl)">
-                    <img :src="myavtalUrl" alt="" class="avtalimg" v-else>
+                    <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
                     <span class="nickname">{{item.username}}</span>
                     <p class="upVotes_box">
                       <i class="iconfont icon-dianzan1"></i>
@@ -30,14 +30,14 @@
                     </p>
             </li>
         </ul>
-        
       </scroller>  
-            <span class="showempty" v-else>暂无用户上榜</span>
+      <span class="showempty" v-else>暂无用户上榜</span>
       <div class="my_listbox">
         <div class="my_list clearfix">
             <div class="my_list_l">
                   <i>{{myGrade}}</i>
-                  <img :src="myavtalUrl" alt="">
+                  <img :src="myavtalUrl" alt="a" v-if="Boolean(myavtalUrl)" >
+                  <img src="../assets/images/logo.png" alt="" v-else>
                   <span>我的排名</span>
             </div>
             <div class="my_list_r">
@@ -85,13 +85,11 @@ export default {
             }else{
               this.myGrade ='-';
               this.myStar = 0;
-              this.myavtalUrl = localStorage.getItem("headimg");
             }
           }else{
             this.pailist = [];
             this.myGrade ='-';
             this.myStar = 0;
-            this.myavtalUrl = localStorage.getItem("headimg");
           }
       }).catch(function(error){
           console.log(error);
@@ -109,6 +107,7 @@ export default {
               const allFriendIds =JSON.stringify(res.data.allFriendIds);
               const answer ={allFriendIds:allFriendIds};
               this.$axios.get('/answerRank',{params:answer}).then((data)=>{
+                console.log(data);
                 this.pailist =data.data.createdBys;
                 const idarr = [];
                 for(let i=0;i<this.pailist.length;i++){
@@ -118,14 +117,10 @@ export default {
                   const myindex = idarr.indexOf($userid);
                   this.myGrade = Number(idarr.indexOf($userid))+1;
                   this.myStar = this.pailist[myindex].upVotes;
-                  if(this.pailist[myindex].avatarUrl){
-                    console.log('www');
-                  }
                   this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
                 }else{
                   this.myGrade ='-';
                   this.myStar = 0;
-                  this.myavtalUrl = localStorage.getItem("headimg");
                 }
               }).catch((error)=>{
                 console.log(error);
@@ -134,7 +129,6 @@ export default {
               this.pailist = [];
               this.myGrade ='-';
               this.myStar = 0;
-              this.myavtalUrl = localStorage.getItem("headimg");
             }
          }
       }).catch(function(error){
@@ -143,16 +137,14 @@ export default {
     }
   },  
   mounted:function(){
-    this.myavtalUrl = localStorage.getItem("headimg");
+    
   },
   beforeCreate:function(){
-    console.log(1);
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
 
     this.$axios.get('/rank').then((res)=>{
-      conso
         this.pailist =res.data;
         const idarr = [];
         for(let i=0;i<this.pailist.length;i++){
@@ -164,9 +156,9 @@ export default {
           this.myStar = this.pailist[myindex].upVotes;
           this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl:localStorage.getItem("headimg");
         }else{
-          this.myGrade ='-';
-          this.myStar = 0;
-          this.myavtalUrl = localStorage.getItem("headimg");
+            this.pailist = [];
+            this.myGrade ='-';
+            this.myStar = 0;
         }
     }).catch(function(error){
         console.log(error);

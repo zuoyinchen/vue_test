@@ -1,38 +1,41 @@
 <template>
 	<div class="box">
-		<ul class="box-list" v-if="prolist.length>0">
-			<li v-for="(item,index) in prolist" to="" :key="index">
-				<span class="status-bac status-bac-yellow" v-if="item.status == 1"></span>
-				<span class="status-bac" v-else-if="item.status==2"></span>
-				<span class="status"v-if="item.status == 1">进行中</span>
-				<span class="status"v-else-if="item.status == 2">已结束</span>
-				<span class="status"v-else></span>
-                <p class="title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.time">{{item.title}}</p>
-				<ul class="clearfix">
-				  <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
-                        <i class="iconfont icon-paihangbang"></i>
-                  		<span>排行榜</span>
-                  </li>
-                  <li>
-                  	<i class="iconfont icon-xianshimima"></i>
-                  	<span>{{item.readNum?item.readNum:0}}</span>
-                  </li>
-                  <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.messageNum?item.messageNum :0" :data-status="item.status" :data-tid="item.id" :data-time="item.time">
-                  	<i class="iconfont icon-pinglun"></i>
-                  	<span>{{item.messageNum?item.messageNum :0}}</span>
-                  </li>
-                  <li class="time" v-show="item.status==1">
-                  	<i></i>
-                  	<span>倒计时</span>
-                  	<span>
-                  		<countdown :time="item.time" class="countdown">
-                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
-                        </countdown>
-                  	</span>
-                  </li>
-              </ul>
-			</li>
-		</ul>
+		<scroller  v-if="prolist.length>0" :on-refresh="refresh"
+  :on-infinite="infinite" ref="myscroller">
+			<ul class="box-list">
+				<li v-for="(item,index) in prolist" to="" :key="index">
+					<span class="status-bac status-bac-yellow" v-if="item.status == 1"></span>
+					<span class="status-bac" v-else-if="item.status==2"></span>
+					<span class="status"v-if="item.status == 1">进行中</span>
+					<span class="status"v-else-if="item.status == 2">已结束</span>
+					<span class="status"v-else></span>
+	                <p class="title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.time">{{item.title}}</p>
+					<ul class="clearfix">
+					  <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
+	                        <i class="iconfont icon-paihangbang"></i>
+	                  		<span>排行榜</span>
+	                  </li>
+	                  <li>
+	                  	<i class="iconfont icon-xianshimima"></i>
+	                  	<span>{{item.readNum?item.readNum:0}}</span>
+	                  </li>
+	                  <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.messageNum?item.messageNum :0" :data-status="item.status" :data-tid="item.id" :data-time="item.time">
+	                  	<i class="iconfont icon-pinglun"></i>
+	                  	<span>{{item.messageNum?item.messageNum :0}}</span>
+	                  </li>
+	                  <li class="time" v-show="item.status==1">
+	                  	<i></i>
+	                  	<span>倒计时</span>
+	                  	<span>
+	                  		<countdown :time="item.time" class="countdown">
+	                            <template slot-scope="props" >{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }} </template>
+	                        </countdown>
+	                  	</span>
+	                  </li>
+	              </ul>
+				</li>
+			</ul>
+		</scroller>
 		<div v-else class="no_data">
             <img src="../assets/images/canyuchang.png">
             <p>您还没有参与的场次</p>
@@ -47,13 +50,13 @@
 		data(){
 			return {
 				prolist:[
-					{
-						status:1,
-						title:'你还好吗？',
-						messageNum:122,
-						readNum:12,
-						time:1580000
-					}
+					// {
+					// 	status:1,
+					// 	title:'你还好吗？',
+					// 	messageNum:122,
+					// 	readNum:12,
+					// 	time:1580000
+					// }
 				],
 				page:1,
 				size:5
@@ -135,7 +138,7 @@
 	            title : title
 	          }
 	          localStorage.setItem("squery",JSON.stringify(squery));
-	          this.$router.push('/singlepai');
+	          this.$router.replace('/singlepai');
 	        }
 		},
 		mounted:function(){
