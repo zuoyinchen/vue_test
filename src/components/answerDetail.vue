@@ -277,7 +277,8 @@
           const topicid = this.topicid;//问题id
           const data ={
             search:JSON.stringify({topic: topicid}),
-            userid:$userid
+            userid:$userid,
+            sort:{createdAt:0}
           };
           this.$axios.get('/answer', {params:data}).then(res=>{
               this.msg = res.data;
@@ -335,7 +336,8 @@
         
         const data ={
           search:JSON.stringify({topic: topicid}),
-          userid:$userid
+          userid:$userid,
+          sort:{createdAt:0}
         };
         console.log(data);
         
