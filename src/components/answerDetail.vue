@@ -43,8 +43,8 @@
             <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id"  @click="slideDown($event)" :data-index="index" :data-id="item.id">
                 <div class="ctn_l">
                     <i>{{index+1}}</i>
-                    <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
-                    <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
+                    <img v-if="!Boolean(item.createdBy)" src="../assets/images/logo.png" alt="1">
+                    <img v-else-if="!Boolean(item.createdBy.avatarUrl)" src="../assets/images/logo.png" alt="1">
                     <img v-else :src="item.createdBy.avatarUrl" alt="2">
                 </div>
                 <div class="ctn_r">
@@ -98,7 +98,8 @@
 
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
-  const $userid = localStorage.getItem("userid");//用户id
+  // const $userid = localStorage.getItem("userid");//用户id
+  const $userid = '5ab66d31d33f52cd14bc698f';//用户id
   export default {
       name:"answerDetail",
       data(){
@@ -112,7 +113,7 @@
               readnum:'',
               answernum:'',
               id:'',
-              defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
+              defaulturl:''
           }
       },
       methods:{
@@ -505,6 +506,7 @@
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
         overflow: hidden;
+        margin:0 auto;
         margin-top: 15rem/$x;
     }
     
