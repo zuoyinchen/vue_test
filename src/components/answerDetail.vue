@@ -80,12 +80,8 @@
               </div>
           </li>
       </ul>
-      <div class="int" v-show="false">
-          <div class="int_l"></div>
-          <form action="">
-            <input type="text" class="int_m">
-          </form>
-          <div class="int_r"></div>
+      <div class="">
+
       </div>
   </div>
 </template>
@@ -421,7 +417,7 @@
     }
     .theme_t{
        font-family: STHeitiSC-Medium;font-size: 18rem/$x;letter-spacing: 0.22rem/$x;color-interpolation-filters: #333;
-       text-align: left;margin-left: 15rem/$x;margin-top: 15rem/$x;
+       text-align: left;margin-left: 15rem/$x;margin-top: 15rem/$x;font-weight: 500;
     }
     .theme_b{
         width: 345rem/$x;margin-left: 15rem/$x;margin-bottom: 15rem/$x;margin-top: 15rem/$x;
@@ -466,7 +462,7 @@
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}
     .ctn_l>i{width: 17rem/$x;height: 17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;
-    top:10rem/$x;left: 12rem/$x;}
+    top:10rem/$x;left: 12rem/$x;line-height: 18rem/$x;}
     .ctn_l>img{width: 32rem/$x;height: 32rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;margin-left: 15rem/$x;margin-top: 15rem/$x;}
     .ctn_r{
         width: 283rem/$x;float: left;text-align: left;overflow: hidden;margin-top: 15rem/$x;
