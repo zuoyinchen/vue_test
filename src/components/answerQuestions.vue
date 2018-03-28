@@ -15,10 +15,10 @@
               <div><i class="iconfont icon-pinglun"></i><span>{{answernum}}</span></div>
           </div>
       </div>
-      <form action="" method="post">
-        <textarea name="" class="int" id="ctn"></textarea>
-        <input  type="button" name="button" value="提交" class="int_sub" @click="submit"/> 
-      </form>
+      <div>
+        <textarea name="" class="int" id="ctn" v-model="message"></textarea>
+        <button type="button"class="int_sub"@click="submit($event)" :data-message="message">提交</button>
+      </div>
   </div>
 </template>
 <script>
@@ -32,24 +32,29 @@ export default {
             title:'',
             readnum:'',
             answernum:'',
+            message:''
         }
     },
     methods:{
-        submit:function(){
-            const body = $('#ctn').val();
+        submit:function(event){
+            console.log(event.currentTarget.dataset);
+            const message = event.currentTarget.dataset.message;
             const userQuestion = localStorage.getItem("userQuestion");//参数集合
             const userQuestionobj = JSON.parse(userQuestion);
-            const topic = userQuestionobj.topicid;
+            const topicid= userQuestionobj.topicid;
             const createdBy = localStorage.getItem('userid');
-            console.log(newMsg)
             const newMsg = {
-                body,
-                topic,
-                createdBy
+                body:message,
+                topic:topicid,
+                createdBy:localStorage.getItem('userid')
             }
-            this.$axios.post('/answer',JSON.stringify(newMsg)).then(res=>{
+            console.log(newMsg)
+
+            this.$axios.post('/answer',newMsg).then(res=>{
+                console.log(res);
                if (res.status === 200 || res.status === 201) {
                     
+                    localStorage.setItem("answernum",this.answernum+1);
                     this.$router.replace('/answerDetail');
                 }
            
@@ -139,11 +144,16 @@ letter-spacing: -0.39px;
         width: 345rem/$x;height: 240rem/$x;margin-top: 20rem/$x;
     }
     .int_sub{
-        width: 345rem/$x;height: 42rem/$x;margin-top: 20rem/$x;
-        background: #FDD545;border-radius: 4px;font-family: STHeitiSC-Medium;
-font-size: 17rem/$x;
-color: #333333;
-line-height: 42rem/$x;
+        width: 345rem/$x;
+        height: 42rem/$x;
+        margin-top: 20rem/$x;
+        border:none;
+        background: #FDD545;
+        border-radius: 4px;
+        font-family: STHeitiSC-Medium;
+        font-size: 17rem/$x;
+        color: #333333;
+        line-height: 42rem/$x;
     }
 </style>
 

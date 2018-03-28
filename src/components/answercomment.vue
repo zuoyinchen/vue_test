@@ -323,9 +323,10 @@
         gotoComment:function(event){
          	console.log(event.currentTarget.dataset.message);
          	const data ={
-         		body: this.message,
+         		  body: this.message,
               answer: this.answerid,
               createdBy: $userid,
+              sort:{createdAt:0}
          	}
          	console.log(data);
          	this.$axios.post('/comment',data).then((res)=>{
