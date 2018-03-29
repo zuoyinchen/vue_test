@@ -6,9 +6,9 @@
 				<li v-for="(item,index) in prolist" to="" :key="index">
 					<span class="status-bac status-bac-yellow" v-if="item.status == 1"></span>
 					<span class="status-bac" v-else-if="item.status==2"></span>
-					<span class="status"v-if="item.status == 1">进行中</span>
-					<span class="status"v-else-if="item.status == 2">已结束</span>
-					<span class="status"v-else></span>
+					<span class="status" v-if="item.status == 1">进行中</span>
+					<span class="status" v-else-if="item.status == 2">已结束</span>
+					<span class="status" v-else></span>
 	                <p class="title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.time">{{item.title}}</p>
 					<ul class="clearfix">
 					  <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">

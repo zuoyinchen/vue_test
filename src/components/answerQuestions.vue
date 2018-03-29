@@ -40,6 +40,7 @@ export default {
         }
     },
     methods:{
+        
         submit:function(event){
             console.log(event.currentTarget.dataset);
             const message = event.currentTarget.dataset.message;
@@ -93,20 +94,18 @@ export default {
 
 <style lang="scss" scoped>
     $x:37.5;
-    .countdown {
-        font-family: STHeitiSC-Medium;
-        font-size: 13px;
-        color: #333333;
-        letter-spacing: -0.39px;
+    .countdown{
+      font-family: STHeitiSC-Medium;
+      font-size: 13px;
+      color: #333333;
+      letter-spacing: -0.39px;
     }
-    
-    .counttest {
-        font-family: STHeitiSC-Medium;
-        font-size: 13px;
-        color: #333333;
-        letter-spacing: -0.39px;
+    .counttest{
+      font-family: STHeitiSC-Medium;
+      font-size: 13px;
+      color: #333333;
+      letter-spacing: -0.39px;
     }
-    
     .clearfix:after {
         content: "";
         display: block;
@@ -175,7 +174,7 @@ export default {
         color: #BDBDBD;
         letter-spacing: -0.26px;
         float: left;
-        margin: 15rem/$x;
+        margin: 13rem/$x;
     }
     
     .btn>div:nth-of-type(1)>div:nth-of-type(2) {
@@ -195,7 +194,7 @@ export default {
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
-        font-size: 14px;
+        font-size: 14rem/$x;
         text-indent: 20rem/$x;
         line-height: 50rem/$x;
     }
@@ -219,7 +218,7 @@ export default {
         appearance: none;
     }
     .icon_eye{
-        width: 36rem/$x;
+       
     }
     .icon_eye>i:nth-of-type(1){
         font-size: 14px;
@@ -228,8 +227,7 @@ export default {
         padding-left: 12rem/$x;
     }
     .icon_pin{
-        width: 36rem/$x;
-        padding-top: 2rem/$x;
+        
     }
     .icon_pin>i:nth-of-type(1){
         font-size: 12px;
@@ -237,7 +235,6 @@ export default {
     .icon_pin>span:nth-of-type(1){
         padding-left: 12rem/$x;
     }
-    
 </style>
 
 

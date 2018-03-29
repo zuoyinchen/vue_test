@@ -18,11 +18,11 @@
           </p>
           <div class="theme_b clearfix">
               <div class="theme_b_l">
-                  <div>
-                      <i class="iconfont icon-wode"></i>
+                  <div class="icon_eye">
+                      <i class="iconfont icon-xianshimima"></i>
                       <span>{{readnum}}</span>
                   </div>
-                  <div>
+                  <div class="icon_pin">
                       <i class="iconfont icon-pinglun"></i>
                       <span>{{answernum}}</span>
                   </div>
@@ -39,7 +39,7 @@
       </div>
       <ul class="ctn">
           <li class="clearfix pin_list" v-for="(item,index) in list" >
-          	<div class="answer_wrap">
+            <div class="answer_wrap">
               <div class="ctn_l">
                   <i>{{answerindex+1}}</i>
                   <img v-if="!Boolean(item.createdBy)" src="../assets/images/logo.png" alt="1">
@@ -76,7 +76,7 @@
                       </div>
                   </div>
               </div>
-          	</div>
+            </div>
             <div class="slide clearfix" v-for="i in comments" :key="i.id">
               <div class="slide_l">
                   <img v-if="Boolean(i.createdBy.avatarUrl)" :src="i.createdBy.avatarUrl" alt="">
@@ -103,12 +103,12 @@
       <div class="block"></div>
     </scroller>
       <div class="comment_box">
-      	<div class="comment_wrap">
-      		<img src="" alt="" class="comment_img">
-      		<span>|</span>
-      		<input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
-      		<span class="send_com" @click="gotoComment($event)" :data-message="message" >发送</span>
-      	</div>
+        <div class="comment_wrap">
+          <img src="" alt="" class="comment_img">
+          <span>|</span>
+          <input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
+          <span class="send_com" @click="gotoComment($event)" :data-message="message" >发送</span>
+        </div>
       </div>
   </div>
 </template>
@@ -307,15 +307,15 @@
           const queryobj = JSON.parse(query);
           this.topicid = queryobj.topicid;
             const topicid = this.topicid;//问题id
-	        const data ={
-	          search:JSON.stringify({topic: topicid}),
-	          userid:$userid
-	        };
-	        this.$axios.get('/answer', {params:data}).then(res=>{
-	            const cindex = localStorage.getItem("comment_index");
-	            this.answerindex = Number(cindex);
-	            this.list = res.data.splice(cindex,1);
-	            console.log(this.list);
+          const data ={
+            search:JSON.stringify({topic: topicid}),
+            userid:$userid
+          };
+          this.$axios.get('/answer', {params:data}).then(res=>{
+              const cindex = localStorage.getItem("comment_index");
+              this.answerindex = Number(cindex);
+              this.list = res.data.splice(cindex,1);
+              console.log(this.list);
               //拿到所有答题者的id
               $.each(this.list,function(i,v){
                 v.isMe = false;
@@ -354,11 +354,11 @@
               }).catch((error)=>{
 
               });
-	        }).catch((error)=>{
+          }).catch((error)=>{
             Indicator.close();
             Toast({message:'网络错误，操作不成功'});
-	          console.log(error);
-	        });
+            console.log(error);
+          });
         },
         //评论答案
         gotoComment:function(event){
@@ -374,24 +374,24 @@
               return false;
           }
           console.log(this.answerid);
-         	const data ={
-         		  body: this.message,
+          const data ={
+              body: this.message,
               answer: this.answerid,
               createdBy: $userid,
               sort:{createdAt:0}
-         	}
-         	console.log(data);
+          }
+          console.log(data);
           Indicator.open();
-         	this.$axios.post('/comment',data).then((res)=>{
-         		console.log(res.data);
+          this.$axios.post('/comment',data).then((res)=>{
+            console.log(res.data);
             this.upDatedata();
             Indicator.close();
 
-         	}).catch((error)=>{
+          }).catch((error)=>{
             Indicator.close();
-         		console.log(error);
+            console.log(error);
             Toast("操作不成功");
-         	})
+          })
         }
       },
       mounted(){
@@ -510,49 +510,49 @@
       margin-top: 20rem/$x;
     }
     .comment_box{
-    	width:100%;
-    	height:49rem/$x;
-    	background:#fff;
-    	padding:8rem/$x 15rem/$x;
-    	box-sizing:border-box;
-    	position: fixed;
-    	left:0;
-    	bottom:0;
-    	.comment_wrap{
-    		width:100%;
-    		height:100%;
-    		background: #F4F4F4;
-			border-radius: 100px;
-			padding: 6.5rem/$x 20rem/$x;
-			box-sizing:border-box;
-			display: flex;
+      width:100%;
+      height:49rem/$x;
+      background:#fff;
+      padding:8rem/$x 15rem/$x;
+      box-sizing:border-box;
+      position: fixed;
+      left:0;
+      bottom:0;
+      .comment_wrap{
+        width:100%;
+        height:100%;
+        background: #F4F4F4;
+      border-radius: 100px;
+      padding: 6.5rem/$x 20rem/$x;
+      box-sizing:border-box;
+      display: flex;
 
-			.comment_img{
-				width:24rem/$x;
-				height:18rem/$x;
-				margin-right:10rem/$x;
-			}
-			span{
-				font-size:20px;
-				margin-right: 10rem/$x;
-			}
-			.comment_input{
-				flex:1;
-				background: #F4F4F4;
-				outline:none;
-				border:none;
-				font-family: STHeitiSC-Medium;
-				font-size: 12px;
-				color: #D1D1D1;
-				letter-spacing: 0.14px;
-			}
-			.send_com{
-				float: right;
-				color:blue;
-				font-size: 12px;
-				line-height: 20rem/$x;
-			}
-    	}
+      .comment_img{
+        width:24rem/$x;
+        height:18rem/$x;
+        margin-right:10rem/$x;
+      }
+      span{
+        font-size:20px;
+        margin-right: 10rem/$x;
+      }
+      .comment_input{
+        flex:1;
+        background: #F4F4F4;
+        outline:none;
+        border:none;
+        font-family: STHeitiSC-Medium;
+        font-size: 12px;
+        color: #D1D1D1;
+        letter-spacing: 0.14px;
+      }
+      .send_com{
+        float: right;
+        color:blue;
+        font-size: 12px;
+        line-height: 20rem/$x;
+      }
+      }
     }
 
     .countdown{
@@ -569,8 +569,8 @@
       letter-spacing: -0.39px;
     }
     .answer_wrap{
-    	height:auto;
-    	overflow: hidden;
+      height:auto;
+      overflow: hidden;
     }
     .clearfix:after {
     content: "";
@@ -774,6 +774,25 @@
     }
     .block{
         width: 375rem/$x;height: 50rem/$x;
+    }
+    .icon_eye{
+        // width: 36rem/$x;
+    }
+    .icon_eye>i:nth-of-type(1){
+        font-size: 14px;
+    }
+    .icon_eye>span:nth-of-type(1){
+        padding-left: 12rem/$x;
+    }
+    .icon_pin{
+        // width: 36rem/$x;
+        
+    }
+    .icon_pin>i:nth-of-type(1){
+        font-size: 12px;
+    }
+    .icon_pin>span:nth-of-type(1){
+        padding-left: 12rem/$x;
     }
 </style>
 

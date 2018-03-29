@@ -481,8 +481,10 @@
         letter-spacing: 0.22rem/$x;
         color-interpolation-filters: #333;
         text-align: left;
-        margin-left: 15rem/$x;
-        margin-top: 15rem/$x;
+        font-weight: 500;
+        color: #333333;
+        letter-spacing: 0.22px;
+        margin: 15rem/$x;
         font-weight: 500;
     }
     
@@ -827,7 +829,7 @@
         letter-spacing: -0.26px;
     }
     .icon_eye{
-        width: 36rem/$x;
+        // width: 36rem/$x;
     }
     .icon_eye>i:nth-of-type(1){
         font-size: 14px;
@@ -836,8 +838,8 @@
         padding-left: 12rem/$x;
     }
     .icon_pin{
-        width: 36rem/$x;
-        padding-top: 2rem/$x;
+        // width: 36rem/$x;
+        
     }
     .icon_pin>i:nth-of-type(1){
         font-size: 12px;
