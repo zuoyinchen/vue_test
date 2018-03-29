@@ -3,10 +3,10 @@
 			<scroller :on-refresh="refresh"
   :on-infinite="infinite" ref="myscroller" class="myscroller"  v-if="prolist.length>0">
                 <ul>
-                    <li class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0">
-                        <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
-                            <p class="title">{{item.topic.title}}</p>
+                    <li class="list-item" v-for="(item,index) in prolist" :key="index"  data-type="0" >
+                        <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="gotoDetail($event)" :data-title="item.topic.title" :data-rnum="item.topic.readNum? item.topic.readNum : 0" :data-anum="item.comments.length" :data-status="item.topic.status" :data-tid="item.topic.id" :data-time="item.topic.time">
                             <p class="t_componet">{{item.body}}</p>
+                            <p class="title">来自问题：{{item.topic.title}}</p>
                             <p class="title-infor">
                                 <span>
                                     <span class="seenum">{{item.comments.length}}</span>
@@ -24,7 +24,7 @@
                     </li>
                 </ul>
 			</scroller>
-			<div v-else class="no_data">
+			<div v-show="isShow" class="no_data">
 	            <img src="../assets/images/shoucang.png">
 	            <p>您的收藏还是空的</p>
 	            <router-link tag="a" class="goHome" to="../">去逛逛</router-link>
@@ -32,6 +32,8 @@
 	</div>
 </template>
 <script type="text/javascript">
+    import 'mint-ui/lib/style.css'
+    import { MessageBox,Toast,Indicator} from 'mint-ui';
     const $userid = localStorage.getItem("userid");//userid
 	export default{
 		name: 'usecomp',
@@ -43,10 +45,43 @@
                 noData:'',
                 page:1,
                 size:5,
-                noData:''
+                noData:'',
+                isShow:false
             }
         },
         methods : {
+            gotoDetail: async function(event) {
+                if( this.checkSlide() ){
+                    this.restSlide();
+                    return false;
+                }
+                const topicid = event.currentTarget.dataset.tid; //问题id
+                let readnum = event.currentTarget.dataset.rnum; //阅读数
+                const answernum = event.currentTarget.dataset.anum; //评论数
+                const status = event.currentTarget.dataset.status; //状态
+                const time = event.currentTarget.dataset.time; //倒计时时间
+                const title = event.currentTarget.dataset.title; //问题标题
+                console.log("gotoDetail", event.currentTarget.dataset);
+                const query = {
+                    topicid: topicid,
+                    readnum: readnum,
+                    answernum: answernum,
+                    status: status,
+                    time: time,
+                    title: title
+                };
+                console.log(query);
+                readnum++;
+                const clickNum = {
+                    status: Number(status),
+                    title,
+                    readNum: readnum
+                };
+                await this.$axios.put(`/topic/${topicid}`, clickNum);
+                query.readnum = readnum;
+                localStorage.setItem("query", JSON.stringify(query));
+                this.$router.push("/answerDetail");
+            },
             //跳转
             skip:function(){
                 if( this.checkSlide() ){
@@ -130,8 +165,15 @@
                 userid:$userid
               }
               this.$axios.get('/answer',{params:data}).then((res)=>{
-	              this.prolist = res.data;
+                  Indicator.close();
+                  if(res.data&&res.data.length){
+                    this.prolist = res.data;
+                  }else{
+                    this.isShow = true;
+                  }
 	          }).catch((error)=>{
+                  Indicator.close();
+                  Toast({message:"网络错误，请刷新",duration:-1});
 		          console.log(error);
 		      });
            },
@@ -172,6 +214,9 @@
         },
         mounted:function(){
             this.getIndexData();
+        },
+        beforeCreate:function(){
+            Indicator.open();
         }
 	}
 </script>
@@ -231,10 +276,10 @@
 				width:100%;
 				height:auto;
 				font-family: STHeitiSC-Medium;
-				font-size: 18px;
-				color: #333333;
+				font-size: 14px;
+				color: #666666;
 				letter-spacing: 0.22px;
-				padding:15rem/$unit 18rem/$unit 10rem/$unit 15rem/$unit;
+				padding:10rem/$unit 18rem/$unit 10rem/$unit 15rem/$unit;
 				box-sizing:border-box;
 				text-align:left;
 				float: left;
@@ -244,14 +289,15 @@
 			}
 			.t_componet{
 				width:100%;
-				max-height:36rem/$unit;
+                margin-top:15rem/$unit;
+                max-height:44rem/$unit;
 				box-sizing:border-box;
 				padding:0 18rem/$unit 0 15rem/$unit;
 				text-align:left;
 				font-family: STHeitiSC-Medium;
-				font-size: 14px;
-				line-height: 17rem/$unit;
-				color: #666666;
+				font-size: 18px;
+				line-height: 22rem/$unit;
+				color: #333333;
 				letter-spacing: 0.17px;
 				overflow: hidden;
                 text-overflow: ellipsis;

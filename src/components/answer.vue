@@ -26,7 +26,7 @@
             </li>
           </ul>
         </scroller>
-        <div v-else class="no_data">
+        <div v-show="isShow" class="no_data">
             <img src="../assets/images/shoucang.png">
             <p>您的收藏还是空的</p>
             <router-link tag="a" class="goHome" to="../">去逛逛</router-link>
@@ -35,6 +35,8 @@
      </div>
 </template>
 <script>
+    import 'mint-ui/lib/style.css'
+    import { MessageBox,Toast,Indicator} from 'mint-ui';
     const $userid = localStorage.getItem("userid");//userid
     export default{
         name: 'test',
@@ -45,7 +47,8 @@
                 endX : 0 ,
                 page:1,
                 size:5,
-                noData:''
+                noData:'',
+                isShow:false
             }
         },
         methods : {
@@ -138,8 +141,16 @@
                 userid:$userid
               }
               this.$axios.get('/topics',{params:data}).then(res=>{
-                 this.prolist = res.data;
+                console.log(res);
+                Indicator.close();
+                if(res.data&&res.data.length){
+                    this.prolist = res.data;
+                }else{
+                    this.isShow = true;
+                }
               }).catch((error)=>{
+                 Indicator.close();
+                 Toast({message:"网络错误，请刷新",duration:-1});
                  console.log('error');
               });
            },
@@ -178,31 +189,46 @@
                  done()
               }, 3000);
             },
-            gotoDetail:function(event){
-              const topicid = event.currentTarget.dataset.tid;//问题id
-              const readnum = event.currentTarget.dataset.rnum;//阅读数
-              const answernum = event.currentTarget.dataset.anum;//评论数
-              const status = event.currentTarget.dataset.status;//状态
-              const time = event.currentTarget.dataset.time;//倒计时时间
-              const title = event.currentTarget.dataset.title;//问题标题
-
-              const query = {
-                topicid : topicid,
-                readnum : readnum,
-                answernum : answernum,
-                status : status,
-                time : time,
-                title : title
-              }
-
-              localStorage.setItem("query",JSON.stringify(query));
-              this.$router.push('/answerDetail');
-            }
+            gotoDetail: async function(event) {
+                if( this.checkSlide() ){
+                    this.restSlide();
+                    return false;
+                }
+                const topicid = event.currentTarget.dataset.tid; //问题id
+                let readnum = event.currentTarget.dataset.rnum; //阅读数
+                const answernum = event.currentTarget.dataset.anum; //评论数
+                const status = event.currentTarget.dataset.status; //状态
+                const time = event.currentTarget.dataset.time; //倒计时时间
+                const title = event.currentTarget.dataset.title; //问题标题
+                console.log("gotoDetail", event.currentTarget.dataset);
+                const query = {
+                    topicid: topicid,
+                    readnum: readnum,
+                    answernum: answernum,
+                    status: status,
+                    time: time,
+                    title: title
+                };
+                console.log(query);
+                readnum++;
+                const clickNum = {
+                    status: Number(status),
+                    title,
+                    readNum: readnum
+                };
+                await this.$axios.put(`/topic/${topicid}`, clickNum);
+                query.readnum = readnum;
+                localStorage.setItem("query", JSON.stringify(query));
+                this.$router.push("/answerDetail");
+            },
             
         },
         mounted:function(){
             //获取收藏的问题
             this.getIndexData();
+        },
+        beforeCreate:function(){
+            Indicator.open();
         }
     }
 </script>
