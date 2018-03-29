@@ -29,13 +29,14 @@
                   </div>
               </div>
               <div class="theme_b_r" v-if="status==1">
-                  <p @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
+                  <p v-if="!isAnswer" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
+                  <p v-else class="has_answered">已抢答</p>
               </div>
-              <div class="theme_b_r" v-if="status==2" v-show="false">
+              <!-- <div class="theme_b_r" v-if="status==2" v-show="false">
                   <router-link tag="p" :to="{name:'answerQuestions'}">
                        <p>立即抢答</p>
                   </router-link> 
-              </div>
+              </div> -->
           </div>
       </div>
       
@@ -81,15 +82,26 @@
         </ul>
         <div class="block"></div>
       </scroller>
-      
-      <div class="mylist">
-          <i class="iconfont icon-suoding"></i>
-          <span>123</span>
-          <span>我的排名</span>
-          <i class="iconfont icon-dianzan"></i>
-          <span>131</span>
-          <i class="iconfont icon-pinglun"></i>
-          <span>133</span>
+      <div class="mylist_wrap">
+        <div class="mylist" v-if="!isAnswer">
+            <i class="iconfont icon-suoding"></i>
+            <span>{{mygrade}}</span>
+            <span>我的排名</span>
+            <p class="my_pinlun" v-show="!isAnswer">
+              <i class="iconfont icon-pinglun"></i>
+              <span>{{mycomment}}</span>
+            </p>
+            <p class="my_dianzan" v-show="!isAnswer">
+              <i class="iconfont icon-dianzan"></i>
+              <span>{{myupvote}}</span>
+            </p>
+        </div>
+        <div class="mylist" v-else>
+            <i class="iconfont icon-suoding"></i>
+            <span>-</span>
+            <span>我的排名</span>
+            <p class="go_answer">立即抢答</p>
+        </div>
       </div>
   </div>
 </template>
@@ -114,7 +126,11 @@
               readnum:'',
               answernum:'',
               id:'',
-              defaulturl:''
+              defaulturl:'',
+              isAnswer:true,
+              myupvote:0,//我的点赞数
+              mycomment:0,//我的评论数
+              mygrade:''//我的排名
           }
       },
       methods:{
@@ -288,6 +304,10 @@
                   v.isMe = false;
                   if(v.createdBy){
                     if(v.createdBy.id == $userid){
+                      this.isAnswer = true;
+                      this.myupvote = v.stars.length;
+                      this.mycomment = v.comments.length;
+                      this.mygrade = i;
                       v.isMe = true;
                     } 
                   }
@@ -336,6 +356,10 @@
               v.isMe = false;
               if(v.createdBy){
                 if(v.createdBy.id == $userid){
+                  this.isAnswer = true;
+                  this.myupvote = v.stars.length;
+                  this.mycomment = v.comments.length;
+                  this.mygrade = i;
                   v.isMe = true;
                 } 
               }
@@ -388,6 +412,7 @@
     .block{
         width: 375rem/$x;height: 50rem/$x;
     }
+
     .countdown{
       font-family: STHeitiSC-Medium;
       font-size: 13px;
@@ -489,10 +514,9 @@
     }
     
     .theme_b {
-        width: 345rem/$x;
-        margin-left: 15rem/$x;
-        margin-bottom: 15rem/$x;
-        margin-top: 15rem/$x;
+        width: 100%;
+        padding:15rem/$x;
+        box-sizing:border-box;
     }
     
     .theme_b_l {
@@ -518,7 +542,6 @@
         width: 76rem/$x;
         float: right;
         height: 24rem/$x;
-        margin-right: 30rem/$x;
         background: #FDD545;
         border-radius: 4px;
     }
@@ -530,6 +553,11 @@
         letter-spacing: 0.17px;
         padding: 4rem/$x 9rem/$x 6 rem/$x 10rem/$x;
         line-height: 24rem/$x;
+    }
+    .theme_b_r .has_answered{
+      border-radius: 4px;
+      background: #666666;
+      color:#fff;
     }
     
     .theme_b_l>div:nth-of-type(2) {
@@ -766,36 +794,44 @@
         width: 46rem/$x;
         height: 35rem/$x;
     }
-    
+    .mylist_wrap{
+      width:100%;
+      height: 46rem/$x;
+      padding:0 15rem/$x;
+      position: fixed;
+      left:0;
+      bottom: 20rem/$x;
+      box-sizing:border-box;
+    }
     .mylist {
         background: #FDD545;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
-        width: 345rem/$x;
+        width: 100%;
         height: 46rem/$x;
-        position: fixed;
-        bottom: 20rem/$x;
         margin: 0 auto;
         line-height: 46rem/$x;
         text-align: left;
+        padding:0 17rem/$x 0 10rem/$x;
+        box-sizing:border-box;
     }
     
     .mylist>:nth-child(1) {
         color: #333333;
         font-size: 24rem/$x;
-        margin-left: 15rem/$x;
         vertical-align: middle;
+        margin-right: 15rem/$x;
+        float: left;
     }
     
     .mylist>:nth-child(2) {
         color: #333333;
-        font-size: 24rem/$x;
-        vertical-align: middle;
         font-family: STHeitiSC-Medium;
         font-size: 18px;
         color: #333333;
         letter-spacing: 0.22px;
-        padding: 10rem/$x;
+        float: left;
+        margin-right: 10rem/$x;
     }
     
     .mylist>:nth-child(3) {
@@ -803,31 +839,43 @@
         font-size: 14px;
         color: #333333;
         letter-spacing: 0.17px;
-        padding-right: 80rem/$x;
+        float: left;
     }
     
-    .mylist>:nth-child(4) {
+    .my_pinlun{
         color: #333333;
+        float: right;
+        margin-left: 22rem/$x;
+        i{
+          color:#333333;
+        }
+        span{
+          margin-left: 5rem/$x;
+        }
     }
     
-    .mylist>:nth-child(5) {
+    .my_dianzan {
         font-family: STHeitiSC-Medium;
         font-size: 12px;
         color: #333333;
         letter-spacing: -0.26px;
+        float: right;
+        i{
+          color:#333333;
+        }
+        span{
+          margin-left: 5rem/$x;
+        }
+    }
+    .go_answer{
+      float: right;
+      font-family: STHeitiSC-Medium;
+      font-size: 14px;
+      color: #333333;
+      letter-spacing: 0.17px;
+      cursor: pointer;
     }
     
-    .mylist>:nth-child(6) {
-        color: #333333;
-        padding-left: 22rem/$x;
-    }
-    
-    .mylist>:nth-child(7) {
-        font-family: STHeitiSC-Medium;
-        font-size: 12px;
-        color: #333333;
-        letter-spacing: -0.26px;
-    }
     .icon_eye{
         // width: 36rem/$x;
     }

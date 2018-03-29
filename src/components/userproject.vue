@@ -37,7 +37,7 @@
 			</ul>
 		</scroller>
 		<div v-show="isShow" class="no_data">
-            <img src="../assets/images/canyuchang.png">
+            <img src="../assets/images/canyuchang@2x.png">
             <p>您还没有参与的场次</p>
             <router-link tag="a" class="goHome" to="./">去逛逛</router-link>
         </div>
