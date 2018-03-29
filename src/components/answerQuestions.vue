@@ -40,6 +40,7 @@ export default {
         }
     },
     methods:{
+        
         submit:function(event){
             console.log(event.currentTarget.dataset);
             const message = event.currentTarget.dataset.message;
@@ -193,7 +194,7 @@ export default {
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
-        font-size: 14px;
+        font-size: 14rem/$x;
         text-indent: 20rem/$x;
         line-height: 50rem/$x;
     }
@@ -234,7 +235,6 @@ export default {
     .icon_pin>span:nth-of-type(1){
         padding-left: 12rem/$x;
     }
-    
 </style>
 
 

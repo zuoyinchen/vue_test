@@ -94,7 +94,7 @@ export default {
         display: block;
         margin-top: -10rem/$x;
     }
-     .send{
+    .send{
         display: inline-block;
         width: 68rem/$x;
         height: 33rem/$x;
