@@ -3,7 +3,7 @@
         <div class="countdown" v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                                    <countdown :time="time" class="countdown">
+                                    <countdown :time="time" class="countdown" :key="time">
                                             <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
@@ -12,8 +12,8 @@
       <div class="btn">
           <p>{{title}}</p>
           <div class="clearfix">
-              <div><i class="iconfont icon-xianshimima"></i><span>{{readnum}}</span></div>
-              <div><i class="iconfont icon-pinglun"></i><span>{{answernum}}</span></div>
+              <div class="icon_eye"><i class="iconfont icon-xianshimima"></i><span>{{readnum}}</span></div>
+              <div class="icon_pin"><i class="iconfont icon-pinglun"></i><span>{{answernum}}</span></div>
           </div>
       </div>
       <div>
@@ -217,6 +217,25 @@ export default {
     textarea {
         -webkit-appearance: none;
         appearance: none;
+    }
+    .icon_eye{
+        width: 36rem/$x;
+    }
+    .icon_eye>i:nth-of-type(1){
+        font-size: 14px;
+    }
+    .icon_eye>span:nth-of-type(1){
+        padding-left: 12rem/$x;
+    }
+    .icon_pin{
+        width: 36rem/$x;
+        padding-top: 2rem/$x;
+    }
+    .icon_pin>i:nth-of-type(1){
+        font-size: 12px;
+    }
+    .icon_pin>span:nth-of-type(1){
+        padding-left: 12rem/$x;
     }
 </style>
 
