@@ -36,7 +36,7 @@
 				</li>
 			</ul>
 		</scroller>
-		<div v-else class="no_data">
+		<div v-show="isShow" class="no_data">
             <img src="../assets/images/canyuchang.png">
             <p>您还没有参与的场次</p>
             <router-link tag="a" class="goHome" to="./">去逛逛</router-link>
@@ -44,22 +44,17 @@
 	</div>	
 </template>
 <script type="text/javascript">
+	import 'mint-ui/lib/style.css'
+    import { MessageBox,Toast,Indicator} from 'mint-ui';
 	const $userid = localStorage.getItem("userid");//userid
 	export default{
 		name: 'userproject',
 		data(){
 			return {
-				prolist:[
-					// {
-					// 	status:1,
-					// 	title:'你还好吗？',
-					// 	messageNum:122,
-					// 	readNum:12,
-					// 	time:1580000
-					// }
-				],
+				prolist:[],
 				page:1,
-				size:5
+				size:5,
+				isShow:false
 			}
 		},
 		methods:{
@@ -71,8 +66,16 @@
 	                search: { createdBy:$userid }
 	            }
 	            this.$axios.get('/answers',{params:data}).then((res)=>{
-		            this.prolist = res.data;
+	            	console.log(res);
+	                Indicator.close();
+	                if(res.data&&res.data.length){
+	                    this.prolist = res.data;
+	                }else{
+	                    this.isShow = true;
+	                }
 		        }).catch((error)=>{
+		        	Indicator.close();
+	                Toast({message:"网络错误，请刷新",duration:-1});
                 	console.log(error);
                 });
 			},
@@ -143,6 +146,9 @@
 		},
 		mounted:function(){
 			this.getInitialData();
+		},
+		beforeCreate:function(){
+			Indicator.open();
 		}
 	}
 </script>

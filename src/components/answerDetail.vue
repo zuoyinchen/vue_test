@@ -50,8 +50,8 @@
                 <div class="ctn_r">
                     <div>
                         <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
-                        <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
-                        <span v-else class="answer">{{item.createdBy.username}}</span>
+                        <span v-else-if="!Boolean(item.createdBy.nickName)">{{'匿名用户'}}</span>
+                        <span v-else class="answer">{{item.createdBy.nickName}}</span>
                         <!-- <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i> -->
                         <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                         <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
@@ -62,7 +62,7 @@
                     <div class="clearfix">
                         <div>
                             <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
-                            <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
+                            <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer($event)" :data-id="item.id">删除</span>
                         </div>
                         <div class="clearfix">
                             <div>
@@ -97,9 +97,10 @@
 <script>
 
   //引入微信js-sdk
- import wx from 'weixin-js-sdk'
-  // const $userid = localStorage.getItem("userid");//用户id
-  const $userid = '5ab66d31d33f52cd14bc698f';//用户id
+ // import wx from 'weixin-js-sdk'
+ import 'mint-ui/lib/style.css'
+ import { MessageBox,Toast,Indicator} from 'mint-ui';
+  const $userid = localStorage.getItem("userid");//用户id
   export default {
       name:"answerDetail",
       data(){
@@ -209,7 +210,7 @@
             this.$router.push('/answercomment');
         },
         timeReplace:function(str) {
-        return str.replace('T', ' ').slice(0, str.indexOf('.'));
+          return str.replace('T', ' ').slice(0, str.indexOf('.'));
         },
         gotoQuestion:function(event){
           const topicid = event.currentTarget.dataset.tid;//问题id
@@ -232,49 +233,42 @@
           
           this.$router.push('/answerQuestions');
         },
-       gotoShare:function(){
-        wx.onMenuShareAppMessage({
-          title: '这是个问题吗', // 分享标题
-          desc: '回答问题', // 分享描述
-          link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: '../assets/images/logo.png', // 分享图标
-          type: '', // 分享类型,music、video或link，不填默认为link
-          dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-          success: function () {
-              // 用户确认分享后执行的回调函数
-              console.log("成功");
-          },
-          cancel: function () {
-            console.log("取消");
-          // 用户取消分享后执行的回调函数
-          }
-        });
-       },
-       deleteAnswer:function(){
-          console.log("删除答案");
+       // gotoShare:function(){
+       //  wx.onMenuShareAppMessage({
+       //    title: '这是个问题吗', // 分享标题
+       //    desc: '回答问题', // 分享描述
+       //    link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+       //    imgUrl: '../assets/images/logo.png', // 分享图标
+       //    type: '', // 分享类型,music、video或link，不填默认为link
+       //    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+       //    success: function () {
+       //        // 用户确认分享后执行的回调函数
+       //        console.log("成功");
+       //    },
+       //    cancel: function () {
+       //      console.log("取消");
+       //    // 用户取消分享后执行的回调函数
+       //    }
+       //  });
+       // },
+       deleteAnswer:function(event){
+          event.stopPropagation();
           const answerid = event.currentTarget.dataset.id;
-
-          this.$axios.delete('/answer/'+answerid).then((res)=>{
-            console.log(res);
-            this.answernum -=1;
-            localStorage.setItem("answernum",this.answernum);
-            this.upDatedata();
-          }).catch((error,errorcode)=>{
-            console.log(error);
-          })
-       },
-       deletePinlun:function(){
-          const commentid = event.currentTarget.dataset.id;
-          const answerindex = event.currentTarget.dataset.index;//所评论的问题索引
-          let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
-          comment_num -=1;
-          $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
-          this.$axios.delete('/comment/'+commentid).then((res)=>{
-            console.log(res);
-            
-          }).catch((error,errorcode)=>{
-            console.log(error);
-          });
+          console.log(answerid);
+          MessageBox.confirm('您确定要删除此回答?').then(
+            action => {
+              Indicator.open();
+              this.$axios.delete('/answer/'+answerid).then((res)=>{
+                Indicator.close();
+                this.upDatedata();
+              }).catch((error,errorcode)=>{
+                Toast('网络错误，删除不成功');
+                console.log(error);
+              })
+            },(res)=>{
+              console.log("取消");
+            }
+          );
        },
        upDatedata:function(){
           const query = localStorage.getItem("query");//参数集合
@@ -287,26 +281,27 @@
             userid:$userid
           };
           this.$axios.get('/answer', {params:data}).then(res=>{
-              this.msg = res.data;
-              //拿到所有答题者的id
-              const userarr = [];//答题者id集合
-              for(var i=0;i<this.msg.length;i++){
-                  this.msg[i].isMe = false;
-                  userarr.push(this.msg[i].createdBy.id);
-                  
-              }
-              this.users = this.msg;
-              //判断答题者的id中是否有自己
-              if(userarr.indexOf($userid) !== -1){
-                console.log(this.users);
-                this.users[userarr.indexOf($userid)].isMe = true;
+              Toast('操作成功');
+              if(res.data && res.data.length){
+                this.msg = res.data;
+                //拿到所有答题者的id
+                $.each(this.msg,function(i,v){
+                  v.isMe = false;
+                  if(v.createdBy){
+                    if(v.createdBy.id == $userid){
+                      v.isMe = true;
+                    } 
+                  }
+                });
+                this.users = this.msg;
               }
           }).catch((error)=>{
+            Toast({message:'网络错误，操作不成功'});
             console.log(error);
           });
        }
       },
-      mounted(){
+      mounted:function(){
         const query = localStorage.getItem("query");//参数集合
         const queryobj = JSON.parse(query);
         this.title = queryobj.title;
@@ -333,24 +328,25 @@
         };
         console.log(data);
     
-        this.$axios.get('/answer', {
-            params: data
-        }).then(res => {
+        this.$axios.get('/answer', {params: data}).then(res => {
+          Indicator.close();
+          if(res.data && res.data.length){
             this.msg = res.data;
             //拿到所有答题者的id
-            const userarr = []; //答题者id集合
-            for (var i = 0; i < this.msg.length; i++) {
-                this.msg[i].isMe = false;
-                userarr.push(this.msg[i].createdBy.id);
-            }
+            $.each(this.msg,function(i,v){
+              v.isMe = false;
+              if(v.createdBy){
+                if(v.createdBy.id == $userid){
+                  v.isMe = true;
+                } 
+              }
+            });
             this.users = this.msg;
-            // console.log(this.users)
-            //判断答题者的id中是否有自己
-            if (userarr.indexOf($userid) !== -1) {
-                console.log(this.users);
-                this.users[userarr.indexOf($userid)].isMe = true;
-            }
+          }
+            
         }).catch((error) => {
+            Indicator.close();
+            Toast({message:'网络错误，请刷新'});
             console.log(error);
         });
     
@@ -382,6 +378,9 @@
           // }).catch((error) => {
           //     console.log(error);
           // })
+      },
+      beforeCreate:function(){
+        Indicator.open();
       }
   }
 </script>
