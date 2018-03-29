@@ -85,8 +85,8 @@
               <div class="slide_r">
                   <div class="slide_rt clearfix">
                       <div>
-                          <span v-if="!Boolean(i.createdBy.username)">{{'匿名用户'}}</span>
-                          <span v-else>{{i.createdBy.username}}</span>
+                          <span v-if="!Boolean(i.createdBy.nickName)">{{'匿名用户'}}</span>
+                          <span v-else>{{i.createdBy.nickName}}</span>
                       </div>
                       <div>
                           <span v-show="i.isMe" class="delete_pinglun" @click="deletePinlun()" :data-id="i.id" :data-index="index">删除</span>
