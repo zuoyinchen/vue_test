@@ -85,17 +85,17 @@
     },
     methods: {
       countdownend() {
-          //   this.$emit('countdownend');
-          //   let title = $("#a_title").text();
-          //   let status = 2;
-          //   let data = {
-          //       title,
-          //       status
-          //   }
-          //   console.log("显示页面是否刷新请求数据了")
-          //   this.$axios.get('/topic',{params:data}).then(res=>{
-          //   this.msg = res.data.list;
-          // });
+        //     this.$emit('countdownend');
+        //     let title = $("#a_title").text();
+        //     let status = 2;
+        //     let data = {
+        //         title,
+        //         status
+        //     }
+        //     console.log("显示页面是否刷新请求数据了")
+        //     this.$axios.get('/topic',{params:data}).then(res=>{
+        //     this.msg = res.data.list;
+        //   });
       },
       getIndexData: function() {
         this.noData = "";
