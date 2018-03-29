@@ -5,7 +5,7 @@
             <span class="counttest">倒计时</span>
             <span>
                 <countdown :time="time" class="countdown">
-                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                    <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
                     </template>
                 </countdown>
             </span>
@@ -19,11 +19,11 @@
           </p>
           <div class="theme_b clearfix">
               <div class="theme_b_l">
-                  <div>
-                      <i class="iconfont icon-wode"></i>
+                  <div class="icon_eye">
+                      <i class="iconfont icon-xianshimima" ></i>
                       <span>{{readnum}}</span>
                   </div>
-                  <div>
+                  <div class="icon_pin">
                       <i class="iconfont icon-pinglun"></i>
                       <span>{{answernum}}</span>
                   </div>
@@ -391,13 +391,14 @@
     }
     .countdown{
       font-family: STHeitiSC-Medium;
-      font-size: 14px;
+      font-size: 13px;
       color: #333333;
+      margin-left: 15rem/$x;
       letter-spacing: -0.39px;
     }
     .counttest{
       font-family: STHeitiSC-Medium;
-      font-size: 14px;
+      font-size: 13px;
       color: #333333;
       letter-spacing: -0.39px;
     }
@@ -445,22 +446,23 @@
     }
     
     .countdown {
-        width: 106rem/$x;
+        width: 110rem/$x;
         height: 30rem/$x;
         border-radius: 100rem/$x;
         background: #fdd545;
         line-height: 30rem/$x;
-        margin-left: 15rem/$x;
         margin-top: 10rem/$x;
     }
     
     .countdown>span:nth-of-type(1) {
-        font-size: 14rem/$x;
+        padding-left: 2px;
+        font-size: 13rem/$x;
         letter-spacing: -0.39rem/$x;
     }
     
     .countdown>span:nth-of-type(2) {
-        font-size: 14rem/$x;
+        margin-left: -10rem/$x;
+        font-size: 8rem/$x;
         letter-spacing: -0.39rem/$x;
     }
     .theme {
@@ -824,6 +826,25 @@
         font-size: 12px;
         color: #333333;
         letter-spacing: -0.26px;
+    }
+    .icon_eye{
+        width: 36rem/$x;
+    }
+    .icon_eye>i:nth-of-type(1){
+        font-size: 14px;
+    }
+    .icon_eye>span:nth-of-type(1){
+        padding-left: 12rem/$x;
+    }
+    .icon_pin{
+        width: 36rem/$x;
+        padding-top: 2rem/$x;
+    }
+    .icon_pin>i:nth-of-type(1){
+        font-size: 12px;
+    }
+    .icon_pin>span:nth-of-type(1){
+        padding-left: 12rem/$x;
     }
 </style>
 

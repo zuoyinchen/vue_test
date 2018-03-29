@@ -3,7 +3,7 @@
         <div class="countdown" v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                                    <countdown :time="time" class="countdown">
+                                    <countdown :time="time" class="countdown" :key="time">
                                             <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
@@ -12,8 +12,8 @@
       <div class="btn">
           <p>{{title}}</p>
           <div class="clearfix">
-              <div><i class="iconfont icon-xianshimima"></i><span>{{readnum}}</span></div>
-              <div><i class="iconfont icon-pinglun"></i><span>{{answernum}}</span></div>
+              <div class="icon_eye"><i class="iconfont icon-xianshimima"></i><span>{{readnum}}</span></div>
+              <div class="icon_pin"><i class="iconfont icon-pinglun"></i><span>{{answernum}}</span></div>
           </div>
       </div>
       <div>
@@ -95,14 +95,14 @@ export default {
     $x:37.5;
     .countdown {
         font-family: STHeitiSC-Medium;
-        font-size: 14px;
+        font-size: 13px;
         color: #333333;
         letter-spacing: -0.39px;
     }
     
     .counttest {
         font-family: STHeitiSC-Medium;
-        font-size: 14px;
+        font-size: 13px;
         color: #333333;
         letter-spacing: -0.39px;
     }
@@ -126,7 +126,7 @@ export default {
     }
     
     .countdown {
-        width: 106rem/$x;
+        width: 110rem/$x;
         height: 30rem/$x;
         border-radius: 100rem/$x;
         background: #fdd545;
@@ -135,12 +135,13 @@ export default {
     }
     
     .countdown>span:nth-of-type(1) {
-        font-size: 14rem/$x;
+        font-size: 8rem/$x;
         letter-spacing: -0.39rem/$x;
     }
     
     .countdown>span:nth-of-type(2) {
-        font-size: 14rem/$x;
+        margin-left: 5rem/$x;
+        font-size: 8rem/$x;
         letter-spacing: -0.39rem/$x;
     }
     
@@ -197,7 +198,6 @@ export default {
         font-size: 14px;
         text-indent: 20rem/$x;
         line-height: 50rem/$x;
-        margin-bottom: 149rem/$x;
     }
     .int_sub{
         width: 345rem/$x;
@@ -218,6 +218,26 @@ export default {
         -webkit-appearance: none;
         appearance: none;
     }
+    .icon_eye{
+        width: 36rem/$x;
+    }
+    .icon_eye>i:nth-of-type(1){
+        font-size: 14px;
+    }
+    .icon_eye>span:nth-of-type(1){
+        padding-left: 12rem/$x;
+    }
+    .icon_pin{
+        width: 36rem/$x;
+        padding-top: 2rem/$x;
+    }
+    .icon_pin>i:nth-of-type(1){
+        font-size: 12px;
+    }
+    .icon_pin>span:nth-of-type(1){
+        padding-left: 12rem/$x;
+    }
+    
 </style>
 
 
