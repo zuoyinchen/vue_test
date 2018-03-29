@@ -93,20 +93,18 @@ export default {
 
 <style lang="scss" scoped>
     $x:37.5;
-    .countdown {
-        font-family: STHeitiSC-Medium;
-        font-size: 13px;
-        color: #333333;
-        letter-spacing: -0.39px;
+    .countdown{
+      font-family: STHeitiSC-Medium;
+      font-size: 13px;
+      color: #333333;
+      letter-spacing: -0.39px;
     }
-    
-    .counttest {
-        font-family: STHeitiSC-Medium;
-        font-size: 13px;
-        color: #333333;
-        letter-spacing: -0.39px;
+    .counttest{
+      font-family: STHeitiSC-Medium;
+      font-size: 13px;
+      color: #333333;
+      letter-spacing: -0.39px;
     }
-    
     .clearfix:after {
         content: "";
         display: block;
@@ -175,7 +173,7 @@ export default {
         color: #BDBDBD;
         letter-spacing: -0.26px;
         float: left;
-        margin: 15rem/$x;
+        margin: 13rem/$x;
     }
     
     .btn>div:nth-of-type(1)>div:nth-of-type(2) {
@@ -219,7 +217,7 @@ export default {
         appearance: none;
     }
     .icon_eye{
-        width: 36rem/$x;
+       
     }
     .icon_eye>i:nth-of-type(1){
         font-size: 14px;
@@ -228,8 +226,7 @@ export default {
         padding-left: 12rem/$x;
     }
     .icon_pin{
-        width: 36rem/$x;
-        padding-top: 2rem/$x;
+        
     }
     .icon_pin>i:nth-of-type(1){
         font-size: 12px;
