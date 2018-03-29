@@ -46,9 +46,9 @@
                           <span class="counttest">倒计时</span>
                           <span>
                               <countdown :time="item.second" class="countdown">
-<template slot-scope="props">
-   {{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
-</template>
+                                <template slot-scope="props">
+                                    {{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
+                                </template>
                               </countdown>
                           </span>
                       </li>

@@ -197,7 +197,8 @@ export default {
         border-radius: 10px;
         font-size: 14px;
         text-indent: 20rem/$x;
-        line-height: 50rem/$x;;
+        line-height: 50rem/$x;
+        margin-bottom: 149rem/$x;
     }
     .int_sub{
         width: 345rem/$x;
@@ -210,6 +211,7 @@ export default {
         font-size: 17rem/$x;
         color: #333333;
         line-height: 42rem/$x;
+        margin-bottom: 40rem/$x;
     }
     input,
     select,
