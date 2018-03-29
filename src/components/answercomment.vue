@@ -322,7 +322,7 @@
 	            for(var i=0;i<this.list.length;i++){
 	                this.list[i].isMe = false;
 	                userarr.push(this.list[i].createdBy.id);
-                 this.answerid = this.list[i].createdBy.id;
+                 this.answerid = this.list[i].id;
                  this.body = this.list[i].body;
 	            }
 	            console.log(this.list);
@@ -418,7 +418,7 @@
                 this.list[i].isMe = false;
                 userarr.push(this.list[i].createdBy.id);
                  this.answerid = this.list[i].id;
-                 this.body = this.list[i].createdBy.body;
+                 this.body = this.list[i].body;
                 
             }
             console.log(this.answerid);
