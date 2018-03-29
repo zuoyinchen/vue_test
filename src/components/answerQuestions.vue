@@ -72,6 +72,7 @@ export default {
                if (res.status === 200 || res.status === 201) {
                     
                     localStorage.setItem("answernum",this.answernum+1);
+                    
                     this.$router.replace('/answerDetail');
                 }
                 console.log(newMsg)
@@ -161,6 +162,7 @@ export default {
         letter-spacing: 0.22px;
         margin: 15rem/$x;
         font-weight: 500;
+        line-height: 22rem/$x;
     }
     
     .btn>p:nth-of-type(1)>div {
@@ -224,7 +226,7 @@ export default {
         font-size: 14px;
     }
     .icon_eye>span:nth-of-type(1){
-        padding-left: 12rem/$x;
+        padding-left: 8rem/$x;
     }
     .icon_pin{
         
@@ -233,7 +235,7 @@ export default {
         font-size: 12px;
     }
     .icon_pin>span:nth-of-type(1){
-        padding-left: 12rem/$x;
+        padding-left: 8rem/$x;
     }
 </style>
 

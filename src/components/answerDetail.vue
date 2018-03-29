@@ -227,8 +227,9 @@
             title : title
           }
           console.log(JSON.stringify(userQuestion));
-
+          
           localStorage.setItem("userQuestion",JSON.stringify(userQuestion));
+          
           this.$router.push('/answerQuestions');
         },
        gotoShare:function(){
@@ -452,6 +453,11 @@
         background: #fdd545;
         line-height: 30rem/$x;
         margin-top: 10rem/$x;
+        font-family: STHeitiSC-Medium;
+        font-size: 13px;
+        color: #333333;
+        margin-left: 15rem/$x;
+        letter-spacing: -0.39px;
     }
     
     .countdown>span:nth-of-type(1) {
@@ -487,6 +493,7 @@
         letter-spacing: 0.22px;
         margin: 15rem/$x;
         font-weight: 500;
+        line-height: 22rem/$x;
     }
     
     .theme_b {
@@ -836,7 +843,7 @@
         font-size: 14px;
     }
     .icon_eye>span:nth-of-type(1){
-        padding-left: 12rem/$x;
+        padding-left: 8rem/$x;
     }
     .icon_pin{
         // width: 36rem/$x;
@@ -846,7 +853,7 @@
         font-size: 12px;
     }
     .icon_pin>span:nth-of-type(1){
-        padding-left: 12rem/$x;
+        padding-left: 8rem/$x;
     }
 </style>
 
