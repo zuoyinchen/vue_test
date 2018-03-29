@@ -157,7 +157,7 @@ export default {
         done();
       }, 3000);
     },
-    gotoDetail: function(event) {
+    gotoDetail: async function(event) {
       const topicid = event.currentTarget.dataset.tid; //问题id
       let readnum = event.currentTarget.dataset.rnum; //阅读数
       const answernum = event.currentTarget.dataset.anum; //评论数
@@ -175,12 +175,9 @@ export default {
       };
       readnum++;
       const clickNum = { status: Number(status), title, readNum: readnum };
-      this.$axios.put(`/topic/${topicid}`, clickNum).then(res => {
-        if (res.status === 200) {
-          query.readnum = readnum;
-          localStorage.setItem("query", JSON.stringify(query));
-        }
-      });
+      await this.$axios.put(`/topic/${topicid}`, clickNum);
+      query.readnum = readnum;
+      localStorage.setItem("query", JSON.stringify(query));
       this.$router.push("/answerDetail");
     },
     goSiglepai: function(event) {
