@@ -68,7 +68,9 @@ new Vue({
   mounted:function(){
     
      let userobj = this.getQueryStringArgs();
+     // userobj.wxUser = '5abc91748219eeb968990300';
      if(userobj.wxUser){
+      console.log("jin");
        localStorage.setItem("userid",userobj.wxUser);//缓存用户id
        localStorage.setItem('headimg',userobj.avatarUrl);//缓存用户头像
        localStorage.setItem('nickname',userobj.nickName);//缓存用户头像
