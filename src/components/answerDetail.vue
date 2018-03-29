@@ -43,8 +43,8 @@
             <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id"  @click="slideDown($event)" :data-index="index" :data-id="item.id">
                 <div class="ctn_l">
                     <i>{{index+1}}</i>
-                    <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
-                    <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
+                    <img v-if="!Boolean(item.createdBy)" src="../assets/images/logo.png" alt="1">
+                    <img v-else-if="!Boolean(item.createdBy.avatarUrl)" src="../assets/images/logo.png" alt="1">
                     <img v-else :src="item.createdBy.avatarUrl" alt="2">
                 </div>
                 <div class="ctn_r">
@@ -98,7 +98,8 @@
 
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
-  const $userid = localStorage.getItem("userid");//用户id
+  // const $userid = localStorage.getItem("userid");//用户id
+  const $userid = '5ab66d31d33f52cd14bc698f';//用户id
   export default {
       name:"answerDetail",
       data(){
@@ -112,7 +113,7 @@
               readnum:'',
               answernum:'',
               id:'',
-              defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
+              defaulturl:''
           }
       },
       methods:{
@@ -320,103 +321,67 @@
        
         this.readnum =  Number(queryobj.readnum);
         this.topicid = queryobj.topicid;
+    
+        const topicid = this.topicid; //问题id
 
-        
-        const topicid = this.topicid;//问题id
-        
-        const data ={
-          search:JSON.stringify({topic: topicid}),
-          userid:$userid
+        const data = {
+            search: JSON.stringify({
+                topic: topicid
+            }),
+            userid: $userid
         };
         console.log(data);
-        
-        this.$axios.get('/answer', {params:data}).then(res=>{
+    
+        this.$axios.get('/answer', {
+            params: data
+        }).then(res => {
             this.msg = res.data;
             //拿到所有答题者的id
-            const userarr = [];//答题者id集合
-            for(var i=0;i<this.msg.length;i++){
+            const userarr = []; //答题者id集合
+            for (var i = 0; i < this.msg.length; i++) {
                 this.msg[i].isMe = false;
-                userarr.push(this.msg[i].id);
+                userarr.push(this.msg[i].createdBy.id);
             }
             this.users = this.msg;
             // console.log(this.users)
             //判断答题者的id中是否有自己
-            if(userarr.indexOf($userid) !== -1){
-              console.log(this.users);
-              this.users[userarr.indexOf($userid)].isMe = true;
+            if (userarr.indexOf($userid) !== -1) {
+                console.log(this.users);
+                this.users[userarr.indexOf($userid)].isMe = true;
             }
+        }).catch((error) => {
+            console.log(error);
+        });
     
-            this.readnum = Number(queryobj.readnum);
-            this.topicid = queryobj.topicid;
-    
-    
-            const topicid = this.topicid; //问题id
-    
-            const data = {
-                search: JSON.stringify({
-                    topic: topicid
-                }),
-                userid: $userid
-            };
-            console.log(data);
-    
-            this.$axios.get('/answer', {
-                params: data
-            }).then(res => {
-                this.msg = res.data;
-                //拿到所有答题者的id
-                const userarr = []; //答题者id集合
-                for (var i = 0; i < this.msg.length; i++) {
-                    this.msg[i].isMe = false;
-                    userarr.push(this.msg[i].id);
-                }
-                this.users = this.msg;
-                // console.log(this.users)
-                //判断答题者的id中是否有自己
-                if (userarr.indexOf($userid) !== -1) {
-                    console.log(this.users);
-                    this.users[userarr.indexOf($userid)].isMe = true;
-                }
-            }).catch((error) => {
-                console.log(error);
-            });
-    
-            //微信js-sdk
-            this.$axios.get('/wechat_share', {
-                params: {
-                    url: window.location.href
-                }
-            }).then(res => {
-                console.log(res);
-                const appid = res.data.appId;
-                const nonceStr = res.data.nonceStr;
-                const signature = res.data.signature;
-                const timestamp = res.data.timestamp;
-    
-                //配置微信js-sdk
-                wx.config({
-                    debug: false, // 
-                    appId: appid, // 必填，公众号的唯一标识
-                    timestamp: timestamp, // 必填，生成签名的时间戳
-                    nonceStr: nonceStr, // 必填，生成签名的随机串
-                    signature: signature, // 必填，签名
-                    jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
-                });
-    
-                wx.ready(function() {
-                    console.log("成功");
-                });
-                wx.error(function(res) {
-                    console.log("失败");
-                });
-    
-            }).catch((error) => {
-                console.log(error);
-            })
-        }).catch(error=>{
-          console.log(error);
-        })
-    }
+          //微信js-sdk
+          this.$axios.get('/wechat_share', { params: {url: window.location.href}}).then(res => {
+              console.log(res);
+              const appid = res.data.appId;
+              const nonceStr = res.data.nonceStr;
+              const signature = res.data.signature;
+              const timestamp = res.data.timestamp;
+  
+              //配置微信js-sdk
+              wx.config({
+                  debug: false, // 
+                  appId: appid, // 必填，公众号的唯一标识
+                  timestamp: timestamp, // 必填，生成签名的时间戳
+                  nonceStr: nonceStr, // 必填，生成签名的随机串
+                  signature: signature, // 必填，签名
+                  jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+              });
+  
+              wx.ready(function() {
+                  console.log("成功");
+              });
+              wx.error(function(res) {
+                  console.log("失败");
+              });
+  
+          }).catch((error) => {
+              console.log(error);
+          })
+      }
   }
 </script>
 <style lang="scss" scoped>
@@ -505,6 +470,7 @@
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
         overflow: hidden;
+        margin:0 auto;
         margin-top: 15rem/$x;
     }
     

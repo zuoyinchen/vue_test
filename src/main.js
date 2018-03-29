@@ -9,6 +9,12 @@ import axios from 'axios'
 import tabnav from './components/tabnav'//全局tabnav
 import VueResource from 'vue-resource'
 import VueCountdown from '@xkeshi/vue-countdown'
+// import MintUI from 'mint-ui'
+// import 'mint-ui/lib/style.css'
+import {MessageBox} from 'mint-ui';
+
+Vue.component(MessageBox.name, MessageBox);
+
 Vue.component('countdown', VueCountdown);
 
 //引入加载更多组件
