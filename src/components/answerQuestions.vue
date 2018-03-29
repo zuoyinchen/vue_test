@@ -24,6 +24,8 @@
 </template>
 
 <script>
+ import 'mint-ui/lib/style.css'
+ import { MessageBox,Toast,Indicator} from 'mint-ui';
 export default {
     name:'answerQuestions',
     data(){
@@ -45,6 +47,18 @@ export default {
             const userQuestionobj = JSON.parse(userQuestion);
             const topicid= userQuestionobj.topicid;
             const createdBy = localStorage.getItem('userid');
+
+            if(!createdBy){
+                MessageBox.alert('您还未关注筋灵十三猜公众号，关注后进入筋灵十三猜菜单即可答题').then(action=>{
+
+                });
+                return false;
+            }
+            //提交答案不能为空
+            if(!message){
+                Toast("提交答案不能为空");
+                return false;
+            }
             const newMsg = {
                 body:message,
                 topic:topicid,
@@ -60,9 +74,6 @@ export default {
                     this.$router.replace('/answerDetail');
                 }
                 console.log(newMsg)
-    
-                
-    
             });
         }
     },
@@ -76,19 +87,6 @@ export default {
         this.answernum = Number(userQuestionobj.answernum);
         this.topicid = userQuestionobj.topicid;
         console.log(this.title);
-        // const $url = 'http://192.168.1.116:1337';
-        // const topicid = this.topicid;//问题id
-
-        // const data ={
-        //     search:JSON.stringify({topic: topicid}),
-        //     userid:$userid
-        // };
-        // this.$http.get('/answer', {params:data}).then(res=>{
-        //     this.msg = res.data;
-        // }).catch((error)=>{
-        //     console.log(error);
-        // });
-
     }
 }
 </script>
@@ -133,6 +131,7 @@ export default {
         border-radius: 100rem/$x;
         background: #fdd545;
         line-height: 30rem/$x;
+        margin-top:10rem/$x;
     }
     
     .countdown>span:nth-of-type(1) {
