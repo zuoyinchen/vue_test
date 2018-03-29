@@ -17,8 +17,10 @@
                   <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
                   <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
                   <span class="indexname"v-else>{{index+1}}</span>
-                  <img :src="item.createdBy.avatarUrl" alt="" class="avtalimg">
-                  <span class="nickname">{{item.createdBy.nickName}}</span>
+                  <img :src="item.createdBy.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">
+                  <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
+                  <span class="nickname" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">{{item.createdBy.nickName}}</span>
+                  <span class="nickname"v-else>匿名用户</span>
               </div>
               <div class="ctn_r">
                   <i class="iconfont icon-dianzan1"></i>
@@ -28,7 +30,8 @@
           <div class="my_list clearfix">
               <div class="my_list_l">
                     <i>{{myGrade}}</i>
-                    <img :src="myavtalUrl" alt="">
+                    <img :src="myavtalUrl" alt="a" v-if="Boolean(myavtalUrl)" >
+                    <img src="../assets/images/logo.png" alt="" v-else>
                     <span>我的排名</span>
               </div>
               <div class="my_list_r">
@@ -65,8 +68,10 @@
 		    	topicid : this.topicid
 		    }
 		    this.$axios.get('/singleRank',{params:data}).then((res)=>{
+            console.log(res.data);
 		        if(res.data && res.data.length){
 		            this.pailist =res.data;
+                console.log(this.pailist);
 		            const idarr = [];
 			        for(let i=0;i<this.pailist.length;i++){
 			            idarr.push(this.pailist[i].createdBy.id);
@@ -75,17 +80,12 @@
 			            const myindex = idarr.indexOf($userid);
 			            this.myGrade = Number(idarr.indexOf($userid))+1;
 			            this.myStar = this.pailist[myindex].upVotes.length;
-			            this.myavtalUrl = this.pailist[myindex].createdBy.avatarUrl;
-			        }else{
-			            this.myGrade ='-';
-			            this.myStar = 0;
-			            this.myavtalUrl = localStorage.getItem("headimg");
+			            this.myavtalUrl = this.pailist[myindex].createdBy.avatarUrl?this.pailist[myindex].createdBy.avatarUrl:localStorage.getItem("headimg");
 			        }
 		        }else{
 		            this.pailist = [];
 		            this.myGrade ='-';
 		            this.myStar = 0;
-		            this.myavtalUrl = localStorage.getItem("headimg");
 		        }
 		    }).catch(function(error){
 		        console.log(error);

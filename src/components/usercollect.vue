@@ -6,7 +6,7 @@
 					问题
 				</router-link>
 				<router-link tag="li" to="/usercollect/usercomp">
-					评论
+					回答
 				</router-link>
 			</ul>
 		</div>
