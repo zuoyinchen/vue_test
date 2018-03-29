@@ -37,13 +37,13 @@
               </div>
           </div>
       </div>
-      <ul class="ctn" v-if="list.length>0">
+      <ul class="ctn">
           <li class="clearfix pin_list" v-for="(item,index) in list" >
           	<div class="answer_wrap">
               <div class="ctn_l">
                   <i>{{answerindex+1}}</i>
-                  <img v-if="!Boolean(item.createdBy)" :src="defaulturl" alt="1">
-                  <img v-else-if="!Boolean(item.createdBy.avatarUrl)" :src="defaulturl" alt="1">
+                  <img v-if="!Boolean(item.createdBy)" src="../assets/images/logo.png" alt="1">
+                  <img v-else-if="!Boolean(item.createdBy.avatarUrl)" src="../assets/images/logo.png" alt="1">
                   <img v-else :src="item.createdBy.avatarUrl" alt="2">
               </div>
               <div class="ctn_r">
@@ -100,14 +100,13 @@
             </div>
           </li>
       </ul>
-      <p v-else class="error_tip">网络错误，请刷新</p>
       <div class="block"></div>
     </scroller>
       <div class="comment_box">
       	<div class="comment_wrap">
       		<img src="" alt="" class="comment_img">
       		<span>|</span>
-      		<input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message">
+      		<input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
       		<span class="send_com" @click="gotoComment($event)" :data-message="message" >发送</span>
       	</div>
       </div>
@@ -116,7 +115,10 @@
 <script>
   //引入微信js-sdk
  import wx from 'weixin-js-sdk'
+ import 'mint-ui/lib/style.css'
+ import { MessageBox,Toast,Indicator} from 'mint-ui';
   const $userid = localStorage.getItem("userid");//用户id
+  // const $userid = '5ab5ca37ed18e3ab06121f39';//用户id
   export default {
       name:"answercomment",
       data(){
@@ -133,10 +135,15 @@
               title:'',
               readnum:'',
               answernum:'',
-              defaulturl:'http://thirdwx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0'
+              defaulturl:''
           }
       },
       methods:{
+        inputFocus:function(){
+          setTimeout(function(){
+            window.scrollTo(0,document.body.clientHeight);
+          },500)
+        },
         giveStar:function(event){
           const answerid = event.currentTarget.dataset.id;
           const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
@@ -254,28 +261,44 @@
           this.$router.push('/answerQuestions');
         },
         deleteAnswer:function(){
-          console.log("删除答案");
           const answerid = event.currentTarget.dataset.id;
-          this.$axios.delete('/answer/'+answerid).then((res)=>{
-            console.log(res);
-            this.answernum -=1;
-            localStorage.setItem("answernum",this.answernum);
-            this.upDatedata();
-          }).catch((error,errorcode)=>{
-            console.log(error);
-          })
+          MessageBox.confirm('您确定要删除此回答?').then(
+            action => {
+              console.log("确定删除");
+              Toast('删除成功');
+              this.$axios.delete('/answer/'+answerid).then((res)=>{
+                console.log(res);
+                this.$router.replace("/answerDetail");
+              }).catch((error,errorcode)=>{
+                console.log(error);
+              })
+            },(res)=>{
+              console.log("取消");
+            }
+          );
+          
         },
         deletePinlun:function(){
           const commentid = event.currentTarget.dataset.id;
           const answerindex = event.currentTarget.dataset.index;//所评论的问题索引
-          let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
-          comment_num -=1;
-          $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
-          this.$axios.delete('/comment/'+commentid).then((res)=>{
-            this.upDatedata();
-          }).catch((error,errorcode)=>{
-            console.log(error);
-          });
+
+          MessageBox.confirm('您确定要删除此评论?').then(
+            action => {
+              
+              let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
+              comment_num -=1;
+              $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
+              this.$axios.delete('/comment/'+commentid).then((res)=>{
+                Toast('删除成功');
+                this.upDatedata();
+              }).catch((error,errorcode)=>{
+                console.log(error);
+              });
+            },(res)=>{
+              console.log("取消");
+            }
+          );
+          
         },
         upDatedata:function(){
           this.message = '';
@@ -311,27 +334,28 @@
                 //根据答案ID获取评论
                 const search_comment ={
                   search:{
-                    answer:this.answerid
-                  },
-                  sort:{
-                    createdAt:0
+                    answer:this.answerid,
+                    sort:{
+                      createdBy:0
+                    }
                   }
                 }
                 this.$axios.get('/comment',{params:search_comment}).then((res)=>{
+                  console.log(res);
                   if(res.status == 200){
-                    
+                    this.comments = res.data;
                     $.each(res.data,function(i,v){//循环评论判断评论者的ID 是否是自己
                       v.isMe = false;
                       if(v.createdBy.id == $userid){
                          v.isMe = true;
                       };
                     });
-                    this.comments = res.data;
-                    console.log(this.comments);
+                    Indicator.close();
                   }
                 }).catch((error)=>{
 
                 });
+                console.log(this.comments);
 	        }).catch((error)=>{
 	          console.log(error);
 	        });
@@ -346,9 +370,12 @@
               sort:{createdAt:0}
          	}
          	console.log(data);
+          Indicator.open();
          	this.$axios.post('/comment',data).then((res)=>{
          		console.log(res.data);
             this.upDatedata();
+            Indicator.close();
+
          	}).catch((error)=>{
          		console.log(error);
          	})
@@ -376,6 +403,7 @@
         };
         //获取所要评论的答案
         this.$axios.get('/answer', {params:data}).then(res=>{
+            Indicator.close();
             console.log(res.data);
             console.log(localStorage.getItem("comment_index"));
             const cindex = localStorage.getItem("comment_index");
@@ -402,14 +430,11 @@
               const search_comment ={
                 search:{
                   answer:this.answerid
-                },
-                sort:{
-                  createdAt:0
                 }
               }
               this.$axios.get('/comment',{params:search_comment}).then((res)=>{
                 if(res.status == 200){
-                  
+                  Indicator.close();
                   $.each(res.data,function(i,v){//循环评论判断评论者的ID 是否是自己
                     v.isMe = false;
                     if(v.createdBy.id == $userid){
@@ -417,6 +442,7 @@
                     };
                   });
                   this.comments = res.data;
+                  
                   console.log(this.comments);
                 }
               }).catch((error)=>{
@@ -455,6 +481,9 @@
         }).catch((error)=>{
           console.log(error);
         })
+      },
+      beforeCreate:function(){
+        Indicator.open();
       }
   }
 </script>
@@ -534,7 +563,9 @@
     }
     
     .box{
-        width: 345rem/$x;margin: 0 auto;
+        width: 345rem/$x;
+        height:100%;
+        margin: 0 auto;
         padding-top:10rem/$x;
         box-sizing:border-box;
         padding-bottom: 65rem/$x;

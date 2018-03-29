@@ -37,7 +37,7 @@
 			padding-top:15rem/$unit;
 			box-sizing:border-box;
 			z-index:5;
-			background: #e8e8e8;
+			background: #FFFEF7;
 			text-align: center;
 
 			.type_bar{
