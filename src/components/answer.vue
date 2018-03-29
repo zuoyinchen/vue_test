@@ -3,7 +3,7 @@
         <scroller :on-refresh="refresh"
   :on-infinite="infinite" ref="myscroller" v-if="prolist.length>0" class="myscroller">
           <ul>
-            <li class="list-item" v-for="(item,index) in prolist " data-type="0">
+            <li class="list-item" v-for="(item,index) in prolist " data-type="0" :key="index">
                 <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
                     <span class="status-bac status-bac-yellow" v-if="item.status== 1"></span>
                     <span class="status-bac" v-else></span>
