@@ -106,7 +106,7 @@
       	<div class="comment_wrap">
       		<img src="" alt="" class="comment_img">
       		<span>|</span>
-      		<input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message">
+      		<input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
       		<span class="send_com" @click="gotoComment($event)" :data-message="message" >发送</span>
       	</div>
       </div>
@@ -117,8 +117,8 @@
  import wx from 'weixin-js-sdk'
  import 'mint-ui/lib/style.css'
  import { MessageBox,Toast,Indicator} from 'mint-ui';
-  // const $userid = localStorage.getItem("userid");//用户id
-  const $userid = '5ab5ca37ed18e3ab06121f39';//用户id
+  const $userid = localStorage.getItem("userid");//用户id
+  // const $userid = '5ab5ca37ed18e3ab06121f39';//用户id
   export default {
       name:"answercomment",
       data(){
@@ -139,6 +139,11 @@
           }
       },
       methods:{
+        inputFocus:function(){
+          setTimeout(function(){
+            window.scrollTo(0,document.body.clientHeight);
+          },500)
+        },
         giveStar:function(event){
           const answerid = event.currentTarget.dataset.id;
           const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
@@ -558,7 +563,9 @@
     }
     
     .box{
-        width: 345rem/$x;margin: 0 auto;
+        width: 345rem/$x;
+        height:100%;
+        margin: 0 auto;
         padding-top:10rem/$x;
         box-sizing:border-box;
         padding-bottom: 65rem/$x;
