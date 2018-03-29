@@ -50,8 +50,8 @@
                 <div class="ctn_r">
                     <div>
                         <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
-                        <span v-else-if="!Boolean(item.createdBy.username)">{{'匿名用户'}}</span>
-                        <span v-else class="answer">{{item.createdBy.username}}</span>
+                        <span v-else-if="!Boolean(item.createdBy.nickName)">{{'匿名用户'}}</span>
+                        <span v-else class="answer">{{item.createdBy.nickName}}</span>
                         <!-- <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i> -->
                         <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
                         <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
