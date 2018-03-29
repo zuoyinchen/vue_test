@@ -19,11 +19,11 @@
           </p>
           <div class="theme_b clearfix">
               <div class="theme_b_l">
-                  <div>
-                      <i class="iconfont icon-wode"></i>
+                  <div class="icon_eye">
+                      <i class="iconfont icon-xianshimima" ></i>
                       <span>{{readnum}}</span>
                   </div>
-                  <div>
+                  <div class="icon_pin">
                       <i class="iconfont icon-pinglun"></i>
                       <span>{{answernum}}</span>
                   </div>
@@ -826,6 +826,25 @@
         font-size: 12px;
         color: #333333;
         letter-spacing: -0.26px;
+    }
+    .icon_eye{
+        width: 36rem/$x;
+    }
+    .icon_eye>i:nth-of-type(1){
+        font-size: 14px;
+    }
+    .icon_eye>span:nth-of-type(1){
+        padding-left: 12rem/$x;
+    }
+    .icon_pin{
+        width: 36rem/$x;
+        padding-top: 2rem/$x;
+    }
+    .icon_pin>i:nth-of-type(1){
+        font-size: 12px;
+    }
+    .icon_pin>span:nth-of-type(1){
+        padding-left: 12rem/$x;
     }
 </style>
 

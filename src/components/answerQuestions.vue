@@ -95,14 +95,14 @@ export default {
     $x:37.5;
     .countdown {
         font-family: STHeitiSC-Medium;
-        font-size: 14px;
+        font-size: 13px;
         color: #333333;
         letter-spacing: -0.39px;
     }
     
     .counttest {
         font-family: STHeitiSC-Medium;
-        font-size: 14px;
+        font-size: 13px;
         color: #333333;
         letter-spacing: -0.39px;
     }
@@ -126,7 +126,7 @@ export default {
     }
     
     .countdown {
-        width: 106rem/$x;
+        width: 110rem/$x;
         height: 30rem/$x;
         border-radius: 100rem/$x;
         background: #fdd545;
@@ -135,12 +135,13 @@ export default {
     }
     
     .countdown>span:nth-of-type(1) {
-        font-size: 14rem/$x;
+        font-size: 8rem/$x;
         letter-spacing: -0.39rem/$x;
     }
     
     .countdown>span:nth-of-type(2) {
-        font-size: 14rem/$x;
+        margin-left: 5rem/$x;
+        font-size: 8rem/$x;
         letter-spacing: -0.39rem/$x;
     }
     
@@ -197,7 +198,6 @@ export default {
         font-size: 14px;
         text-indent: 20rem/$x;
         line-height: 50rem/$x;
-        margin-bottom: 149rem/$x;
     }
     .int_sub{
         width: 345rem/$x;
@@ -237,6 +237,7 @@ export default {
     .icon_pin>span:nth-of-type(1){
         padding-left: 12rem/$x;
     }
+    
 </style>
 
 
