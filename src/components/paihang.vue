@@ -147,6 +147,7 @@ export default {
     this.$axios.get('/rank').then((res)=>{
         this.pailist =res.data;
         const idarr = [];
+        console.log(res)
         for(let i=0;i<this.pailist.length;i++){
           idarr.push(this.pailist[i].id);
         }

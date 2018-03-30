@@ -17,7 +17,7 @@
           </div>
       </div>
       <div>
-        <textarea name="" class="int" id="ctn" v-model="message" placeholder="请输入..."></textarea>
+        <textarea name="" class="int" id="ctn" v-model="message" placeholder="请输入......"></textarea>
         <button type="button"class="int_sub"@click="submit($event)" :data-message="message">提交</button>
       </div>
   </div>
@@ -71,7 +71,7 @@
                 console.log(res);
                if (res.status === 200 || res.status === 201) {
                     
-                    localStorage.setItem("answernum",this.answernum+1);
+                    localStorage.setItem("isAnswer",true);
                     
                     this.$router.replace('/answerDetail');
                 }
@@ -192,12 +192,14 @@
         width: 345rem/$x;
         height: 240rem/$x;
         margin-top: 20rem/$x;
+        padding:10rem/$x;
         border: none;
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
+        box-sizing: border-box;
         font-size: 14rem/$x;
-        text-indent: 2rem/$x;
+        text-indent: 5rem/$x;
         line-height: 24rem/$x;
     }
     .int_sub{

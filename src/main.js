@@ -25,7 +25,7 @@ Vue.use(VueResource);
 //将全局变量挂载到vue实例上
 
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
-//axios.defaults.baseURL = 'http://192.168.1.116:1337/api/v1';
+// axios.defaults.baseURL = 'http://192.168.1.116:1337/api/v1';
 
 
 
@@ -68,7 +68,8 @@ new Vue({
   mounted:function(){
       console.log("nihao");
      let userobj = this.getQueryStringArgs();
-    //   userobj.wxUser = '5aab64f19298544957f2215a';
+     // userobj.id = '5abccf18a97f343e6a916e3c';
+
      if(userobj.id){
       console.log("jin");
        localStorage.setItem("userid",userobj.id);//缓存用户id
