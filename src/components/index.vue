@@ -85,7 +85,7 @@
     },
     methods: {
       countdownend() {
-        this.$emit('countdownend');
+        // this.$emit('countdownend');
         // let title = $("#a_title").text();
         // let status = 2;
         let data = {
@@ -94,7 +94,7 @@
             time: 0
           })
         }
-        console.log("显示页面是否刷新请求数据了")
+        console.log("显示页面是否刷新请求数据了。。。。")
         this.$axios.get('/topic', {
           params: data
         }).then(res => {
@@ -115,7 +115,6 @@
           })
           .then(res => {
             this.countdown = res.data.countDown;
-            console.log("time", this.countdown);
             this.msg = res.data.list || [];
             if (this.countdown == 0) {
               return;

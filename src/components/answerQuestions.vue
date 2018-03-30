@@ -197,8 +197,8 @@
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
         font-size: 14rem/$x;
-        text-indent: 20rem/$x;
-        line-height: 50rem/$x;
+        text-indent: 2rem/$x;
+        line-height: 24rem/$x;
     }
     .int_sub{
         width: 345rem/$x;
