@@ -4,8 +4,8 @@
       <div class="nav clearfix">
         <span class="counttest">下场开始时间</span>
         <span>
-                        <countdown :key="countdown" :time="countdown" class="countdown" v-on:countdownend = "countdownend">
-                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                        <countdown :key="countdown" :time="countdown" class="countdown">
+                            <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
             </span>
@@ -84,26 +84,6 @@ export default {
     };
   },
   methods: {
-    countdownend() {
-      this.$emit("countdownend");
-      // let title = $("#a_title").text();
-      // let status = 2;
-      let data = {
-        limit: this.page * this.size,
-        sort: JSON.stringify({
-          time: 0
-        })
-      };
-      console.log("显示页面是否刷新请求数据了");
-      //   this.$axios
-      //     .get("/topic", {
-      //       params: data
-      //     })
-      //     .then(res => {
-      //       this.msg = res.data.list || [];
-      //       this.countdown = res.data.countDown;
-      //     });
-    },
     getIndexData: function() {
       this.noData = "";
       const data = {
@@ -157,6 +137,7 @@ export default {
             params: data
           })
           .then(res => {
+            this.countdown = res.data.countDown;
             this.msg = res.data.list || [];
             this.countdown = res.data.countDown;
           });

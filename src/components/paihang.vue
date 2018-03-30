@@ -7,16 +7,16 @@
               <img src="../assets/images/friendList.png" alt="" v-else>
           </div>
           <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
-            切换好友榜
+            <b>切换好友榜</b>
           </div>
            <div class="top_btn" @click="this.getWorld" v-else>
-            切换世界榜
+            <b>切换世界榜</b>
           </div>
 
       </div>
       <scroller class="list_wrap" v-if="pailist.length > 0">
         <ul class="paihang_list">
-            <li class="ctn clearfix" v-for="(item,index) in pailist">
+            <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
                     <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
                     <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
                     <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
@@ -139,7 +139,7 @@ export default {
   mounted:function(){
     
   },
-  beforeCreate:function(){
+  created:function(){
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
@@ -147,6 +147,7 @@ export default {
     this.$axios.get('/rank').then((res)=>{
         this.pailist =res.data;
         const idarr = [];
+        console.log(res.data)
         for(let i=0;i<this.pailist.length;i++){
           idarr.push(this.pailist[i].id);
         }
@@ -231,12 +232,15 @@ export default {
     .top_btn{
       width: 75rem/$x;
       height: 20rem/$x;
-      border: 1px solid #333333;
+      border: 1px solid #333;
       border-radius: 100rem/$x;
       margin: 0 auto;
-      font-size:8px;
+      font-size:8rem/$x;
       text-align: center;
       line-height: 20rem/$x;
+    }
+    .top_btn>b{
+      font-weight: 600;
     }
     .list_wrap{
       padding-top:130rem/$x;

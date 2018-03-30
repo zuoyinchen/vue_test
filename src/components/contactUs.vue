@@ -14,11 +14,11 @@
           </li>
           <li>
               <p>客服邮箱 : zg-kefu@zg18.com</p>
-                 <a href="mailto:zg-kefu@zg18.com" class="send">
+                 <!-- <a href="mailto:zg-kefu@zg18.com" class="send">
                         <span>
                         发送
                         </span>
-                 </a>
+                 </a> -->
           </li>
       </ul>
   </div>
