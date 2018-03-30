@@ -38,7 +38,7 @@
           </div>
       </div>
       <ul class="ctn">
-          <li class="clearfix pin_list" v-for="(item,index) in list" >
+          <li class="clearfix pin_list" v-for="(item,index) in list" :key="index">
             <div class="answer_wrap">
               <div class="ctn_l">
                   <i>{{answerindex+1}}</i>
@@ -535,6 +535,7 @@
       span{
         font-size:20px;
         margin-right: 10rem/$x;
+        color: #aaa;
       }
       .comment_input{
         flex:1;
@@ -548,7 +549,7 @@
       }
       .send_com{
         float: right;
-        color:blue;
+        color:#333;
         font-size: 12px;
         line-height: 20rem/$x;
       }

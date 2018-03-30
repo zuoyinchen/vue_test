@@ -68,10 +68,10 @@ new Vue({
   mounted:function(){
       console.log("nihao");
      let userobj = this.getQueryStringArgs();
-     // userobj.wxUser = '5abcbe54587bde833d1bdffe';
-     if(userobj.wxUser){
+    //   userobj.wxUser = '5aab64f19298544957f2215a';
+     if(userobj.id){
       console.log("jin");
-       localStorage.setItem("userid",userobj.wxUser);//缓存用户id
+       localStorage.setItem("userid",userobj.id);//缓存用户id
        localStorage.setItem('headimg',userobj.avatarUrl);//缓存用户头像
        localStorage.setItem('nickname',userobj.nickName);//缓存用户头像
      }
