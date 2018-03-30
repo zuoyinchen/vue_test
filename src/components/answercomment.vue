@@ -737,7 +737,7 @@
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}
     .ctn_l>i{width: 17rem/$x;height: 17rem/$x;line-height:17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;
-    top:10rem/$x;left: 12rem/$x;}
+    top:10rem/$x;left: 12rem/$x;line-height: 18rem/$x;}
     .ctn_l>img{width: 32rem/$x;height: 32rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;margin-left: 15rem/$x;margin-top: 15rem/$x;}
     .ctn_r{
         width: 283rem/$x;float: left;text-align: left;overflow: hidden;margin-top: 15rem/$x;
