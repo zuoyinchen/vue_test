@@ -25,23 +25,24 @@
                   </div>
                   <div class="icon_pin">
                       <i class="iconfont icon-pinglun"></i>
-                      <span>{{answernum}}</span>
+                      <span>{{users.length}}</span>
                   </div>
               </div>
-              <div class="theme_b_r" v-if="status==1">
-                  <p v-if="!isAnswer" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
-                  <p v-else class="has_answered">已抢答</p>
+              <div class="theme_b_mark" @click="starAnswer($event)">
+                <div class="icon_pin">
+                    <i class="iconfont icon-shoucang1"></i>
+                    <span>收藏</span>
+                </div>
               </div>
-              <!-- <div class="theme_b_r" v-if="status==2" v-show="false">
-                  <router-link tag="p" :to="{name:'answerQuestions'}">
-                       <p>立即抢答</p>
-                  </router-link> 
-              </div> -->
           </div>
       </div>
-      
+        <div class="theme_b_sub" v-if="status==1">
+            <p v-if="!isAnswer" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
+            <p v-else class="has_answered">已抢答</p>
+        </div>
+        
         <ul class="ctn">
-            <li class="clearfix pin_list" v-if="msg!=null" v-for="(item,index) in users" :key="item.id"  @click="slideDown($event)" :data-index="index" :data-id="item.id">
+            <li class="clearfix pin_list" v-for="(item,index) in users" :key="item.id"  @click="slideDown($event)" :data-index="index" :data-id="item.id" :data-isanswer="isAnswer">
                 <div class="ctn_l">
                     <i>{{index+1}}</i>
                     <img v-if="!Boolean(item.createdBy)" src="../assets/images/logo.png" alt="1">
@@ -66,9 +67,13 @@
                             <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer($event)" :data-id="item.id">删除</span>
                         </div>
                         <div class="clearfix">
-                            <div>
+                            <div v-if="status == 1">
                                 <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                                 <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                                <span class="upVote_num">{{item.upVotes.length}}</span>
+                            </div>
+                            <div v-else @click="endTip($event)">
+                                <i class="iconfont icon-dianzan"></i>
                                 <span class="upVote_num">{{item.upVotes.length}}</span>
                             </div>
                             <div>
@@ -83,25 +88,32 @@
         <div class="block"></div>
       </scroller>
       <div class="mylist_wrap">
-        <div class="mylist" v-if="!isAnswer">
+        <div class="mylist" v-show="isAnswer">
             <i class="iconfont icon-suoding"></i>
             <span>{{mygrade}}</span>
             <span>我的排名</span>
-            <p class="my_pinlun" v-show="!isAnswer">
+            <p class="my_pinlun">
               <i class="iconfont icon-pinglun"></i>
               <span>{{mycomment}}</span>
             </p>
-            <p class="my_dianzan" v-show="!isAnswer">
+            <p class="my_dianzan">
               <i class="iconfont icon-dianzan"></i>
               <span>{{myupvote}}</span>
             </p>
         </div>
-        <div class="mylist" v-else>
+        <div class="mylist" v-show="!isAnswer & status == 1">
             <i class="iconfont icon-suoding"></i>
             <span>-</span>
             <span>我的排名</span>
             <p class="go_answer">立即抢答</p>
         </div>
+        <div class="mylist" v-show="!isAnswer & status == 2">
+            <i class="iconfont icon-suoding"></i>
+            <span>-</span>
+            <span>我的排名</span>
+            <p class="go_answer">未抢答</p>
+        </div>
+
       </div>
   </div>
 </template>
@@ -127,13 +139,23 @@
               answernum:'',
               id:'',
               defaulturl:'',
-              isAnswer:true,
+              isAnswer:false,
+              myinfor:{
+
+              },
               myupvote:0,//我的点赞数
               mycomment:0,//我的评论数
               mygrade:''//我的排名
           }
       },
       methods:{
+        starAnswer:function(event){//收藏问题
+          console.log(event);
+        },
+        endTip:function(event){
+          event.stopPropagation();
+          MessageBox.alert('该场次已结束');
+        },
         giveStar:function(event){
           event.stopPropagation();
           const answerid = event.currentTarget.dataset.id;
@@ -169,7 +191,7 @@
               }else{
                 this.msg[$index].isStar = true;
               }
-              this.upDatedata();
+              this.upDatedata('收藏成功');
             }
           }).catch((error)=>{
             console.log(error);
@@ -213,7 +235,7 @@
               }else{
                 this.msg[$index].upVote = true;
               }
-              this.upDatedata();
+              this.upDatedata('点赞成功');
             }
           }).catch((error, errorcode) => {
               console.log(error);
@@ -223,6 +245,7 @@
             const index = event.currentTarget.dataset.index;
             localStorage.setItem("comment_index", index);
             const answerid = event.currentTarget.dataset.id;
+            console.log(event.currentTarget.dataset.isanswer);
             this.$router.push('/answercomment');
         },
         timeReplace:function(str) {
@@ -231,7 +254,8 @@
         gotoQuestion:function(event){
           const topicid = event.currentTarget.dataset.tid;//问题id
           const readnum = event.currentTarget.dataset.rnum;//阅读数
-          const answernum = event.currentTarget.dataset.anum;//评论数
+          console.log(this.users.length);
+          const answernum = this.users.length;//评论数
           const status = event.currentTarget.dataset.status;//状态
           // const time = event.currentTarget.dataset.time;//倒计时时间
           const title = event.currentTarget.dataset.title;//问题标题
@@ -271,12 +295,14 @@
           event.stopPropagation();
           const answerid = event.currentTarget.dataset.id;
           console.log(answerid);
+          
           MessageBox.confirm('您确定要删除此回答?').then(
             action => {
               Indicator.open();
               this.$axios.delete('/answer/'+answerid).then((res)=>{
-                Indicator.close();
+                localStorage.setItem("isAnswer",false);
                 this.upDatedata();
+                Indicator.close();
               }).catch((error,errorcode)=>{
                 Toast('网络错误，删除不成功');
                 console.log(error);
@@ -286,7 +312,7 @@
             }
           );
        },
-       upDatedata:function(){
+       upDatedata:function(title){
           const query = localStorage.getItem("query");//参数集合
           const queryobj = JSON.parse(query);
           this.topicid = queryobj.topicid;
@@ -296,25 +322,47 @@
             search:JSON.stringify({topic: topicid}),
             userid:$userid
           };
+          if(localStorage.getItem("isAnswer")){
+            if(localStorage.getItem("isAnswer") == 'false' || localStorage.getItem("isAnswer") == 'undefinded'){
+              console.log('没答题');
+              this.isAnswer = false;
+            }else{
+              console.log('答题');
+              this.isAnswer = true;
+            }
+        }
           this.$axios.get('/answer', {params:data}).then(res=>{
-              Toast('操作成功');
+              Toast(title);
               if(res.data && res.data.length){
                 this.msg = res.data;
+                var grade,upvote,comments,isAnswer;
                 //拿到所有答题者的id
                 $.each(this.msg,function(i,v){
                   v.isMe = false;
                   if(v.createdBy){
                     if(v.createdBy.id == $userid){
-                      this.isAnswer = true;
-                      this.myupvote = v.stars.length;
-                      this.mycomment = v.comments.length;
-                      this.mygrade = i;
+                      grade = i ;
                       v.isMe = true;
+                      upvote = v.upVotes.length;
+                      comments = v.comments.length;
+                      isAnswer = true;
                     } 
                   }
                 });
                 this.users = this.msg;
+                console.log(this.users);
+                this.answernum = this.users.length;
+                this.mygrade = grade +1;
+                this.myupvote = upvote;
+                this.mycomment = comments;
+                this.isAnswer = isAnswer;
+                localStorage.setItem("isAnswer",isAnswer);
+              }else{
+                this.users = res.data;
+                 console.log(this.users);
+                
               }
+              
           }).catch((error)=>{
             Toast({message:'网络错误，操作不成功'});
             console.log(error);
@@ -327,13 +375,17 @@
         this.title = queryobj.title;
         this.time = Number(queryobj.time);
         this.status = queryobj.status;
-        
-        if(localStorage.getItem("answernum")){
-           this.answernum = localStorage.getItem("answernum");
-        }else{
-          localStorage.setItem("answernum",Number(queryobj.answernum));
-          this.answernum = localStorage.getItem("answernum");
+        if(localStorage.getItem("isAnswer")){
+            if(localStorage.getItem("isAnswer") == 'false' || localStorage.getItem("isAnswer") == 'undefinded'){
+              console.log('没答题');
+              this.isAnswer = false;
+            }else{
+              console.log('答题');
+              this.isAnswer = true;
+            }
         }
+        
+        
        
         this.readnum =  Number(queryobj.readnum);
         this.topicid = queryobj.topicid;
@@ -352,20 +404,28 @@
           Indicator.close();
           if(res.data && res.data.length){
             this.msg = res.data;
+            var grade,upvote,comments,isAnswer;
             //拿到所有答题者的id
             $.each(this.msg,function(i,v){
               v.isMe = false;
               if(v.createdBy){
                 if(v.createdBy.id == $userid){
-                  this.isAnswer = true;
-                  this.myupvote = v.stars.length;
-                  this.mycomment = v.comments.length;
-                  this.mygrade = i;
+                  grade = i ;
                   v.isMe = true;
+                  upvote = v.upVotes.length;
+                  comments = v.comments.length;
+                  isAnswer = true;
                 } 
               }
             });
             this.users = this.msg;
+            console.log(this.users);
+            this.answernum = this.users.length;
+            this.mygrade = grade +1;
+            this.myupvote = upvote;
+            this.mycomment = comments;
+            this.isAnswer = isAnswer;
+            localStorage.setItem("isAnswer",isAnswer);
           }
             
         }).catch((error) => {
@@ -373,6 +433,7 @@
             Toast({message:'网络错误，请刷新'});
             console.log(error);
         });
+        
     
           //微信js-sdk
           // this.$axios.get('/wechat_share', { params: {url: window.location.href}}).then(res => {
@@ -413,7 +474,25 @@
     .block{
         width: 375rem/$x;height: 50rem/$x;
     }
-
+    .theme_b_mark {
+      float: right;
+      line-height: 24rem/$x;
+      color: #666666;
+    }
+    .theme_b_sub>p{
+      text-align: center;
+      margin: 15px auto;
+      width: 345rem/$x;
+      padding: 10rem/$x 0;
+      background: #fdd545;
+      border-radius: 4px;
+    }
+    .theme_b_sub .has_answered{
+      height:100%;
+      border-radius: 4px;
+      background: #666666;
+      color:#fff
+    }
     .countdown{
       font-family: STHeitiSC-Medium;
       font-size: 13px;
@@ -553,19 +632,7 @@
         border-radius: 4px;
     }
     
-    .theme_b_r>p {
-        font-family: STHeitiSC-Medium;
-        font-size: 14px;
-        color: #333333;
-        letter-spacing: 0.17px;
-        padding: 4rem/$x 9rem/$x 6 rem/$x 10rem/$x;
-        line-height: 24rem/$x;
-    }
-    .theme_b_r .has_answered{
-      border-radius: 4px;
-      background: #666666;
-      color:#fff;
-    }
+
     
     .theme_b_l>div:nth-of-type(2) {
         margin-left: 10rem/$x;

@@ -160,6 +160,7 @@
         }, 3000);
       },
      gotoDetail: async function(event) {
+      localStorage.removeItem("isAnswer");
       const topicid = event.currentTarget.dataset.tid; //问题id
       let readnum = event.currentTarget.dataset.rnum; //阅读数
       const answernum = event.currentTarget.dataset.anum; //评论数
