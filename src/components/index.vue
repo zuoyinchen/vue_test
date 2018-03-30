@@ -4,8 +4,8 @@
       <div class="nav clearfix">
         <span class="counttest">下场开始时间</span>
         <span>
-                        <countdown :key="countdown" :time="countdown" class="countdown" v-on:countdownend = "countdownend">
-                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                        <countdown :key="countdown" :time="countdown" class="countdown" v-on:countdownend = "onCountdownEnd">
+                            <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
             </span>
@@ -84,8 +84,8 @@
       };
     },
     methods: {
-      countdownend() {
-        this.$emit('countdownend');
+      onCountdownEnd() {
+        // this.$emit('countdownend');
         // let title = $("#a_title").text();
         // let status = 2;
         let data = {
@@ -94,7 +94,7 @@
             time: 0
           })
         }
-        console.log("显示页面是否刷新请求数据了")
+        console.log("显示页面是否刷新请求数据了。。。。")
         this.$axios.get('/topic', {
           params: data
         }).then(res => {
@@ -115,7 +115,6 @@
           })
           .then(res => {
             this.countdown = res.data.countDown;
-            console.log("time", this.countdown);
             this.msg = res.data.list || [];
             if (this.countdown == 0) {
               return;

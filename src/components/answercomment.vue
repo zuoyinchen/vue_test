@@ -40,7 +40,7 @@
           <p v-else class="has_answered">已抢答</p>
       </div>
       <ul class="ctn">
-          <li class="clearfix pin_list" v-for="(item,index) in list" >
+          <li class="clearfix pin_list" v-for="(item,index) in list" :key="index">
             <div class="answer_wrap">
               <div class="ctn_l">
                   <i>{{answerindex+1}}</i>
@@ -152,6 +152,8 @@
         inputFocus:function(){
           setTimeout(function(){
             window.scrollTo(0,document.body.clientHeight);
+
+;
           },500)
         },
         giveStar:function(event){
@@ -546,6 +548,22 @@
         }
         
       }
+      ,
+      created(){
+          //获取页面高度
+        var clientHeight = document.body.clientHeight;
+        //设置监听聚焦事件
+        document.body.addEventListener("focus", function(e) {
+            var focusElem = document.getElementById('input')
+        }, true);
+        //设置监听窗口变化时间
+        window.addEventListener("resize", function() {
+            if(focusElem && document.body.clientHeight < clientHeight) {
+                //使用scrollIntoView方法来控制输入框
+                focusElem.scrollIntoView(false);
+            }
+        });
+      }
   }
 </script>
 <style lang="scss" scoped>
@@ -595,8 +613,11 @@
         border-radius: 5px;
         outline: none;
         caret-color: #FBCE01;
-
       }
+    //   .comment_input:focus{
+    //       position: absolute;
+    //       bottom: 200rem/$x;
+    //   }
       .send_com{
         width:65rem/$x;
         height:36rem/$x;
@@ -716,7 +737,7 @@
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}
     .ctn_l>i{width: 17rem/$x;height: 17rem/$x;line-height:17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;
-    top:10rem/$x;left: 12rem/$x;}
+    top:10rem/$x;left: 12rem/$x;line-height: 18rem/$x;}
     .ctn_l>img{width: 32rem/$x;height: 32rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;margin-left: 15rem/$x;margin-top: 15rem/$x;}
     .ctn_r{
         width: 283rem/$x;float: left;text-align: left;overflow: hidden;margin-top: 15rem/$x;

@@ -11,16 +11,16 @@
           </p>
       	</div>
       	<ul class="paihang_list">
-          <li class="ctn clearfix" v-for="(item,index) in pailist">
+          <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
               <div class="ctn_l clearfix">
                   <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
                   <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
                   <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
-                  <span class="indexname"v-else>{{index+1}}</span>
+                  <span class="indexname" v-else>{{index+1}}</span>
                   <img :src="item.createdBy.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">
                   <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
                   <span class="nickname" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">{{item.createdBy.nickName}}</span>
-                  <span class="nickname"v-else>匿名用户</span>
+                  <span class="nickname" v-else>匿名用户</span>
               </div>
               <div class="ctn_r">
                   <i class="iconfont icon-dianzan1"></i>
