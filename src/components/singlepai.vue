@@ -44,6 +44,8 @@
 	</div>
 </template>
 <script type="text/javascript">
+  import "mint-ui/lib/style.css";
+  import { MessageBox, Toast, Indicator } from "mint-ui";
   const $userid = localStorage.getItem("userid");//userid
 	export default {
 		name : 'singlepai',
@@ -59,7 +61,6 @@
 			}
 		},
 		mounted:function(){
-        this.myavtalUrl = localStorage.getItem("headimg");
         const squery = localStorage.getItem("squery");//参数集合
         const queryobj = JSON.parse(squery);
         this.title = queryobj.title;

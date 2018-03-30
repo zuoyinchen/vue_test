@@ -151,6 +151,7 @@ export default {
   },
   methods: {
     starAnswer: async function(event) {
+      Indicator.open();
       // 收藏问题
       const { status, title } = this.$data;
       const query = localStorage.getItem("query"); //参数集合
@@ -165,15 +166,10 @@ export default {
         });
         if (stars_.length === this.stars.length) {
           stars_.push($userid);
-          this.isMark = true;
-        } else {
-          this.isMark = false;
-        }
+        } 
       } else {
         stars_.push($userid);
-        this.isMark = true;
       }
-      //   console.log("stars_", stars_, this.stars);
       const res = {
         status: Number(status),
         title,
@@ -181,13 +177,20 @@ export default {
       };
       let updateTopic = await this.$axios.put(`/topic/${this.topicid}`, res);
       if (updateTopic.status === 200) {
-        if (!this.isMark) {
+        if (this.isMark) {
           this.upDatedata("取消收藏");
+          this.isMark = false;
         } else {
           this.upDatedata("收藏成功");
+          this.isMark = true;
         }
         this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
           this.stars = res.data.stars;
+          $.each(this.stars,function(i,v){
+            if(v.id == $userid){
+              this.isMark = true;
+            }
+          })
         });
       } else {
         Toast("收藏失败");
@@ -499,6 +502,7 @@ export default {
           });
           this.users = this.msg;
           console.log(this.users);
+          localStorage.setItem("answernum",this.users.length);
           this.answernum = this.users.length;
           this.mygrade = grade + 1;
           this.myupvote = upvote;
@@ -547,17 +551,9 @@ export default {
   },
   beforeCreate: async function() {
     Indicator.open();
-    // const query = localStorage.getItem("query"); //参数集合
-    // const queryobj = JSON.parse(query);
-    // const topicDetail = await this.$axios.get(`/topic/${queryobj.topicid}`);
-    // this.stars = topicDetail.data.stars;
-    // for (let i = 0; i++; i < this.stars.length) {
-    //   if (stars[i].id === $userid) {
-    //     this.isMark = true;
-    //     break;
-    //   }
-    // }
-    // console.log("beforeCreate", this.isMark);
+  },
+  destroyed:function(){
+    Indicator.close();
   }
 };
 </script>
@@ -659,7 +655,7 @@ $x: 37.5;
 
 .countdown > span:nth-of-type(1) {
   padding-left: 2px;
-  font-size: 13rem/$x;
+  font-size: 13px;
   letter-spacing: -0.39rem/$x;
 }
 

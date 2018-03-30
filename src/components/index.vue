@@ -34,7 +34,7 @@
                         <span>{{item.readNum? item.readNum : 0}}</span>
                         <i class="s"></i>
                       </li>
-                      <li @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
+                      <li @click="gotoDetail($event)":data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
                           <i class="line_l"></i>
                           <i class="line_r"></i>
                           <i class="iconfont icon-pinglun"></i>

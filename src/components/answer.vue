@@ -17,7 +17,7 @@
                         </span>
                         <span>
                             <i class="iconfont icon-pinglun"></i>
-                            <span class="componet-num">{{item.messageNum}}</span>
+                            <span class="componet-num">{{item.toAnswer.length}}</span>
                         </span>
                     </div>
                 </div>
@@ -124,16 +124,18 @@
                     status:$status
                 };
                 console.log(data);
+                Indicator.open();
                 this.$http.put('/topic/'+$id,data).then(res=>{
                     if(res.status == 200){
                         this.restSlide();
                         this.prolist.splice(index,1);
+                        this.getIndexData("删除成功");
                     }
                 }).catch((error,errorcode)=>{
                     console.log('error');
                 });
             },
-            getIndexData:function(){
+            getIndexData:function(msg){
               this.noData='';
               const data = {
                 limit : this.page*this.size,
@@ -143,6 +145,9 @@
               this.$axios.get('/topics',{params:data}).then(res=>{
                 console.log(res);
                 Indicator.close();
+                if(msg){
+                    Toast(msg);
+                }
                 if(res.data&&res.data.length){
                     this.prolist = res.data;
                 }else{

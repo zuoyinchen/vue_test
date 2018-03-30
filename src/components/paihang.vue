@@ -26,7 +26,7 @@
                     <span class="nickname">{{item.username}}</span>
                     <p class="upVotes_box">
                       <i class="iconfont icon-dianzan1"></i>
-                      <span>{{item.upVotes}}</span>
+                      <span>{{item.upVotes.length}}</span>
                     </p>
             </li>
         </ul>
@@ -52,6 +52,8 @@
   
 </template>
 <script>
+import "mint-ui/lib/style.css";
+import { MessageBox, Toast, Indicator } from "mint-ui";
 export default {
   name:'paihang',
   data(){
@@ -68,10 +70,12 @@ export default {
   methods:{
     getWorld:function(){
       this.iswho = 0;
+      Indicator.open();
       //获取世界榜
       const $userid = localStorage.getItem("userid");//userid
       this.$axios.get('/rank').then((res)=>{
           if(res.data && res.data.length){
+            Indicator.close();
             this.pailist =res.data;
             const idarr = [];
             for(let i=0;i<this.pailist.length;i++){
@@ -92,17 +96,19 @@ export default {
             this.myStar = 0;
           }
       }).catch(function(error){
+         Indicator.close();
           console.log(error);
       })
     },
     getFriend:function(){
       this.iswho = 1;
-
+      Indicator.open();
       //获取好友榜
       const $userid = localStorage.getItem("userid");//userid
       const data ={search: {id:$userid} }
       this.$axios.get('/friend',{params:data}).then((res)=>{
          if (res.status === 200) {
+            Indicator.close();
             if(res.data.allFriendIds){
               const allFriendIds =JSON.stringify(res.data.allFriendIds);
               const answer ={allFriendIds:allFriendIds};
@@ -132,6 +138,7 @@ export default {
             }
          }
       }).catch(function(error){
+         Indicator.close();
           console.log(error);
       });
     }
@@ -143,8 +150,9 @@ export default {
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
-
+    Indicator.open();
     this.$axios.get('/rank').then((res)=>{
+        Indicator.close();
         this.pailist =res.data;
         const idarr = [];
         console.log(res.data)

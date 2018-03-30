@@ -147,17 +147,19 @@
                     stars:stars,
                     body:$body,
                 };
+                Indicator.open();
                 this.$axios.put('/answer/'+$id,data).then(res=>{
                     console.log(res);
                     if(res.status == 200){
                     	this.restSlide();
                 		this.prolist.splice(index,1);
+                        this.getIndexData('删除成功');
                     }
                 }).catch((error)=>{
                 	console.log('error');
                 });
             },
-            getIndexData:function(){
+            getIndexData:function(msg){
               this.noData='';
               const data = {
                 limit : this.page*this.size,
@@ -166,6 +168,9 @@
               }
               this.$axios.get('/answer',{params:data}).then((res)=>{
                   Indicator.close();
+                  if(msg){
+                    Toast(msg);
+                  }
                   if(res.data&&res.data.length){
                     this.prolist = res.data;
                   }else{
@@ -217,6 +222,9 @@
         },
         beforeCreate:function(){
             Indicator.open();
+        },
+        destroyed:function(){
+            Indicator.close();
         }
 	}
 </script>
