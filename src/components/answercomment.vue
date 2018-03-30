@@ -105,8 +105,8 @@
     </scroller>
       <div class="comment_box">
         <div class="comment_wrap">
-          <img src="" alt="" class="comment_img">
-          <span>|</span>
+          <!-- <img src="" alt="" class="comment_img"> -->
+          <!-- <span>|</span> -->
           <input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
           <span class="send_com" @click="gotoComment($event)" :data-message="message" >发送</span>
         </div>
