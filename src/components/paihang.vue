@@ -139,7 +139,7 @@ export default {
   mounted:function(){
     
   },
-  beforeCreate:function(){
+  created:function(){
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
@@ -147,7 +147,7 @@ export default {
     this.$axios.get('/rank').then((res)=>{
         this.pailist =res.data;
         const idarr = [];
-        console.log(res)
+        console.log(res.data)
         for(let i=0;i<this.pailist.length;i++){
           idarr.push(this.pailist[i].id);
         }
