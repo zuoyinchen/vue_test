@@ -396,6 +396,8 @@
     margin-top: 10rem/$x;
     text-align: left;
     font-weight: 500;
+    line-height: 22rem/$x;
+    letter-spacing: 0.39px;
   }
   
   .btn_t1>ul {

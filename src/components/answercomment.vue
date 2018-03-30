@@ -782,7 +782,7 @@
         font-size: 14px;
     }
     .icon_eye>span:nth-of-type(1){
-        padding-left: 12rem/$x;
+        padding-left: 8rem/$x;
     }
     .icon_pin{
         // width: 36rem/$x;
@@ -792,7 +792,7 @@
         font-size: 12px;
     }
     .icon_pin>span:nth-of-type(1){
-        padding-left: 12rem/$x;
+        padding-left: 8rem/$x;
     }
 </style>
 
