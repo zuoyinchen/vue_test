@@ -95,14 +95,14 @@ export default {
         })
       };
       console.log("显示页面是否刷新请求数据了");
-      this.$axios
-        .get("/topic", {
-          params: data
-        })
-        .then(res => {
-          this.msg = res.data.list || [];
-          this.countdown = res.data.countDown;
-        });
+      //   this.$axios
+      //     .get("/topic", {
+      //       params: data
+      //     })
+      //     .then(res => {
+      //       this.msg = res.data.list || [];
+      //       this.countdown = res.data.countDown;
+      //     });
     },
     getIndexData: function() {
       this.noData = "";
