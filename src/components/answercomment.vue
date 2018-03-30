@@ -5,7 +5,7 @@
             <span class="counttest">倒计时</span>
             <span>
                 <countdown :time="time" class="countdown">
-                    <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }} </template>
+                    <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
       </div>
@@ -110,12 +110,9 @@
       <div class="block"></div>
     </scroller>
       <div class="comment_box">
-        <div class="comment_wrap">
-          <!-- <img src="" alt="" class="comment_img"> -->
-          <!-- <span>|</span> -->
-          <input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
-          <span class="send_com" @click="gotoComment($event)" :data-message="message" >发送</span>
-        </div>
+        <input type="text" name="" class="comment_input" placeholder=" 请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
+        <button type="button" class="send_com" @click="gotoComment($event)" :data-message="message" >发布</button>
+        
       </div>
   </div>
 </template>
@@ -178,15 +175,18 @@
           const data = {
             'stars' : resultarr
           }
+          Indicator.open();
           this.$axios.put('/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.list[$index].isStar){
+                this.upDatedata('取消收藏');
                 this.list[$index].isStar = false;
               }else{
+                this.upDatedata('收藏成功');
                 this.list[$index].isStar = true;
               }
-              this.upDatedata('收藏成功');
+              
             }
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -217,19 +217,22 @@
           const data = {
             'upVotes' : resultarr
           }
+          Indicator.open();
           this.$axios.put('/answer/'+answerid,data).then((res)=>{
             console.log(res);
             if(res.status == 200){
               if(this.list[$index].upVote){
                 this.list[$index].upVote = false;
+                this.upDatedata('取消点赞');
                 $(".upVote_num").eq($index).text(resultarr.length);
 
               }else{
+                this.upDatedata('点赞成功');
                 this.list[$index].upVote = true;
                 upVotesid.push($userid);
                 $(".upVote_num").eq($index).text(resultarr.length);
               }
-              this.upDatedata('点赞成功');
+              
             }
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -305,7 +308,7 @@
                 let comment_num = $(".pin_list").eq(answerindex).find(".comment_num").text();
                 comment_num -=1;
                 $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
-                this.upDatedata();
+                this.upDatedata('删除成功');
 
               }).catch((error,errorcode)=>{
                 console.log(error);
@@ -360,7 +363,7 @@
                 search:{
                   answer:this.list[0].id,
                   sort:{
-                    createdBy:0
+                    createdAt:0
                   }
                 }
               }
@@ -405,13 +408,13 @@
               body: this.message,
               answer: this.answerid,
               createdBy: $userid,
-              sort:{createdAt:0}
+              
           }
           console.log(data);
           Indicator.open();
           this.$axios.post('/comment',data).then((res)=>{
             console.log(res.data);
-            this.upDatedata();
+            this.upDatedata('发布成功');
             Indicator.close();
 
           }).catch((error)=>{
@@ -453,7 +456,6 @@
         };
         //获取所要评论的答案
         this.$axios.get('/answer', {params:data}).then(res=>{
-            console.log(res.data);
             console.log(localStorage.getItem("comment_index"));
             const cindex = localStorage.getItem("comment_index");
             this.answerindex = Number(cindex);
@@ -499,7 +501,7 @@
             
         }).catch((error)=>{
           Indicator.close();
-          Toast({message:'网络错误'});
+          Toast("网络错误请刷新");
           console.log(error);
         });
 
@@ -572,47 +574,41 @@
     }
     .comment_box{
       width:100%;
-      height:49rem/$x;
+      height:55rem/$x;
       background:#fff;
-      padding:8rem/$x 15rem/$x;
+      padding:10rem/$x;
       box-sizing:border-box;
       position: fixed;
       left:0;
       bottom:0;
-      .comment_wrap{
-        width:100%;
-        height:100%;
-        background: #F4F4F4;
-      border-radius: 100px;
-      padding: 6.5rem/$x 20rem/$x;
-      box-sizing:border-box;
+      background: #FFFFFF;
+      box-shadow: 0 1px 5px 2px rgba(204,204,204,0.25);
       display: flex;
-
-      .comment_img{
-        width:24rem/$x;
-        height:18rem/$x;
-        margin-right:10rem/$x;
-      }
-      span{
-        font-size:20px;
-        margin-right: 10rem/$x;
-      }
       .comment_input{
         flex:1;
-        background: #F4F4F4;
-        outline:none;
-        border:none;
         font-family: STHeitiSC-Medium;
-        font-size: 12px;
-        color: #D1D1D1;
-        letter-spacing: 0.14px;
+        font-size: 14px;
+        color: #999999;
+        letter-spacing: 0.17px;
+        padding-left:15rem/$x;
+        border: 1px solid #AAAAAA;
+        border-radius: 5px;
+        outline: none;
+        caret-color: #FBCE01;
+
       }
       .send_com{
+        width:65rem/$x;
+        height:36rem/$x;
+        background: #FBCE01;
+        border:none;
+        border-radius: 5px;
         float: right;
-        color:blue;
-        font-size: 12px;
-        line-height: 20rem/$x;
-      }
+        font-family: PingFangHK-Regular;
+        font-size: 14px;
+        color: #333333;
+        letter-spacing: 0.17px;
+        margin-left: 10rem/$x;
       }
     }
 
@@ -649,15 +645,26 @@
         padding-bottom: 65rem/$x;
     }
     .countdown{
-        width: 106rem/$x;height: 30rem/$x;border-radius: 100rem/$x;background: #fdd545;
+        width: 110rem/$x;
+        height: 30rem/$x;
+        border-radius: 100rem/$x;
+        background: #fdd545;
         line-height: 30rem/$x;
+        margin-top: 10rem/$x;
+        font-family: STHeitiSC-Medium;
+        font-size: 13px;
+        color: #333333;
+        margin-left: 15rem/$x;
+        letter-spacing: -0.39px;
     }
     .countdown>span:nth-of-type(1){
         font-size: 14rem/$x;letter-spacing: -0.39rem/$x;
     }
     .countdown>span:nth-of-type(2){
         font-size: 14rem/$x;letter-spacing: -0.39rem/$x;
+        margin-left: -10rem/$x;
     }
+    
     .theme{
         width: 345rem/$x;
         height: 100%;
@@ -708,7 +715,7 @@
         
     }
     .ctn_l{position: relative;width: 62rem/$x;float: left;}
-    .ctn_l>i{width: 17rem/$x;height: 17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;
+    .ctn_l>i{width: 17rem/$x;height: 17rem/$x;line-height:17rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;position: absolute;
     top:10rem/$x;left: 12rem/$x;}
     .ctn_l>img{width: 32rem/$x;height: 32rem/$x;background: #FDD545;display: inline-block;border-radius: 50%;margin-left: 15rem/$x;margin-top: 15rem/$x;}
     .ctn_r{
