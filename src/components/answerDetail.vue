@@ -606,20 +606,20 @@
     }
     
     .theme_b_l {
-        width: 100rem/$x;
+        // width: 100rem/$x;
         float: left;
         height: 24rem/$x;
         color: #BDBDBD;
     }
     
     .theme_b_l>div:nth-of-type(1) {
-        width: 45rem/$x;
+        // width: 45rem/$x;
         float: left;
         line-height: 24rem/$x;
     }
     
     .theme_b_l>div:nth-of-type(2) {
-        width: 45rem/$x;
+        // width: 45rem/$x;
         float: left;
         line-height: 24rem/$x;
     }

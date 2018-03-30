@@ -69,6 +69,7 @@ new Vue({
       console.log("nihao");
      let userobj = this.getQueryStringArgs();
      // userobj.id = '5abccf18a97f343e6a916e3c';
+
      if(userobj.id){
       console.log("jin");
        localStorage.setItem("userid",userobj.id);//缓存用户id

@@ -847,4 +847,3 @@
         padding-left: 8rem/$x;
     }
 </style>
-
