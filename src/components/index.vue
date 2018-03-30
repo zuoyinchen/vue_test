@@ -347,8 +347,8 @@
     top: 0;
     width: 0;
     height: 0;
-    border-top: 50px solid #fdd545;
-    border-right: 50px solid transparent;
+    border-top: 50rem/$x solid #fdd545;
+    border-right: 50rem/$x solid transparent;
   }
   
   .end {
@@ -357,8 +357,8 @@
     top: 0;
     width: 0;
     height: 0;
-    border-top: 50px solid #666;
-    border-right: 50px solid transparent;
+    border-top: 50rem/$x solid #666;
+    border-right: 50rem/$x solid transparent;
   }
   
   .loading>p {
@@ -370,7 +370,7 @@
     letter-spacing: -0.29px;
     text-align: left;
     position: absolute;
-    left: 0;
+    left: -4rem/$x;
     top: -45rem/$x;
   }
   
@@ -383,7 +383,7 @@
     letter-spacing: -0.29px;
     text-align: left;
     position: absolute;
-    left: 0;
+    left: -4rem/$x;
     top: -45rem/$x;
   }
   
