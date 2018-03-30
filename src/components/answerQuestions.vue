@@ -135,7 +135,7 @@
     }
     
     .countdown>span:nth-of-type(1) {
-        font-size: 8rem/$x;
+        font-size: 13px;
         letter-spacing: -0.39rem/$x;
     }
     
