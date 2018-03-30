@@ -27,18 +27,20 @@
                       <span>{{answernum}}</span>
                   </div>
               </div>
-              <div class="theme_b_r" v-if="status==1">
-                  <p @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
-              </div>
-              <div class="theme_b_r" v-if="status==2" v-show="false">
-                  <router-link tag="p" :to="{name:'answerQuestions'}">
-                       <p>立即抢答</p>
-                  </router-link> 
+              <div class="theme_b_mark">
+                <div class="icon_pin">
+                    <i class="iconfont icon-shoucang1"></i>
+                    <span>收藏</span>
+                </div>
               </div>
           </div>
       </div>
+      <div class="theme_b_sub" v-if="status==1">
+          <p v-if="!isAnswer" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
+          <p v-else class="has_answered">已抢答</p>
+      </div>
       <ul class="ctn">
-          <li class="clearfix pin_list" v-for="(item,index) in list" :key="index">
+          <li class="clearfix pin_list" v-for="(item,index) in list" >
             <div class="answer_wrap">
               <div class="ctn_l">
                   <i>{{answerindex+1}}</i>
@@ -64,11 +66,16 @@
                           <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
                       </div>
                       <div class="clearfix">
-                          <div>
+                          <div v-if="status == 1">
                               <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
                               <span class="upVote_num">{{item.upVotes.length}}</span>
                           </div>
+                          <div v-else @click="endTip($event)">
+                              <i class="iconfont icon-dianzan"></i>
+                              <span class="upVote_num">{{item.upVotes.length}}</span>
+                          </div>
+
                           <div >
                               <i class="iconfont icon-pinglun"></i>
                               <span class="comment_num">{{item.comments.length}}</span>
@@ -104,8 +111,8 @@
     </scroller>
       <div class="comment_box">
         <div class="comment_wrap">
-          <img src="" alt="" class="comment_img">
-          <span>|</span>
+          <!-- <img src="" alt="" class="comment_img"> -->
+          <!-- <span>|</span> -->
           <input type="text" name="" class="comment_input" placeholder="请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
           <span class="send_com" @click="gotoComment($event)" :data-message="message" >发送</span>
         </div>
@@ -125,6 +132,7 @@
           return {
               comments:[],
               answerindex:0,
+              clist:[],
               list:[],//答案数组
               body:'',//答案
               answerid:'',//答案ID
@@ -135,10 +143,15 @@
               title:'',
               readnum:'',
               answernum:'',
-              defaulturl:''
+              defaulturl:'',
+              isAnswer:false
           }
       },
       methods:{
+        endTip:function(event){
+          event.stopPropagation();
+          MessageBox.alert('该场次已结束');
+        },
         inputFocus:function(){
           setTimeout(function(){
             window.scrollTo(0,document.body.clientHeight);
@@ -173,7 +186,7 @@
               }else{
                 this.list[$index].isStar = true;
               }
-              this.upDatedata();
+              this.upDatedata('收藏成功');
             }
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -216,7 +229,7 @@
                 upVotesid.push($userid);
                 $(".upVote_num").eq($index).text(resultarr.length);
               }
-              this.upDatedata();
+              this.upDatedata('点赞成功');
             }
           }).catch((error,errorcode)=>{
             console.log(error);
@@ -270,6 +283,7 @@
               Indicator.open();
               this.$axios.delete('/answer/'+answerid).then((res)=>{
                 Indicator.close();
+                localStorage.setItem("isAnswer",false);
                 this.$router.replace("/answerDetail");
               }).catch((error,errorcode)=>{
                 Toast('网络错误，删除不成功');
@@ -292,6 +306,7 @@
                 comment_num -=1;
                 $(".pin_list").eq(answerindex).find(".comment_num").text(comment_num);
                 this.upDatedata();
+
               }).catch((error,errorcode)=>{
                 console.log(error);
               });
@@ -301,12 +316,23 @@
           );
           
         },
-        upDatedata:function(){
+        upDatedata:function(title){
+
           this.message = '';
+
+          if(localStorage.getItem("isAnswer")){
+            if(localStorage.getItem("isAnswer") == 'false' || localStorage.getItem("isAnswer") == 'undefinded'){
+              console.log('没答题');
+              this.isAnswer = false;
+            }else{
+              console.log('答题');
+              this.isAnswer = true;
+            }
+          }
           const query = localStorage.getItem("query");//参数集合
           const queryobj = JSON.parse(query);
           this.topicid = queryobj.topicid;
-            const topicid = this.topicid;//问题id
+          const topicid = this.topicid;//问题id
           const data ={
             search:JSON.stringify({topic: topicid}),
             userid:$userid
@@ -315,7 +341,6 @@
               const cindex = localStorage.getItem("comment_index");
               this.answerindex = Number(cindex);
               this.list = res.data.splice(cindex,1);
-              console.log(this.list);
               //拿到所有答题者的id
               $.each(this.list,function(i,v){
                 v.isMe = false;
@@ -324,9 +349,11 @@
                 if(v.createdBy){
                   if(v.createdBy.id == $userid){//判断答题者的id中是否有自己
                     v.isMe = true;
+                    localStorage.getItem("isAnswer",true);
                   } 
                 }
               });
+              this.clist = this.list;
               this.answerid = this.list[0].id;
               //根据答案ID获取评论
               const search_comment ={
@@ -339,7 +366,7 @@
               }
               this.$axios.get('/comment',{params:search_comment}).then((res)=>{
                 Indicator.close();
-                Toast('操作成功');
+                Toast(title);
                 console.log(res);
                 if(res.status == 200){
                   this.comments = res.data;
@@ -395,6 +422,15 @@
         }
       },
       mounted(){
+        if(localStorage.getItem("isAnswer")){
+            if(localStorage.getItem("isAnswer") == 'false' || localStorage.getItem("isAnswer") == 'undefinded'){
+              console.log('没答题');
+              this.isAnswer = false;
+            }else{
+              console.log('答题');
+              this.isAnswer = true;
+            }
+        }
         const query = localStorage.getItem("query");//参数集合
         const queryobj = JSON.parse(query);
         this.title = queryobj.title;
@@ -407,6 +443,7 @@
           localStorage.setItem("answernum",Number(queryobj.answernum));
           this.answernum = localStorage.getItem("answernum");
         }
+
         this.topicid = queryobj.topicid;
 
         const topicid = this.topicid;//问题id
@@ -420,26 +457,23 @@
             console.log(localStorage.getItem("comment_index"));
             const cindex = localStorage.getItem("comment_index");
             this.answerindex = Number(cindex);
-            console.log(cindex);
             this.list = res.data.splice(cindex,1);
-            console.log(this.list);
 
+            var isAnswer;
             //拿到所有答题者的id
             $.each(this.list,function(i,v){
               v.isMe = false;
               this.answerid = v.id;
-              console.log(this.answerid);
               this.body = v.body;
-              
               if(v.createdBy){
                 if(v.createdBy.id == $userid){//判断答题者的id中是否有自己
                   v.isMe = true;
+                  localStorage.getItem("isAnswer",true);
                 } 
               }
-
             });
-            console.log(this.list[0].id);
             this.answerid = this.list[0].id;
+            console.log(this.isAnswer);
             //根据答案ID获取评论
               var search_comment ={
                 search:{
@@ -501,6 +535,14 @@
       },
       beforeCreate:function(){
         Indicator.open();
+        if(localStorage.getItem("isAnswer") == 'false' || localStorage.getItem("isAnswer") == 'undefinded'){
+          console.log('没答题');
+          this.isAnswer = false;
+        }else{
+          console.log('答题');
+          this.isAnswer = true;
+        }
+        
       }
   }
 </script>
@@ -508,6 +550,25 @@
     $x:37.5;
     .error_tip{
       margin-top: 20rem/$x;
+    }
+    .theme_b_mark{
+        float: right;
+        line-height: 0.64rem;
+        color: #666666;
+    }
+    .theme_b_sub>p{
+      text-align: center;
+      margin: 15px auto;
+      width: 345rem/$x;
+      padding: 10rem/$x 0;
+      background: #fdd545;
+      border-radius: 4px;
+    }
+    .theme_b_sub .has_answered{
+      height:100%;
+      border-radius: 4px;
+      background: #666666;
+      color:#fff
     }
     .comment_box{
       width:100%;
@@ -535,7 +596,6 @@
       span{
         font-size:20px;
         margin-right: 10rem/$x;
-        color: #aaa;
       }
       .comment_input{
         flex:1;
@@ -549,7 +609,7 @@
       }
       .send_com{
         float: right;
-        color:#333;
+        color:blue;
         font-size: 12px;
         line-height: 20rem/$x;
       }
@@ -611,8 +671,11 @@
        font-family: STHeitiSC-Medium;font-size: 18rem/$x;letter-spacing: 0.22rem/$x;color-interpolation-filters: #333;
        text-align: left;margin-left: 15rem/$x;margin-top: 15rem/$x;
     }
-    .theme_b{
-        width: 345rem/$x;margin-left: 15rem/$x;margin-bottom: 15rem/$x;margin-top: 15rem/$x;
+    .theme_b {
+        width: 100%;
+        padding: 0.4rem;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
     }
     .theme_b_l{
         width: 100rem/$x;float: left;height: 24rem/$x;color: #BDBDBD; 
@@ -622,18 +685,6 @@
     }
     .theme_b_l>div:nth-of-type(2){
         width: 45rem/$x;float: left;line-height: 24rem/$x;
-    }
-    .theme_b_r{
-        width: 76rem/$x;float: right;height: 24rem/$x;margin-right: 30rem/$x;
-        background: #FDD545;
-        border-radius: 4px;
-    }
-    .theme_b_r > p{
-        font-family: STHeitiSC-Medium;font-size: 14px;color: #333333;letter-spacing: 0.17px;padding: 4rem/$x 9rem/$x 6 rem/$x 10rem/$x;
-        line-height: 24rem/$x;
-    }
-    .theme_b_l>div:nth-of-type(2){
-        margin-left: 10rem/$x;
     }
     .icon-wode{
         font-size: 12px;color: #BDBDBD;
@@ -796,4 +847,3 @@
         padding-left: 8rem/$x;
     }
 </style>
-

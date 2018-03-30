@@ -26,7 +26,7 @@
 <script>
  import 'mint-ui/lib/style.css'
  import { MessageBox,Toast,Indicator} from 'mint-ui';
-export default {
+ export default {
     name:'answerQuestions',
     data(){
         return {
@@ -71,7 +71,7 @@ export default {
                 console.log(res);
                if (res.status === 200 || res.status === 201) {
                     
-                    localStorage.setItem("answernum",this.answernum+1);
+                    localStorage.setItem("isAnswer",true);
                     
                     this.$router.replace('/answerDetail');
                 }

@@ -4,8 +4,8 @@
       <div class="nav clearfix">
         <span class="counttest">下场开始时间</span>
         <span>
-                      <countdown :key="countdown" :time="countdown" class="countdown" v-on:countdownend = "countdownend">
-                          <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
+                        <countdown :key="countdown" :time="countdown" class="countdown" v-on:countdownend = "countdownend">
+                            <template slot-scope="props" >{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
             </span>
@@ -46,9 +46,9 @@
                           <span class="counttest">倒计时</span>
                           <span>
                               <countdown :time="item.second" class="countdown">
-                                <template slot-scope="props">
-                                    {{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
-                                </template>
+<template slot-scope="props">
+   {{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
+</template>
                               </countdown>
                           </span>
                       </li>
@@ -85,17 +85,22 @@
     },
     methods: {
       countdownend() {
-        //     this.$emit('countdownend');
-        //     let title = $("#a_title").text();
-        //     let status = 2;
-        //     let data = {
-        //         title,
-        //         status
-        //     }
-        //     console.log("显示页面是否刷新请求数据了")
-        //     this.$axios.get('/topic',{params:data}).then(res=>{
-        //     this.msg = res.data.list;
-        //   });
+        this.$emit('countdownend');
+        // let title = $("#a_title").text();
+        // let status = 2;
+        let data = {
+          limit: this.page * this.size,
+          sort: JSON.stringify({
+            time: 0
+          })
+        }
+        console.log("显示页面是否刷新请求数据了")
+        this.$axios.get('/topic', {
+          params: data
+        }).then(res => {
+          this.msg = res.data.list || [];
+          this.countdown = res.data.countDown;
+        });
       },
       getIndexData: function() {
         this.noData = "";
@@ -149,7 +154,7 @@
               params: data
             })
             .then(res => {
-              this.msg = res.data.list|| [];
+              this.msg = res.data.list || [];
               this.countdown = res.data.countDown;
             });
           const limit = this.page * this.size;
@@ -160,6 +165,7 @@
         }, 3000);
       },
      gotoDetail: async function(event) {
+      localStorage.removeItem("isAnswer");
       const topicid = event.currentTarget.dataset.tid; //问题id
       let readnum = event.currentTarget.dataset.rnum; //阅读数
       const answernum = event.currentTarget.dataset.anum; //评论数
