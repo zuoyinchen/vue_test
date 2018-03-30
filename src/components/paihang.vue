@@ -26,7 +26,7 @@
                     <span class="nickname">{{item.username}}</span>
                     <p class="upVotes_box">
                       <i class="iconfont icon-dianzan1"></i>
-                      <span>{{item.upVotes.length}}</span>
+                      <span>{{item.ups}}</span>
                     </p>
             </li>
         </ul>
@@ -84,7 +84,7 @@ export default {
             if(idarr.indexOf($userid) != -1){
               const myindex = idarr.indexOf($userid);
               this.myGrade = Number(idarr.indexOf($userid))+1;
-              this.myStar = this.pailist[myindex].upVotes;
+              this.myStar = this.pailist[myindex].ups;
               this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
             }else{
               this.myGrade ='-';
@@ -122,7 +122,7 @@ export default {
                 if(idarr.indexOf($userid) != -1){
                   const myindex = idarr.indexOf($userid);
                   this.myGrade = Number(idarr.indexOf($userid))+1;
-                  this.myStar = this.pailist[myindex].upVotes;
+                  this.myStar = this.pailist[myindex].ups;
                   this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
                 }else{
                   this.myGrade ='-';
@@ -156,13 +156,14 @@ export default {
         this.pailist =res.data;
         const idarr = [];
         console.log(res.data)
+        console.log(this.pailist.length)
         for(let i=0;i<this.pailist.length;i++){
           idarr.push(this.pailist[i].id);
         }
         if(idarr.indexOf($userid) != -1){
           const myindex = idarr.indexOf($userid);
           this.myGrade = Number(idarr.indexOf($userid))+1;
-          this.myStar = this.pailist[myindex].upVotes;
+          this.myStar = this.pailist[myindex].ups;
           this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl:localStorage.getItem("headimg");
         }else{
             this.pailist = [];

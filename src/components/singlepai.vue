@@ -68,8 +68,10 @@
 		    const data = {
 		    	topicid : this.topicid
 		    }
+        Indicator.open();
 		    this.$axios.get('/singleRank',{params:data}).then((res)=>{
             console.log(res.data);
+            Indicator.close();
 		        if(res.data && res.data.length){
 		            this.pailist =res.data;
                 console.log(this.pailist);
@@ -89,6 +91,7 @@
 		            this.myStar = 0;
 		        }
 		    }).catch(function(error){
+          Indicator.close();
 		        console.log(error);
 		    });
 		}
