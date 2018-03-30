@@ -25,7 +25,7 @@
                 </ul>
 			</scroller>
 			<div v-show="isShow" class="no_data">
-	            <img src="../assets/images/shoucang.png">
+	            <img src="../assets/images/shoucang@2x.png">
 	            <p>您的收藏还是空的</p>
 	            <router-link tag="a" class="goHome" to="../">去逛逛</router-link>
 	        </div>

@@ -66,9 +66,9 @@ new Vue({
     }
   },
   mounted:function(){
-    
+      console.log("nihao");
      let userobj = this.getQueryStringArgs();
-     // userobj.wxUser = '5abc91748219eeb968990300';
+     // userobj.wxUser = '5abcbe54587bde833d1bdffe';
      if(userobj.wxUser){
       console.log("jin");
        localStorage.setItem("userid",userobj.wxUser);//缓存用户id

@@ -118,7 +118,7 @@
  import 'mint-ui/lib/style.css'
  import { MessageBox,Toast,Indicator} from 'mint-ui';
   const $userid = localStorage.getItem("userid");//用户id
-  // const $userid = '5ab5ca37ed18e3ab06121f39';//用户id
+  // const $userid = '5abcbe54587bde833d1bdffd';//用户id
   export default {
       name:"answercomment",
       data(){
