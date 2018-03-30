@@ -30,7 +30,8 @@
               </div>
               <div class="theme_b_mark" @click="starAnswer($event)">
                 <div class="icon_pin">
-                    <i class="iconfont icon-shoucang1"></i>
+                    <i class="iconfont icon-shoucang2" style="color: #FFD62D" v-if="isMark"></i>
+                    <i class="iconfont icon-shoucang1" v-else ></i>
                     <span>收藏</span>
                 </div>
               </div>
@@ -88,7 +89,7 @@
         <div class="block"></div>
       </scroller>
       <div class="mylist_wrap">
-        <div class="mylist" v-show="isAnswer">
+        <div class="mylist" v-show="isAnswer"   @click="slideDown($event)" :data-index="mygrade-1" :data-id="myanswerid">
             <i class="iconfont icon-suoding"></i>
             <span>{{mygrade}}</span>
             <span>我的排名</span>
@@ -119,855 +120,945 @@
 </template>
 
 <script>
-
-  //引入微信js-sdk
- // import wx from 'weixin-js-sdk'
- import 'mint-ui/lib/style.css'
- import { MessageBox,Toast,Indicator} from 'mint-ui';
-  const $userid = localStorage.getItem("userid");//用户id
-  export default {
-      name:"answerDetail",
-      data(){
-          return {
-              msg:[],
-              users:[],
-              status:'',
-              topicId:'',
-              time:0,
-              title:'',
-              readnum:'',
-              answernum:'',
-              id:'',
-              defaulturl:'',
-              isAnswer:false,
-              myinfor:{
-
-              },
-              myupvote:0,//我的点赞数
-              mycomment:0,//我的评论数
-              mygrade:''//我的排名
+//引入微信js-sdk
+// import wx from 'weixin-js-sdk'
+import "mint-ui/lib/style.css";
+import { MessageBox, Toast, Indicator } from "mint-ui";
+const $userid = localStorage.getItem("userid"); //用户id
+export default {
+  name: "answerDetail",
+  data() {
+    return {
+      msg: [],
+      users: [],
+      status: "",
+      topicId: "",
+      time: 0,
+      title: "",
+      readnum: "",
+      answernum: "",
+      id: "",
+      defaulturl: "",
+      isAnswer: false,
+      myinfor: {},
+      myupvote: 0, //我的点赞数
+      mycomment: 0, //我的评论数
+      mygrade: "", //我的排名
+      stars: [],
+      isMark: false,
+      myanswerid: ""
+    };
+  },
+  methods: {
+    starAnswer: async function(event) {
+      // 收藏问题
+      const { status, title } = this.$data;
+      const query = localStorage.getItem("query"); //参数集合
+      const queryobj = JSON.parse(query);
+      this.topicid = queryobj.topicid;
+      const stars_ = [];
+      if (this.stars && this.stars.length) {
+        this.stars.forEach(item => {
+          if ($userid !== item.id) {
+            stars_.push(item.id);
           }
-      },
-      methods:{
-        starAnswer:function(event){//收藏问题
-          console.log(event);
-        },
-        endTip:function(event){
-          event.stopPropagation();
-          MessageBox.alert('该场次已结束');
-        },
-        giveStar:function(event){
-          event.stopPropagation();
-          const answerid = event.currentTarget.dataset.id;
-          const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
-          const $userid = localStorage.getItem("userid");
-          console.log(this.msg[$index].stars);
-          const stars = this.msg[$index].stars;
-          const starsid = [];
-          //循环当前评论收藏的信息，拿到此条评论的所有id
-          for(let i=0;i<stars.length;i++){
-            starsid.push(stars[i].id);
-          }
-          console.log(this.msg[$index].isStar);
-          if(this.msg[$index].isStar){
-            console.log("取消收藏");
-            starsid.splice(starsid.indexOf($userid),1)
-            var resultarr = starsid;
-            console.log(resultarr);
-          }else{
-            console.log("收藏");
-            starsid.push($userid);
-            var resultarr = [...new Set(starsid)]
-            console.log(resultarr);
-          }
-          const data = {
-            'stars' : resultarr
-          }
-          this.$axios.put('/answer/'+answerid,data).then((res)=>{
-            console.log(res);
-            if(res.status == 200){
-              if(this.msg[$index].isStar){
-                this.msg[$index].isStar = false;
-              }else{
-                this.msg[$index].isStar = true;
-              }
-              this.upDatedata('收藏成功');
+        });
+        if (stars_.length === this.stars.length) {
+          stars_.push($userid);
+          this.isMark = true;
+        } else {
+          this.isMark = false;
+        }
+      } else {
+        stars_.push($userid);
+        this.isMark = true;
+      }
+      //   console.log("stars_", stars_, this.stars);
+      const res = {
+        status: Number(status),
+        title,
+        stars: stars_
+      };
+      let updateTopic = await this.$axios.put(`/topic/${this.topicid}`, res);
+      if (updateTopic.status === 200) {
+        if (!this.isMark) {
+          this.upDatedata("取消收藏");
+        } else {
+          this.upDatedata("收藏成功");
+        }
+        this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
+          this.stars = res.data.stars;
+        });
+      } else {
+        Toast("收藏失败");
+      }
+      console.log("isMark", this.isMark);
+    },
+    endTip: function(event) {
+      event.stopPropagation();
+      MessageBox.alert("该场次已结束");
+    },
+    giveStar: function(event) {
+      event.stopPropagation();
+      const answerid = event.currentTarget.dataset.id;
+      const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
+      const $userid = localStorage.getItem("userid");
+      console.log(this.msg[$index].stars);
+      const stars = this.msg[$index].stars;
+      const starsid = [];
+      //循环当前评论收藏的信息，拿到此条评论的所有id
+      for (let i = 0; i < stars.length; i++) {
+        starsid.push(stars[i].id);
+      }
+      console.log(this.msg[$index].isStar);
+      if (this.msg[$index].isStar) {
+        console.log("取消收藏");
+        starsid.splice(starsid.indexOf($userid), 1);
+        var resultarr = starsid;
+        console.log(resultarr);
+      } else {
+        console.log("收藏");
+        starsid.push($userid);
+        var resultarr = [...new Set(starsid)];
+        console.log(resultarr);
+      }
+      const data = {
+        stars: resultarr
+      };
+      Indicator.open();
+      this.$axios
+        .put("/answer/" + answerid, data)
+        .then(res => {
+          console.log(res);
+          if (res.status == 200) {
+            if (this.msg[$index].isStar) {
+              this.msg[$index].isStar = false;
+              this.upDatedata("取消收藏");
+            } else {
+              this.msg[$index].isStar = true;
+              this.upDatedata("收藏成功");
             }
-          }).catch((error)=>{
-            console.log(error);
-          })
-        },
-        giveLike:function(event){
-          event.stopPropagation();
-          console.log(event.currentTarget.dataset);
-          const answerid = event.currentTarget.dataset.id;
-          console.log('点赞id |'+answerid);
-          const $index = event.currentTarget.dataset.index;//所点击收藏的评论索引
-          const $userid = localStorage.getItem("userid");
-          console.log('点赞用户 |'+$userid);
-          console.log(this.msg[$index].upVotes);
-          const upVotes = this.msg[$index].upVotes;
-          const upVotesid = [];
-          //循环当前评论收藏的信息，拿到此条评论的所有id
-          for(let i=0;i<upVotes.length;i++){
-            upVotesid.push(upVotes[i].id);
           }
-          console.log(this.msg[$index].upVote);
-          console.log('当前用户点赞位置'+upVotesid.indexOf($userid));
-          if(this.msg[$index].upVote){
-            upVotesid.splice(upVotesid.indexOf($userid),1)
-            var resultarr = upVotesid;
-            $(".upVote_num").eq($index).text(resultarr.length);
-          }else{
-            upVotesid.push($userid);
-            var resultarr = [...new Set(upVotesid)];
-            $(".upVote_num").eq($index).text(resultarr.length);
-          }
-          const data = {
-            'upVotes' : resultarr
-          }
-          this.$axios.put('/answer/'+answerid,data).then((res)=>{
-            console.log(res);
-            if(res.status == 200){
-              if(this.msg[$index].upVote){
-                this.msg[$index].upVote = false;
-
-              }else{
-                this.msg[$index].upVote = true;
-              }
-              this.upDatedata('点赞成功');
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    giveLike: function(event) {
+      event.stopPropagation();
+      console.log(event.currentTarget.dataset);
+      const answerid = event.currentTarget.dataset.id;
+      console.log("点赞id |" + answerid);
+      const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
+      const $userid = localStorage.getItem("userid");
+      console.log("点赞用户 |" + $userid);
+      console.log(this.msg[$index].upVotes);
+      const upVotes = this.msg[$index].upVotes;
+      const upVotesid = [];
+      //循环当前评论收藏的信息，拿到此条评论的所有id
+      for (let i = 0; i < upVotes.length; i++) {
+        upVotesid.push(upVotes[i].id);
+      }
+      console.log(this.msg[$index].upVote);
+      console.log("当前用户点赞位置" + upVotesid.indexOf($userid));
+      if (this.msg[$index].upVote) {
+        upVotesid.splice(upVotesid.indexOf($userid), 1);
+        var resultarr = upVotesid;
+        $(".upVote_num")
+          .eq($index)
+          .text(resultarr.length);
+      } else {
+        upVotesid.push($userid);
+        var resultarr = [...new Set(upVotesid)];
+        $(".upVote_num")
+          .eq($index)
+          .text(resultarr.length);
+      }
+      const data = {
+        upVotes: resultarr
+      };
+      Indicator.open();
+      this.$axios
+        .put("/answer/" + answerid, data)
+        .then(res => {
+          console.log(res);
+          if (res.status == 200) {
+            if (this.msg[$index].upVote) {
+              this.msg[$index].upVote = false;
+              this.upDatedata("取消点赞");
+            } else {
+              this.msg[$index].upVote = true;
+              this.upDatedata("点赞成功");
             }
-          }).catch((error, errorcode) => {
+          }
+        })
+        .catch((error, errorcode) => {
+          console.log(error);
+        });
+    },
+    slideDown: function(event) {
+      const index = event.currentTarget.dataset.index;
+      localStorage.setItem("comment_index", index);
+      const answerid = event.currentTarget.dataset.id;
+      console.log("myanswerid", event.currentTarget.dataset.id);
+      this.$router.push("/answercomment");
+    },
+    timeReplace: function(str) {
+      return str.replace("T", " ").slice(0, str.indexOf("."));
+    },
+    gotoQuestion: function(event) {
+      const topicid = event.currentTarget.dataset.tid; //问题id
+      const readnum = event.currentTarget.dataset.rnum; //阅读数
+      console.log(this.users.length);
+      const answernum = this.users.length; //评论数
+      const status = event.currentTarget.dataset.status; //状态
+      // const time = event.currentTarget.dataset.time;//倒计时时间
+      const title = event.currentTarget.dataset.title; //问题标题
+      const userQuestion = {
+        topicid: topicid,
+        readnum: readnum,
+        answernum: answernum,
+        status: status,
+        time: this.time,
+        title: title
+      };
+      console.log(JSON.stringify(userQuestion));
+
+      localStorage.setItem("userQuestion", JSON.stringify(userQuestion));
+
+      this.$router.push("/answerQuestions");
+    },
+    // gotoShare:function(){
+    //  wx.onMenuShareAppMessage({
+    //    title: '这是个问题吗', // 分享标题
+    //    desc: '回答问题', // 分享描述
+    //    link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+    //    imgUrl: '../assets/images/logo.png', // 分享图标
+    //    type: '', // 分享类型,music、video或link，不填默认为link
+    //    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+    //    success: function () {
+    //        // 用户确认分享后执行的回调函数
+    //        console.log("成功");
+    //    },
+    //    cancel: function () {
+    //      console.log("取消");
+    //    // 用户取消分享后执行的回调函数
+    //    }
+    //  });
+    // },
+    deleteAnswer: function(event) {
+      event.stopPropagation();
+      const answerid = event.currentTarget.dataset.id;
+      console.log(answerid);
+
+      MessageBox.confirm("您确定要删除此回答?").then(
+        action => {
+          Indicator.open();
+          this.$axios
+            .delete("/answer/" + answerid)
+            .then(res => {
+              localStorage.setItem("isAnswer", false);
+              this.upDatedata();
+              Indicator.close();
+            })
+            .catch((error, errorcode) => {
+              Toast("网络错误，删除不成功");
               console.log(error);
-          });
+            });
         },
-        slideDown: function(event) {
-            const index = event.currentTarget.dataset.index;
-            localStorage.setItem("comment_index", index);
-            const answerid = event.currentTarget.dataset.id;
-            console.log(event.currentTarget.dataset.isanswer);
-            this.$router.push('/answercomment');
-        },
-        timeReplace:function(str) {
-          return str.replace('T', ' ').slice(0, str.indexOf('.'));
-        },
-        gotoQuestion:function(event){
-          const topicid = event.currentTarget.dataset.tid;//问题id
-          const readnum = event.currentTarget.dataset.rnum;//阅读数
-          console.log(this.users.length);
-          const answernum = this.users.length;//评论数
-          const status = event.currentTarget.dataset.status;//状态
-          // const time = event.currentTarget.dataset.time;//倒计时时间
-          const title = event.currentTarget.dataset.title;//问题标题
-          const userQuestion = {
-            topicid : topicid,
-            readnum : readnum,
-            answernum : answernum,
-            status : status,
-            time : this.time,
-            title : title
-          }
-          console.log(JSON.stringify(userQuestion));
-          
-          localStorage.setItem("userQuestion",JSON.stringify(userQuestion));
-          
-          this.$router.push('/answerQuestions');
-        },
-       // gotoShare:function(){
-       //  wx.onMenuShareAppMessage({
-       //    title: '这是个问题吗', // 分享标题
-       //    desc: '回答问题', // 分享描述
-       //    link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-       //    imgUrl: '../assets/images/logo.png', // 分享图标
-       //    type: '', // 分享类型,music、video或link，不填默认为link
-       //    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-       //    success: function () {
-       //        // 用户确认分享后执行的回调函数
-       //        console.log("成功");
-       //    },
-       //    cancel: function () {
-       //      console.log("取消");
-       //    // 用户取消分享后执行的回调函数
-       //    }
-       //  });
-       // },
-       deleteAnswer:function(event){
-          event.stopPropagation();
-          const answerid = event.currentTarget.dataset.id;
-          console.log(answerid);
-          
-          MessageBox.confirm('您确定要删除此回答?').then(
-            action => {
-              Indicator.open();
-              this.$axios.delete('/answer/'+answerid).then((res)=>{
-                localStorage.setItem("isAnswer",false);
-                this.upDatedata();
-                Indicator.close();
-              }).catch((error,errorcode)=>{
-                Toast('网络错误，删除不成功');
-                console.log(error);
-              })
-            },(res)=>{
-              console.log("取消");
-            }
-          );
-       },
-       upDatedata:function(title){
-          const query = localStorage.getItem("query");//参数集合
-          const queryobj = JSON.parse(query);
-          this.topicid = queryobj.topicid;
-          
-          const topicid = this.topicid;//问题id
-          const data ={
-            search:JSON.stringify({topic: topicid}),
-            userid:$userid
-          };
-          if(localStorage.getItem("isAnswer")){
-            if(localStorage.getItem("isAnswer") == 'false' || localStorage.getItem("isAnswer") == 'undefinded'){
-              console.log('没答题');
-              this.isAnswer = false;
-            }else{
-              console.log('答题');
-              this.isAnswer = true;
-            }
+        res => {
+          console.log("取消");
         }
-          this.$axios.get('/answer', {params:data}).then(res=>{
-              Toast(title);
-              if(res.data && res.data.length){
-                this.msg = res.data;
-                var grade,upvote,comments,isAnswer;
-                //拿到所有答题者的id
-                $.each(this.msg,function(i,v){
-                  v.isMe = false;
-                  if(v.createdBy){
-                    if(v.createdBy.id == $userid){
-                      grade = i ;
-                      v.isMe = true;
-                      upvote = v.upVotes.length;
-                      comments = v.comments.length;
-                      isAnswer = true;
-                    } 
-                  }
-                });
-                this.users = this.msg;
-                console.log(this.users);
-                this.answernum = this.users.length;
-                this.mygrade = grade +1;
-                this.myupvote = upvote;
-                this.mycomment = comments;
-                this.isAnswer = isAnswer;
-                localStorage.setItem("isAnswer",isAnswer);
-              }else{
-                this.users = res.data;
-                 console.log(this.users);
-                
-              }
-              
-          }).catch((error)=>{
-            Toast({message:'网络错误，操作不成功'});
-            console.log(error);
-          });
-       }
-      },
-      mounted:function(){
-        const query = localStorage.getItem("query");//参数集合
-        const queryobj = JSON.parse(query);
-        this.title = queryobj.title;
-        this.time = Number(queryobj.time);
-        this.status = queryobj.status;
-        if(localStorage.getItem("isAnswer")){
-            if(localStorage.getItem("isAnswer") == 'false' || localStorage.getItem("isAnswer") == 'undefinded'){
-              console.log('没答题');
-              this.isAnswer = false;
-            }else{
-              console.log('答题');
-              this.isAnswer = true;
-            }
-        }
-        
-        
-       
-        this.readnum =  Number(queryobj.readnum);
-        this.topicid = queryobj.topicid;
-    
-        const topicid = this.topicid; //问题id
+      );
+    },
+    upDatedata: function(title) {
+      const query = localStorage.getItem("query"); //参数集合
+      const queryobj = JSON.parse(query);
+      this.topicid = queryobj.topicid;
 
-        const data = {
-            search: JSON.stringify({
-                topic: topicid
-            }),
-            userid: $userid
-        };
-        console.log(data);
-    
-        this.$axios.get('/answer', {params: data}).then(res => {
-          Indicator.close();
-          if(res.data && res.data.length){
+      const topicid = this.topicid; //问题id
+      const data = {
+        search: JSON.stringify({ topic: topicid }),
+        userid: $userid
+      };
+      if (localStorage.getItem("isAnswer")) {
+        if (
+          localStorage.getItem("isAnswer") == "false" ||
+          localStorage.getItem("isAnswer") == "undefinded"
+        ) {
+          console.log("没答题");
+          this.isAnswer = false;
+        } else {
+          console.log("答题");
+          this.isAnswer = true;
+        }
+      }
+      Indicator.close();
+
+      this.$axios
+        .get("/answer", { params: data })
+        .then(res => {
+          Toast(title);
+          if (res.data && res.data.length) {
             this.msg = res.data;
-            var grade,upvote,comments,isAnswer;
+            var grade, upvote, comments, isAnswer;
             //拿到所有答题者的id
-            $.each(this.msg,function(i,v){
+            $.each(this.msg, function(i, v) {
               v.isMe = false;
-              if(v.createdBy){
-                if(v.createdBy.id == $userid){
-                  grade = i ;
+              if (v.createdBy) {
+                if (v.createdBy.id == $userid) {
+                  grade = i;
                   v.isMe = true;
                   upvote = v.upVotes.length;
                   comments = v.comments.length;
                   isAnswer = true;
-                } 
+                }
               }
             });
             this.users = this.msg;
             console.log(this.users);
             this.answernum = this.users.length;
-            this.mygrade = grade +1;
+            this.mygrade = grade + 1;
             this.myupvote = upvote;
             this.mycomment = comments;
             this.isAnswer = isAnswer;
-            localStorage.setItem("isAnswer",isAnswer);
+            localStorage.setItem("isAnswer", isAnswer);
+          } else {
+            this.users = res.data;
+            console.log(this.users);
           }
-            
-        }).catch((error) => {
-            Indicator.close();
-            Toast({message:'网络错误，请刷新'});
-            console.log(error);
+        })
+        .catch(error => {
+          Toast({ message: "网络错误，操作不成功" });
+          console.log(error);
         });
-        
-    
-          //微信js-sdk
-          // this.$axios.get('/wechat_share', { params: {url: window.location.href}}).then(res => {
-          //     console.log(res);
-          //     const appid = res.data.appId;
-          //     const nonceStr = res.data.nonceStr;
-          //     const signature = res.data.signature;
-          //     const timestamp = res.data.timestamp;
-  
-          //     //配置微信js-sdk
-          //     wx.config({
-          //         debug: false, // 
-          //         appId: appid, // 必填，公众号的唯一标识
-          //         timestamp: timestamp, // 必填，生成签名的时间戳
-          //         nonceStr: nonceStr, // 必填，生成签名的随机串
-          //         signature: signature, // 必填，签名
-          //         jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
-          //     });
-  
-          //     wx.ready(function() {
-          //         console.log("成功");
-          //     });
-          //     wx.error(function(res) {
-          //         console.log("失败");
-          //     });
-  
-          // }).catch((error) => {
-          //     console.log(error);
-          // })
-      },
-      beforeCreate:function(){
-        Indicator.open();
+    }
+  },
+  mounted: function() {
+    const query = localStorage.getItem("query"); //参数集合
+    const queryobj = JSON.parse(query);
+    this.title = queryobj.title;
+    this.time = Number(queryobj.time);
+    this.status = queryobj.status;
+
+    this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
+      this.stars = res.data.stars;
+      this.stars.forEach(item => {
+        if ($userid === item.id) {
+          this.isMark = true;
+        }
+      });
+    });
+
+    if (localStorage.getItem("isAnswer")) {
+      if (
+        localStorage.getItem("isAnswer") == "false" ||
+        localStorage.getItem("isAnswer") == "undefinded"
+      ) {
+        console.log("没答题");
+        this.isAnswer = false;
+      } else {
+        console.log("答题");
+        this.isAnswer = true;
       }
+    }
+
+    this.readnum = Number(queryobj.readnum);
+    this.topicid = queryobj.topicid;
+
+    const topicid = this.topicid; //问题id
+
+    const data = {
+      search: JSON.stringify({
+        topic: topicid
+      }),
+      userid: $userid
+    };
+    console.log(data);
+
+    this.$axios
+      .get("/answer", { params: data })
+      .then(res => {
+        Indicator.close();
+        if (res.data && res.data.length) {
+          this.msg = res.data;
+          var grade, upvote, comments, isAnswer, myanswerid;
+          //拿到所有答题者的id
+          $.each(this.msg, function(i, v) {
+            v.isMe = false;
+            if (v.createdBy) {
+              if (v.createdBy.id == $userid) {
+                grade = i;
+                v.isMe = true;
+                upvote = v.upVotes.length;
+                comments = v.comments.length;
+                isAnswer = true;
+                myanswerid = v.id;
+              }
+            }
+          });
+          this.users = this.msg;
+          console.log(this.users);
+          this.answernum = this.users.length;
+          this.mygrade = grade + 1;
+          this.myupvote = upvote;
+          this.mycomment = comments;
+          this.isAnswer = isAnswer;
+          localStorage.setItem("isAnswer", isAnswer);
+          this.myanswerid = myanswerid;
+          console.log("哈哈");
+          console.log(this.myanswerid);
+        }
+      })
+      .catch(error => {
+        Indicator.close();
+        Toast({ message: "网络错误，请刷新" });
+        console.log(error);
+      });
+
+    //微信js-sdk
+    // this.$axios.get('/wechat_share', { params: {url: window.location.href}}).then(res => {
+    //     console.log(res);
+    //     const appid = res.data.appId;
+    //     const nonceStr = res.data.nonceStr;
+    //     const signature = res.data.signature;
+    //     const timestamp = res.data.timestamp;
+
+    //     //配置微信js-sdk
+    //     wx.config({
+    //         debug: false, //
+    //         appId: appid, // 必填，公众号的唯一标识
+    //         timestamp: timestamp, // 必填，生成签名的时间戳
+    //         nonceStr: nonceStr, // 必填，生成签名的随机串
+    //         signature: signature, // 必填，签名
+    //         jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+    //     });
+
+    //     wx.ready(function() {
+    //         console.log("成功");
+    //     });
+    //     wx.error(function(res) {
+    //         console.log("失败");
+    //     });
+
+    // }).catch((error) => {
+    //     console.log(error);
+    // })
+  },
+  beforeCreate: async function() {
+    Indicator.open();
+    // const query = localStorage.getItem("query"); //参数集合
+    // const queryobj = JSON.parse(query);
+    // const topicDetail = await this.$axios.get(`/topic/${queryobj.topicid}`);
+    // this.stars = topicDetail.data.stars;
+    // for (let i = 0; i++; i < this.stars.length) {
+    //   if (stars[i].id === $userid) {
+    //     this.isMark = true;
+    //     break;
+    //   }
+    // }
+    // console.log("beforeCreate", this.isMark);
   }
+};
 </script>
 <style lang="scss" scoped>
-    $x:37.5;
-    .block{
-        width: 375rem/$x;height: 50rem/$x;
-    }
-    .theme_b_mark {
-      float: right;
-      line-height: 24rem/$x;
-      color: #666666;
-    }
-    .theme_b_sub>p{
-      text-align: center;
-      margin: 15px auto;
-      width: 345rem/$x;
-      padding: 10rem/$x 0;
-      background: #fdd545;
-      border-radius: 4px;
-    }
-    .theme_b_sub .has_answered{
-      height:100%;
-      border-radius: 4px;
-      background: #666666;
-      color:#fff
-    }
-    .countdown{
-      font-family: STHeitiSC-Medium;
-      font-size: 13px;
-      color: #333333;
-      margin-left: 15rem/$x;
-      letter-spacing: -0.39px;
-    }
-    .counttest{
-      font-family: STHeitiSC-Medium;
-      font-size: 13px;
-      color: #333333;
-      letter-spacing: -0.39px;
-    }
-    .clearfix:after {
-    content: "";
-    display: block;
-    height: 0;
-    clear: both;
-    }
-    *{
-        margin: 0;padding: 0;
-    }
-    .box{
-        width: 345rem/$x;
-        height:100%;
-        margin: 0 auto;
-        padding-top:10rem/$x;
-        box-sizing:border-box;
-    }
-    
-    .counttest {
-        font-family: STHeitiSC-Medium;
-        font-size: 14px;
-        color: #333333;
-        letter-spacing: -0.39px;
-    }
-    
-    .clearfix:after {
-        content: "";
-        display: block;
-        height: 0;
-        clear: both;
-    }
-    
-    * {
-        margin: 0;
-        padding: 0;
-    }
-    
-    .box {
-        width: 345rem/$x;
-        margin: 0 auto;
-        padding-top: 10rem/$x;
-        box-sizing: border-box;
-    }
-    
-    .countdown {
-        width: 110rem/$x;
-        height: 30rem/$x;
-        border-radius: 100rem/$x;
-        background: #fdd545;
-        line-height: 30rem/$x;
-        margin-top: 10rem/$x;
-        font-family: STHeitiSC-Medium;
-        font-size: 13px;
-        color: #333333;
-        margin-left: 15rem/$x;
-        letter-spacing: -0.39px;
-    }
-    
-    .countdown>span:nth-of-type(1) {
-        padding-left: 2px;
-        font-size: 13rem/$x;
-        letter-spacing: -0.39rem/$x;
-    }
-    
-    .countdown>span:nth-of-type(2) {
-        margin-left: -10rem/$x;
-        font-size: 8rem/$x;
-        letter-spacing: -0.39rem/$x;
-    }
-    .theme {
-        width: 345rem/$x;
-        height: 100%;
-        background: #FFFFFF;
-        box-shadow: 0 2px 6px 0 #DDDDDD;
-        border-radius: 10px;
-        overflow: hidden;
-        margin:0 auto;
-        margin-top: 15rem/$x;
-    }
-    
-    .theme_t {
-        font-family: STHeitiSC-Medium;
-        font-size: 18rem/$x;
-        letter-spacing: 0.22rem/$x;
-        color-interpolation-filters: #333;
-        text-align: left;
-        font-weight: 500;
-        color: #333333;
-        letter-spacing: 0.22px;
-        margin: 15rem/$x;
-        font-weight: 500;
-        line-height: 22rem/$x;
-    }
-    
-    .theme_b {
-        width: 100%;
-        padding:15rem/$x;
-        box-sizing:border-box;
-    }
-    
-    .theme_b_l {
-        // width: 100rem/$x;
-        float: left;
-        height: 24rem/$x;
-        color: #BDBDBD;
-    }
-    
-    .theme_b_l>div:nth-of-type(1) {
-        // width: 45rem/$x;
-        float: left;
-        line-height: 24rem/$x;
-    }
-    
-    .theme_b_l>div:nth-of-type(2) {
-        // width: 45rem/$x;
-        float: left;
-        line-height: 24rem/$x;
-    }
-    
-    .theme_b_r {
-        width: 76rem/$x;
-        float: right;
-        height: 24rem/$x;
-        background: #FDD545;
-        border-radius: 4px;
-    }
-    
+$x: 37.5;
+.block {
+  width: 375rem/$x;
+  height: 50rem/$x;
+}
+.theme_b_mark {
+  float: right;
+  line-height: 24rem/$x;
+  color: #666666;
+}
+.theme_b_sub > p {
+  text-align: center;
+  margin: 15px auto;
+  width: 345rem/$x;
+  padding: 10rem/$x 0;
+  background: #fdd545;
+  border-radius: 4px;
+}
+.theme_b_sub .has_answered {
+  height: 100%;
+  border-radius: 4px;
+  background: #666666;
+  color: #fff;
+}
+.countdown {
+  font-family: STHeitiSC-Medium;
+  font-size: 13px;
+  color: #333333;
+  margin-left: 15rem/$x;
+  letter-spacing: -0.39px;
+}
+.counttest {
+  font-family: STHeitiSC-Medium;
+  font-size: 13px;
+  color: #333333;
+  letter-spacing: -0.39px;
+}
+.clearfix:after {
+  content: "";
+  display: block;
+  height: 0;
+  clear: both;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+.box {
+  width: 345rem/$x;
+  height: 100%;
+  margin: 0 auto;
+  padding-top: 10rem/$x;
+  box-sizing: border-box;
+}
 
-    
-    .theme_b_l>div:nth-of-type(2) {
-        margin-left: 10rem/$x;
-    }
-    
-    .icon-wode {
-        font-size: 12px;
-        color: #BDBDBD;
-    }
-    
-    .icon-pinglun {
-        font-size: 12px;
-        color: #BDBDBD;
-    }
-    
-    .icon-dianzan,
-    .icon-dianzan1 {
-        font-size: 12px;
-        color: #BDBDBD;
-    }
-    
-    ul,
-    li {
-        list-style: none;
-    }
-    
-    .ctn>li {
-        width: 345rem/$x;
-        height: 100%;
-        background: #FFFFFF;
-        box-shadow: 0 2px 6px 0 #DDDDDD;
-        border-radius: 10px;
-        margin: 0 auto;
-        margin-top: 15rem/$x;
-    }
-    
-    .ctn_l {
-        position: relative;
-        width: 62rem/$x;
-        float: left;
-    }
-    
-    .ctn_l>i {
-        width: 17rem/$x;
-        height: 17rem/$x;
-        background: #FDD545;
-        display: inline-block;
-        border-radius: 50%;
-        position: absolute;
-        top: 10rem/$x;
-        left: 12rem/$x;
-        line-height: 18rem/$x;
-    }
-    
-    .ctn_l>img {
-        width: 32rem/$x;
-        height: 32rem/$x;
-        background: #FDD545;
-        display: inline-block;
-        border-radius: 50%;
-        margin-left: 15rem/$x;
-        margin-top: 15rem/$x;
-    }
-    
-    .ctn_r {
-        width: 283rem/$x;
-        float: left;
-        text-align: left;
-        overflow: hidden;
-        margin-top: 15rem/$x;
-    }
-    
-    .ctn_r>div:nth-of-type(1)>span {
-        font-family: STHeitiSC-Medium;
-        font-size: 16rem/$x;
-        color: #333333;
-        letter-spacing: 0.19px;
-    }
-    
-    .ctn_r>div:nth-of-type(1)>i {
-        float: right;
-        color: #fdd545;
-        margin-right: 15rem/$x;
-        padding: 2rem/$x;
-    }
-    
-    .ctn_r>div:nth-of-type(1)>i:nth-of-type(2) {
-        float: right;
-        color: #fdd545;
-        margin-right: 5rem/$x;
-    }
-    
-    .ctn_r>p:nth-of-type(1) {
-        width: 268rem/$x;
-        font-family: STHeitiSC-Medium;
-        font-size: 14px;
-        color: #666666;
-        letter-spacing: 0.17px;
-        margin-top: 10rem/$x;
-    }
-    
-    .ctn_r>div:nth-of-type(2) {
-        margin-top: 16rem/$x;
-    }
-    
-    .ctn_r>div:nth-of-type(2)>div:nth-of-type(1) {
-        float: left;
-        font-family: STHeitiSC-Medium;
-        font-size: 12rem/$x;
-        color: #BDBDBD;
-        letter-spacing: 0.14rem/$x;
-        padding-bottom: 15rem/$x;
-    }
-    
-    .ctn_r>div:nth-of-type(2)>div:nth-of-type(2) {
-        float: right;
-    }
-    
-    .ctn_r>div:nth-of-type(2)>div:nth-of-type(2)>div {
-        float: left;
-        margin-right: 15rem/$x;
-        color: #BDBDBD;
-        width: 36rem/$x;
-    }
-    
-    .countend {
-        background: #666666;
-        border-radius: 100rem/$x;
-    }
-    
-    .countend>span {
-        font-family: STHeitiSC-Medium;
-        font-size: 14px;
-        color: #FFFFFF;
-        letter-spacing: -0.39px;
-    }
-    
-    .slide {
-        margin-top: 0;
-        border-radius: 0;
-        background: #FAFAFA;
-    }
-    
-    .slide_l {
-        float: left;
-        text-align: left;
-        width: 62rem/$x;
-    }
-    
-    .slide_l>img {
-        width: 32rem/$x;
-        height: 32rem/$x;
-        background: #FDD545;
-        display: inline-block;
-        border-radius: 50%;
-        margin: 15rem/$x;
-    }
-    
-    .slide_r {
-        float: left;
-        width: 283rem/$x;
-    }
-    
-    .slide_rt {
-        width: 283rem/$x;
-        margin-top: 15rem/$x;
-    }
-    
-    .slide_rt>div:nth-of-type(1) {
-        font-family: STHeitiSC-Medium;
-        font-size: 12px;
-        color: #333333;
-        letter-spacing: 0.14px;
-        float: left;
-    }
-    
-    .slide_rt>div:nth-of-type(2) {
-        font-family: STHeitiSC-Medium;
-        font-size: 12px;
-        color: #BDBDBD;
-        letter-spacing: 0.14px;
-        float: right;
-        margin-right: 15rem/$x;
-    }
-    
-    .slide_rb {
-        text-align: left;
-        font-family: STHeitiSC-Medium;
-        font-size: 12px;
-        color: #666666;
-        letter-spacing: 0.14px;
-        margin-top: 10rem/$x;
-    }
-    
-    .hide {
-        display: none;
-    }
-    
-    .delete_pinglun {
-        font-family: STHeitiSC-Medium;
-        font-size: 12px;
-        color: #1E88E5;
-        letter-spacing: 0.14px;
-    }
-    
-    .int {
-        width: 345rem/$x;
-        height: 33rem/$x;
-        position: fixed;
-        bottom: 33rem/$x;
-        left: 15rem/$x;
-    }
-    
-    .int_l {
-        float: left;
-        background: #f4f4f4;
-        // border-right:1px solid #000;
-        width: 54rem/$x;
-        height: 33rem/$x;
-    }
-    
-    .int_m {
-        float: left;
-        width: 207rem/$x;
-        background: #f4f4f4;
-        height: 33rem/$x;
-        outline: medium
-    }
-    
-    .int_r {
-        float: left;
-        background: #f4f4f4;
-        width: 46rem/$x;
-        height: 35rem/$x;
-    }
-    .mylist_wrap{
-      width:100%;
-      height: 46rem/$x;
-      padding:0 15rem/$x;
-      position: fixed;
-      left:0;
-      bottom: 20rem/$x;
-      box-sizing:border-box;
-    }
-    .mylist {
-        background: #FDD545;
-        box-shadow: 0 2px 6px 0 #DDDDDD;
-        border-radius: 10px;
-        width: 100%;
-        height: 46rem/$x;
-        margin: 0 auto;
-        line-height: 46rem/$x;
-        text-align: left;
-        padding:0 17rem/$x 0 10rem/$x;
-        box-sizing:border-box;
-    }
-    
-    .mylist>:nth-child(1) {
-        color: #333333;
-        font-size: 24rem/$x;
-        vertical-align: middle;
-        margin-right: 15rem/$x;
-        float: left;
-    }
-    
-    .mylist>:nth-child(2) {
-        color: #333333;
-        font-family: STHeitiSC-Medium;
-        font-size: 18px;
-        color: #333333;
-        letter-spacing: 0.22px;
-        float: left;
-        margin-right: 10rem/$x;
-    }
-    
-    .mylist>:nth-child(3) {
-        font-family: STHeitiSC-Medium;
-        font-size: 14px;
-        color: #333333;
-        letter-spacing: 0.17px;
-        float: left;
-    }
-    
-    .my_pinlun{
-        color: #333333;
-        float: right;
-        margin-left: 22rem/$x;
-        i{
-          color:#333333;
-        }
-        span{
-          margin-left: 5rem/$x;
-        }
-    }
-    
-    .my_dianzan {
-        font-family: STHeitiSC-Medium;
-        font-size: 12px;
-        color: #333333;
-        letter-spacing: -0.26px;
-        float: right;
-        i{
-          color:#333333;
-        }
-        span{
-          margin-left: 5rem/$x;
-        }
-    }
-    .go_answer{
-      float: right;
-      font-family: STHeitiSC-Medium;
-      font-size: 14px;
-      color: #333333;
-      letter-spacing: 0.17px;
-      cursor: pointer;
-    }
-    
-    .icon_eye{
-        // width: 36rem/$x;
-    }
-    .icon_eye>i:nth-of-type(1){
-        font-size: 14px;
-    }
-    .icon_eye>span:nth-of-type(1){
-        padding-left: 8rem/$x;
-    }
-    .icon_pin{
-        // width: 36rem/$x;
-        
-    }
-    .icon_pin>i:nth-of-type(1){
-        font-size: 12px;
-    }
-    .icon_pin>span:nth-of-type(1){
-        padding-left: 8rem/$x;
-    }
+.counttest {
+  font-family: STHeitiSC-Medium;
+  font-size: 14px;
+  color: #333333;
+  letter-spacing: -0.39px;
+}
+
+.clearfix:after {
+  content: "";
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.box {
+  width: 345rem/$x;
+  margin: 0 auto;
+  padding-top: 10rem/$x;
+  box-sizing: border-box;
+}
+
+.countdown {
+  width: 110rem/$x;
+  height: 30rem/$x;
+  border-radius: 100rem/$x;
+  background: #fdd545;
+  line-height: 30rem/$x;
+  margin-top: 10rem/$x;
+  font-family: STHeitiSC-Medium;
+  font-size: 13px;
+  color: #333333;
+  margin-left: 15rem/$x;
+  letter-spacing: -0.39px;
+}
+
+.countdown > span:nth-of-type(1) {
+  padding-left: 2px;
+  font-size: 13rem/$x;
+  letter-spacing: -0.39rem/$x;
+}
+
+.countdown > span:nth-of-type(2) {
+  margin-left: -10rem/$x;
+  font-size: 8rem/$x;
+  letter-spacing: -0.39rem/$x;
+}
+.theme {
+  width: 345rem/$x;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 2px 6px 0 #dddddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 auto;
+  margin-top: 15rem/$x;
+}
+
+.theme_t {
+  font-family: STHeitiSC-Medium;
+  font-size: 18rem/$x;
+  letter-spacing: 0.22rem/$x;
+  color-interpolation-filters: #333;
+  text-align: left;
+  font-weight: 500;
+  color: #333333;
+  letter-spacing: 0.22px;
+  margin: 15rem/$x;
+  font-weight: 500;
+  line-height: 22rem/$x;
+}
+
+.theme_b {
+  width: 100%;
+  padding: 15rem/$x;
+  box-sizing: border-box;
+}
+
+.theme_b_l {
+  // width: 100rem/$x;
+  float: left;
+  height: 24rem/$x;
+  color: #bdbdbd;
+}
+
+.theme_b_l > div:nth-of-type(1) {
+  // width: 45rem/$x;
+  float: left;
+  line-height: 24rem/$x;
+}
+
+.theme_b_l > div:nth-of-type(2) {
+  // width: 45rem/$x;
+  float: left;
+  line-height: 24rem/$x;
+}
+
+.theme_b_r {
+  width: 76rem/$x;
+  float: right;
+  height: 24rem/$x;
+  background: #fdd545;
+  border-radius: 4px;
+}
+
+.theme_b_l > div:nth-of-type(2) {
+  margin-left: 10rem/$x;
+}
+
+.icon-wode {
+  font-size: 12px;
+  color: #bdbdbd;
+}
+
+.icon-pinglun {
+  font-size: 12px;
+  color: #bdbdbd;
+}
+
+.icon-dianzan,
+.icon-dianzan1 {
+  font-size: 12px;
+  color: #bdbdbd;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+.ctn > li {
+  width: 345rem/$x;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 2px 6px 0 #dddddd;
+  border-radius: 10px;
+  margin: 0 auto;
+  margin-top: 15rem/$x;
+}
+
+.ctn_l {
+  position: relative;
+  width: 62rem/$x;
+  float: left;
+}
+
+.ctn_l > i {
+  width: 17rem/$x;
+  height: 17rem/$x;
+  background: #fdd545;
+  display: inline-block;
+  border-radius: 50%;
+  position: absolute;
+  top: 10rem/$x;
+  left: 12rem/$x;
+  line-height: 18rem/$x;
+}
+
+.ctn_l > img {
+  width: 32rem/$x;
+  height: 32rem/$x;
+  background: #fdd545;
+  display: inline-block;
+  border-radius: 50%;
+  margin-left: 15rem/$x;
+  margin-top: 15rem/$x;
+}
+
+.ctn_r {
+  width: 283rem/$x;
+  float: left;
+  text-align: left;
+  overflow: hidden;
+  margin-top: 15rem/$x;
+}
+
+.ctn_r > div:nth-of-type(1) > span {
+  font-family: STHeitiSC-Medium;
+  font-size: 16rem/$x;
+  color: #333333;
+  letter-spacing: 0.19px;
+}
+
+.ctn_r > div:nth-of-type(1) > i {
+  float: right;
+  color: #fdd545;
+  margin-right: 15rem/$x;
+  padding: 2rem/$x;
+}
+
+.ctn_r > div:nth-of-type(1) > i:nth-of-type(2) {
+  float: right;
+  color: #fdd545;
+  margin-right: 5rem/$x;
+}
+
+.ctn_r > p:nth-of-type(1) {
+  width: 268rem/$x;
+  font-family: STHeitiSC-Medium;
+  font-size: 14px;
+  color: #666666;
+  letter-spacing: 0.17px;
+  margin-top: 10rem/$x;
+}
+
+.ctn_r > div:nth-of-type(2) {
+  margin-top: 16rem/$x;
+}
+
+.ctn_r > div:nth-of-type(2) > div:nth-of-type(1) {
+  float: left;
+  font-family: STHeitiSC-Medium;
+  font-size: 12rem/$x;
+  color: #bdbdbd;
+  letter-spacing: 0.14rem/$x;
+  padding-bottom: 15rem/$x;
+}
+
+.ctn_r > div:nth-of-type(2) > div:nth-of-type(2) {
+  float: right;
+}
+
+.ctn_r > div:nth-of-type(2) > div:nth-of-type(2) > div {
+  float: left;
+  margin-right: 15rem/$x;
+  color: #bdbdbd;
+  width: 36rem/$x;
+}
+
+.countend {
+  background: #666666;
+  border-radius: 100rem/$x;
+}
+
+.countend > span {
+  font-family: STHeitiSC-Medium;
+  font-size: 14px;
+  color: #ffffff;
+  letter-spacing: -0.39px;
+}
+
+.slide {
+  margin-top: 0;
+  border-radius: 0;
+  background: #fafafa;
+}
+
+.slide_l {
+  float: left;
+  text-align: left;
+  width: 62rem/$x;
+}
+
+.slide_l > img {
+  width: 32rem/$x;
+  height: 32rem/$x;
+  background: #fdd545;
+  display: inline-block;
+  border-radius: 50%;
+  margin: 15rem/$x;
+}
+
+.slide_r {
+  float: left;
+  width: 283rem/$x;
+}
+
+.slide_rt {
+  width: 283rem/$x;
+  margin-top: 15rem/$x;
+}
+
+.slide_rt > div:nth-of-type(1) {
+  font-family: STHeitiSC-Medium;
+  font-size: 12px;
+  color: #333333;
+  letter-spacing: 0.14px;
+  float: left;
+}
+
+.slide_rt > div:nth-of-type(2) {
+  font-family: STHeitiSC-Medium;
+  font-size: 12px;
+  color: #bdbdbd;
+  letter-spacing: 0.14px;
+  float: right;
+  margin-right: 15rem/$x;
+}
+
+.slide_rb {
+  text-align: left;
+  font-family: STHeitiSC-Medium;
+  font-size: 12px;
+  color: #666666;
+  letter-spacing: 0.14px;
+  margin-top: 10rem/$x;
+}
+
+.hide {
+  display: none;
+}
+
+.delete_pinglun {
+  font-family: STHeitiSC-Medium;
+  font-size: 12px;
+  color: #1e88e5;
+  letter-spacing: 0.14px;
+}
+
+.int {
+  width: 345rem/$x;
+  height: 33rem/$x;
+  position: fixed;
+  bottom: 33rem/$x;
+  left: 15rem/$x;
+}
+
+.int_l {
+  float: left;
+  background: #f4f4f4;
+  // border-right:1px solid #000;
+  width: 54rem/$x;
+  height: 33rem/$x;
+}
+
+.int_m {
+  float: left;
+  width: 207rem/$x;
+  background: #f4f4f4;
+  height: 33rem/$x;
+  outline: medium;
+}
+
+.int_r {
+  float: left;
+  background: #f4f4f4;
+  width: 46rem/$x;
+  height: 35rem/$x;
+}
+.mylist_wrap {
+  width: 100%;
+  height: 46rem/$x;
+  padding: 0 15rem/$x;
+  position: fixed;
+  left: 0;
+  bottom: 20rem/$x;
+  box-sizing: border-box;
+}
+.mylist {
+  background: #fdd545;
+  box-shadow: 0 2px 6px 0 #dddddd;
+  border-radius: 10px;
+  width: 100%;
+  height: 46rem/$x;
+  margin: 0 auto;
+  line-height: 46rem/$x;
+  text-align: left;
+  padding: 0 17rem/$x 0 10rem/$x;
+  box-sizing: border-box;
+}
+
+.mylist > :nth-child(1) {
+  color: #333333;
+  font-size: 24rem/$x;
+  vertical-align: middle;
+  margin-right: 15rem/$x;
+  float: left;
+}
+
+.mylist > :nth-child(2) {
+  color: #333333;
+  font-family: STHeitiSC-Medium;
+  font-size: 18px;
+  color: #333333;
+  letter-spacing: 0.22px;
+  float: left;
+  margin-right: 10rem/$x;
+}
+
+.mylist > :nth-child(3) {
+  font-family: STHeitiSC-Medium;
+  font-size: 14px;
+  color: #333333;
+  letter-spacing: 0.17px;
+  float: left;
+}
+
+.my_pinlun {
+  color: #333333;
+  float: right;
+  margin-left: 22rem/$x;
+  i {
+    color: #333333;
+  }
+  span {
+    margin-left: 5rem/$x;
+  }
+}
+
+.my_dianzan {
+  font-family: STHeitiSC-Medium;
+  font-size: 12px;
+  color: #333333;
+  letter-spacing: -0.26px;
+  float: right;
+  i {
+    color: #333333;
+  }
+  span {
+    margin-left: 5rem/$x;
+  }
+}
+.go_answer {
+  float: right;
+  font-family: STHeitiSC-Medium;
+  font-size: 14px;
+  color: #333333;
+  letter-spacing: 0.17px;
+  cursor: pointer;
+}
+
+.icon_eye {
+  // width: 36rem/$x;
+}
+.icon_eye > i:nth-of-type(1) {
+  font-size: 14px;
+}
+.icon_eye > span:nth-of-type(1) {
+  padding-left: 8rem/$x;
+}
+.icon_pin {
+  // width: 36rem/$x;
+}
+.icon_pin > i:nth-of-type(1) {
+  font-size: 12px;
+}
+.icon_pin > span:nth-of-type(1) {
+  padding-left: 8rem/$x;
+}
 </style>
 

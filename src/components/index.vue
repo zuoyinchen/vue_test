@@ -20,7 +20,7 @@
                   <div class="end" v-else-if="item.status==2">
                       <p>已结束</p>
                   </div>
-                  <p id="a_title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
+                  <p id="a_title" @click="gotoDetail($event)" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
                       <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
                         <i class="iconfont icon-paihangbang"></i>
@@ -71,100 +71,103 @@
 </template>
 
 <script>
-  const $url = "https://www.13cai.com.cn/api/v1";
-  export default {
-    name: "index",
-    data() {
-      return {
-        msg: [],
-        limit: "",
-        page: 1,
-        size: 5,
-        countdown: 0
+const $url = "https://www.13cai.com.cn/api/v1";
+export default {
+  name: "index",
+  data() {
+    return {
+      msg: [],
+      limit: "",
+      page: 1,
+      size: 5,
+      countdown: 0
+    };
+  },
+  methods: {
+    countdownend() {
+      this.$emit("countdownend");
+      // let title = $("#a_title").text();
+      // let status = 2;
+      let data = {
+        limit: this.page * this.size,
+        sort: JSON.stringify({
+          time: 0
+        })
       };
-    },
-    methods: {
-      countdownend() {
-        this.$emit('countdownend');
-        // let title = $("#a_title").text();
-        // let status = 2;
-        let data = {
-          limit: this.page * this.size,
-          sort: JSON.stringify({
-            time: 0
-          })
-        }
-        console.log("显示页面是否刷新请求数据了")
-        this.$axios.get('/topic', {
+      console.log("显示页面是否刷新请求数据了");
+      this.$axios
+        .get("/topic", {
           params: data
-        }).then(res => {
+        })
+        .then(res => {
           this.msg = res.data.list || [];
           this.countdown = res.data.countDown;
         });
-      },
-      getIndexData: function() {
-        this.noData = "";
+    },
+    getIndexData: function() {
+      this.noData = "";
+      const data = {
+        limit: this.page * this.size,
+        sort: JSON.stringify({
+          time: 0
+        })
+      };
+      this.$axios
+        .get("/topic", {
+          params: data
+        })
+        .then(res => {
+          this.countdown = res.data.countDown;
+          console.log("time", this.countdown);
+          this.msg = res.data.list || [];
+          if (this.countdown == 0) {
+            return;
+          }
+          const limit = this.page * this.size;
+          if (this.msg.length <= limit) {
+            this.noData = "没有更多数据";
+          }
+        });
+    },
+    refresh(done) {
+      setTimeout(() => {
+        this.size = 5;
+        this.page = 1;
+        this.getIndexData();
+        done();
+      }, 1500);
+    },
+    infinite(done) {
+      if (this.noData) {
+        setTimeout(() => {
+          done(true);
+        });
+        return;
+      }
+      setTimeout(() => {
+        this.page++;
         const data = {
           limit: this.page * this.size,
           sort: JSON.stringify({
             time: 0
           })
         };
-        this.$axios.get("/topic", {
+        this.$axios
+          .get("/topic", {
             params: data
           })
           .then(res => {
-            this.countdown = res.data.countDown;
-            console.log("time", this.countdown);
             this.msg = res.data.list || [];
-            if (this.countdown == 0) {
-              return;
-            }
-            const limit = this.page * this.size;
-            if (this.msg.length <= limit) {
-              this.noData = "没有更多数据";
-            }
+            this.countdown = res.data.countDown;
           });
-      },
-      refresh(done) {
-        setTimeout(() => {
-          this.size = 5;
-          this.page = 1;
-          this.getIndexData();
-          done();
-        }, 1500);
-      },
-      infinite(done) {
-        if (this.noData) {
-          setTimeout(() => {
-            done(true);
-          });
-          return;
+        const limit = this.page * this.size;
+        if (this.msg.length <= limit) {
+          this.noData = "没有更多数据";
         }
-        setTimeout(() => {
-          this.page++;
-          const data = {
-            limit: this.page * this.size,
-            sort: JSON.stringify({
-              time: 0
-            })
-          };
-          this.$axios
-            .get("/topic", {
-              params: data
-            })
-            .then(res => {
-              this.msg = res.data.list || [];
-              this.countdown = res.data.countDown;
-            });
-          const limit = this.page * this.size;
-          if (this.msg.length <= limit) {
-            this.noData = "没有更多数据";
-          }
-          done();
-        }, 3000);
-      },
-     gotoDetail: async function(event) {
+        done();
+      }, 3000);
+    },
+    gotoDetail: async function(event) {
       localStorage.removeItem("isAnswer");
       const topicid = event.currentTarget.dataset.tid; //问题id
       let readnum = event.currentTarget.dataset.rnum; //阅读数
@@ -172,6 +175,7 @@
       const status = event.currentTarget.dataset.status; //状态
       const time = event.currentTarget.dataset.time; //倒计时时间
       const title = event.currentTarget.dataset.title; //问题标题
+      const stars = JSON.parse(event.currentTarget.dataset.stars);
       console.log("gotoDetail", event.currentTarget.dataset);
       const query = {
         topicid: topicid,
@@ -179,7 +183,8 @@
         answernum: answernum,
         status: status,
         time: time,
-        title: title
+        title: title,
+        stars
       };
       readnum++;
       const clickNum = {
@@ -192,262 +197,261 @@
       localStorage.setItem("query", JSON.stringify(query));
       this.$router.push("/answerDetail");
     },
-      goSiglepai: function(event) {
-        const topicid = event.currentTarget.dataset.tid; //问题id
-        const title = event.currentTarget.dataset.title; //问题标题
-        const squery = {
-          topicid: topicid,
-          title: title
-        };
-        localStorage.setItem("squery", JSON.stringify(squery));
-        this.$router.push("/singlepai");
-      }
-    },
-    mounted() {
-  
-      this.getIndexData();
-      //清除缓存
-      if (localStorage.getItem("answernum")) {
-        localStorage.removeItem("answernum");
-      }
+    goSiglepai: function(event) {
+      const topicid = event.currentTarget.dataset.tid; //问题id
+      const title = event.currentTarget.dataset.title; //问题标题
+      const squery = {
+        topicid: topicid,
+        title: title
+      };
+      localStorage.setItem("squery", JSON.stringify(squery));
+      this.$router.push("/singlepai");
     }
-  };
+  },
+  mounted() {
+    this.getIndexData();
+    //清除缓存
+    if (localStorage.getItem("answernum")) {
+      localStorage.removeItem("answernum");
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-  $x: 37.5;
-  .box {
-    overflow: hidden;
-  }
-  
-  .nav {
-    margin-top: 15rem/$x;
-    background: #ffffff;
-  }
-  
-  .countdown {
-    font-family: STHeitiSC-Medium;
-    font-size: 13px;
-    color: #333333;
-    letter-spacing: -0.39px;
-    padding-right: 15rem/$x;
-  }
-  
-  .counttest {
-    font-family: STHeitiSC-Medium;
-    font-size: 13px;
-    color: #333333;
-    letter-spacing: -0.39px;
-    text-align: left;
-  }
-  
-  .my_message {
-    position: fixed;
-    width: 40rem/$x;
-    height: 40rem/$x;
-    border-radius: 40rem/$x;
-    background: #ffffff;
-    box-shadow: 0 2px 6px 0 #dddddd;
-    right: 15rem/$x;
-    bottom: 64rem/$x;
-  }
-  
-  .my_message>p {
-    width: 100%;
-    height: 100%;
-    line-height: 40rem/$x;
-    position: relative;
-  }
-  
-  .my_message .iconfont:nth-of-type(1) {
-    font-size: 24px;
-  }
-  
-  .my_message span {
-    display: block;
-    width: 8rem/$x;
-    height: 8rem/$x;
-    border-radius: 8rem/$x;
-    position: absolute;
-    background: #ef5350;
-    right: 8rem/$x;
-    top: 8rem/$x;
-  }
-  
-  .clearfix:after {
-    content: "";
-    display: block;
-    height: 0;
-    clear: both;
-  }
-  
-  .btn_t1>.height_light {
-    background: #fdd545;
-  }
-  
-  ul {
-    padding: 0;
-  }
-  
-  .box {
-    width: 100%;
-    height: 100%;
-  }
-  
-  .nav {
-    width: 345rem/$x;
-    height: 35rem/$x;
-    margin: 0 auto;
-    border-radius: 100rem/$x;
-    border: 1px solid #fdd545;
-    line-height: 35rem/$x;
-    margin-top: 17rem/$x;
-    text-align: center;
-    position: relative;
-    background: #ffffff;
-  }
-  
-  .nav>span:nth-of-type(3) {
-    display: block;
-    position: absolute;
-    width: auto;
-    height: 100%;
-    line-height: 35rem/$x;
-    font-size: 13rem/$x;
-    color: #fdd545;
-    top: 0;
-    right: 15rem/$x;
-  }
-  
-  ul,
-  li {
-    list-style: none;
-    -webkit-padding-start: 0;
-  }
-  
-  .btn {
-    padding: 0;
-  }
-  
-  .btn>li {
-    width: 345rem/$x;
-    height: 105rem/$x;
-    border: 10rem/$x;
-    box-shadow: 0 2px 6px 0 #dddddd;
-    margin: 20rem/$x auto;
-    border-radius: 10rem/$x;
-    overflow: hidden;
-  }
-  
-  .btn_t1 {
-    width: 345rem/$x;
-    height: 105rem/$x;
-    position: relative;
-    overflow: hidden;
-    background: #fff;
-  }
-  
-  .loading {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 0;
-    border-top: 50rem/$x solid #fdd545;
-    border-right: 50rem/$x solid transparent;
-  }
-  
-  .end {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 0;
-    border-top: 50rem/$x solid #666;
-    border-right: 50rem/$x solid transparent;
-  }
-  
-  .loading>p {
-    width: 50rem/$x;
-    transform: rotate(-45deg);
-    font-family: STHeitiSC-Medium;
-    font-size: 12rem/$x;
-    color: #333;
-    letter-spacing: -0.29px;
-    text-align: left;
-    position: absolute;
-    left: -4rem/$x;
-    top: -45rem/$x;
-  }
-  
-  .end>p {
-    width: 50rem/$x;
-    transform: rotate(-45deg);
-    font-family: STHeitiSC-Medium;
-    font-size: 12rem/$x;
-    color: #fff;
-    letter-spacing: -0.29px;
-    text-align: left;
-    position: absolute;
-    left: -4rem/$x;
-    top: -45rem/$x;
-  }
-  
-  .btn_t1>p {
-    font-size: 18rem/$x;
-    color: #333333;
-    height: 60rem/$x;
-    width: 256rem/$x;
-    margin: 0 auto;
-    margin-top: 10rem/$x;
-    text-align: left;
-    font-weight: 500;
-    line-height: 22rem/$x;
-    letter-spacing: 0.39px;
-  }
-  
-  .btn_t1>ul {
-    width: 345rem/$x;
-    height: 35rem/$x;
-    padding: 0;
-    border-radius: 10rem/$x;
-  }
-  
-  .btn_t1>ul>li {
-    width: 115rem/$x;
-    height: 35rem/$x;
-    float: left;
-    line-height: 35rem/$x;
-    margin: 0 0;
-    background-color: #fafafa;
-    position: relative;
-  }
-  
-  .btn_t1>ul>li>span {
-    margin-left: 10rem/$x;
-  }
-  
-  .block {
-    width: 375rem/$x;
-    height: 50rem/$x;
-  }
-  
-  .line_l {
-    width: 1rem/$x;
-    height: 19rem/$x;
-    background: #dddddd;
-    position: absolute;
-    left: 0;
-    top: 8rem/$x;
-  }
-  
-  .line_r {
-    width: 1rem/$x;
-    height: 19rem/$x;
-    background: #dddddd;
-    position: absolute;
-    right: -1rem/$x;
-    top: 8rem/$x;
-  }
+$x: 37.5;
+.box {
+  overflow: hidden;
+}
+
+.nav {
+  margin-top: 15rem/$x;
+  background: #ffffff;
+}
+
+.countdown {
+  font-family: STHeitiSC-Medium;
+  font-size: 13px;
+  color: #333333;
+  letter-spacing: -0.39px;
+  padding-right: 15rem/$x;
+}
+
+.counttest {
+  font-family: STHeitiSC-Medium;
+  font-size: 13px;
+  color: #333333;
+  letter-spacing: -0.39px;
+  text-align: left;
+}
+
+.my_message {
+  position: fixed;
+  width: 40rem/$x;
+  height: 40rem/$x;
+  border-radius: 40rem/$x;
+  background: #ffffff;
+  box-shadow: 0 2px 6px 0 #dddddd;
+  right: 15rem/$x;
+  bottom: 64rem/$x;
+}
+
+.my_message > p {
+  width: 100%;
+  height: 100%;
+  line-height: 40rem/$x;
+  position: relative;
+}
+
+.my_message .iconfont:nth-of-type(1) {
+  font-size: 24px;
+}
+
+.my_message span {
+  display: block;
+  width: 8rem/$x;
+  height: 8rem/$x;
+  border-radius: 8rem/$x;
+  position: absolute;
+  background: #ef5350;
+  right: 8rem/$x;
+  top: 8rem/$x;
+}
+
+.clearfix:after {
+  content: "";
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+.btn_t1 > .height_light {
+  background: #fdd545;
+}
+
+ul {
+  padding: 0;
+}
+
+.box {
+  width: 100%;
+  height: 100%;
+}
+
+.nav {
+  width: 345rem/$x;
+  height: 35rem/$x;
+  margin: 0 auto;
+  border-radius: 100rem/$x;
+  border: 1px solid #fdd545;
+  line-height: 35rem/$x;
+  margin-top: 17rem/$x;
+  text-align: center;
+  position: relative;
+  background: #ffffff;
+}
+
+.nav > span:nth-of-type(3) {
+  display: block;
+  position: absolute;
+  width: auto;
+  height: 100%;
+  line-height: 35rem/$x;
+  font-size: 13rem/$x;
+  color: #fdd545;
+  top: 0;
+  right: 15rem/$x;
+}
+
+ul,
+li {
+  list-style: none;
+  -webkit-padding-start: 0;
+}
+
+.btn {
+  padding: 0;
+}
+
+.btn > li {
+  width: 345rem/$x;
+  height: 105rem/$x;
+  border: 10rem/$x;
+  box-shadow: 0 2px 6px 0 #dddddd;
+  margin: 20rem/$x auto;
+  border-radius: 10rem/$x;
+  overflow: hidden;
+}
+
+.btn_t1 {
+  width: 345rem/$x;
+  height: 105rem/$x;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+
+.loading {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-top: 50rem/$x solid #fdd545;
+  border-right: 50rem/$x solid transparent;
+}
+
+.end {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-top: 50rem/$x solid #666;
+  border-right: 50rem/$x solid transparent;
+}
+
+.loading > p {
+  width: 50rem/$x;
+  transform: rotate(-45deg);
+  font-family: STHeitiSC-Medium;
+  font-size: 12rem/$x;
+  color: #333;
+  letter-spacing: -0.29px;
+  text-align: left;
+  position: absolute;
+  left: -4rem/$x;
+  top: -45rem/$x;
+}
+
+.end > p {
+  width: 50rem/$x;
+  transform: rotate(-45deg);
+  font-family: STHeitiSC-Medium;
+  font-size: 12rem/$x;
+  color: #fff;
+  letter-spacing: -0.29px;
+  text-align: left;
+  position: absolute;
+  left: -4rem/$x;
+  top: -45rem/$x;
+}
+
+.btn_t1 > p {
+  font-size: 18rem/$x;
+  color: #333333;
+  height: 60rem/$x;
+  width: 256rem/$x;
+  margin: 0 auto;
+  margin-top: 10rem/$x;
+  text-align: left;
+  font-weight: 500;
+  line-height: 22rem/$x;
+  letter-spacing: 0.39px;
+}
+
+.btn_t1 > ul {
+  width: 345rem/$x;
+  height: 35rem/$x;
+  padding: 0;
+  border-radius: 10rem/$x;
+}
+
+.btn_t1 > ul > li {
+  width: 115rem/$x;
+  height: 35rem/$x;
+  float: left;
+  line-height: 35rem/$x;
+  margin: 0 0;
+  background-color: #fafafa;
+  position: relative;
+}
+
+.btn_t1 > ul > li > span {
+  margin-left: 10rem/$x;
+}
+
+.block {
+  width: 375rem/$x;
+  height: 50rem/$x;
+}
+
+.line_l {
+  width: 1rem/$x;
+  height: 19rem/$x;
+  background: #dddddd;
+  position: absolute;
+  left: 0;
+  top: 8rem/$x;
+}
+
+.line_r {
+  width: 1rem/$x;
+  height: 19rem/$x;
+  background: #dddddd;
+  position: absolute;
+  right: -1rem/$x;
+  top: 8rem/$x;
+}
 </style>
 
