@@ -26,7 +26,7 @@
 <script>
  import 'mint-ui/lib/style.css'
  import { MessageBox,Toast,Indicator} from 'mint-ui';
-export default {
+ export default {
     name:'answerQuestions',
     data(){
         return {
