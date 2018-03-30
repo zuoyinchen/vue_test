@@ -164,33 +164,34 @@
           done();
         }, 3000);
       },
-      gotoDetail: async function(event) {
-        const topicid = event.currentTarget.dataset.tid; //问题id
-        let readnum = event.currentTarget.dataset.rnum; //阅读数
-        const answernum = event.currentTarget.dataset.anum; //评论数
-        const status = event.currentTarget.dataset.status; //状态
-        const time = event.currentTarget.dataset.time; //倒计时时间
-        const title = event.currentTarget.dataset.title; //问题标题
-        console.log("gotoDetail", event.currentTarget.dataset);
-        const query = {
-          topicid: topicid,
-          readnum: readnum,
-          answernum: answernum,
-          status: status,
-          time: time,
-          title: title
-        };
-        readnum++;
-        const clickNum = {
-          status: Number(status),
-          title,
-          readNum: readnum
-        };
-        await this.$axios.put(`/topic/${topicid}`, clickNum);
-        query.readnum = readnum;
-        localStorage.setItem("query", JSON.stringify(query));
-        this.$router.push("/answerDetail");
-      },
+     gotoDetail: async function(event) {
+      localStorage.removeItem("isAnswer");
+      const topicid = event.currentTarget.dataset.tid; //问题id
+      let readnum = event.currentTarget.dataset.rnum; //阅读数
+      const answernum = event.currentTarget.dataset.anum; //评论数
+      const status = event.currentTarget.dataset.status; //状态
+      const time = event.currentTarget.dataset.time; //倒计时时间
+      const title = event.currentTarget.dataset.title; //问题标题
+      console.log("gotoDetail", event.currentTarget.dataset);
+      const query = {
+        topicid: topicid,
+        readnum: readnum,
+        answernum: answernum,
+        status: status,
+        time: time,
+        title: title
+      };
+      readnum++;
+      const clickNum = {
+        status: Number(status),
+        title,
+        readNum: readnum
+      };
+      await this.$axios.put(`/topic/${topicid}`, clickNum);
+      query.readnum = readnum;
+      localStorage.setItem("query", JSON.stringify(query));
+      this.$router.push("/answerDetail");
+    },
       goSiglepai: function(event) {
         const topicid = event.currentTarget.dataset.tid; //问题id
         const title = event.currentTarget.dataset.title; //问题标题
