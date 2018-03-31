@@ -3,7 +3,7 @@
       <div class="top">
           <div class="top_img">
               <img src="../assets/images/worldlist.png" alt=
-              "" v-if="iswho == 0">
+              "" >
               <!-- <img src="../assets/images/friendList.png" alt="" v-else> -->
           </div>
           <!-- <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
@@ -14,7 +14,7 @@
           </div> -->
 
       </div>
-      <scroller class="list_wrap" v-if="pailist > 0">
+      <scroller class="list_wrap" v-if="pailist.length > 0">
         <ul class="paihang_list">
             <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
                     <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
@@ -29,7 +29,11 @@
                       <span>{{item.ups}}</span>
                     </p>
             </li>
+            <div class="block">
+
+            </div>
         </ul>
+        
       </scroller>  
       <span class="showempty" v-else>暂无用户上榜</span>
       <div class="my_listbox">
@@ -68,38 +72,38 @@ export default {
       }
   },
   methods:{
-    // getWorld:function(){
-    //   this.iswho = 0;
-    //   Indicator.open();
-    //   //获取世界榜
-    //   const $userid = localStorage.getItem("userid");//userid
-    //   this.$axios.get('/rank').then((res)=>{
-    //       if(res.data && res.data.length){
-    //         Indicator.close();
-    //         this.pailist =res.data;
-    //         const idarr = [];
-    //         for(let i=0;i<this.pailist.length;i++){
-    //           idarr.push(this.pailist[i].id);
-    //         }
-    //         if(idarr.indexOf($userid) != -1){
-    //           const myindex = idarr.indexOf($userid);
-    //           this.myGrade = Number(idarr.indexOf($userid))+1;
-    //           this.myStar = this.pailist[myindex].ups;
-    //           this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
-    //         }else{
-    //           this.myGrade ='-';
-    //           this.myStar = 0;
-    //         }
-    //       }else{
-    //         this.pailist = [];
-    //         this.myGrade ='-';
-    //         this.myStar = 0;
-    //       }
-    //   }).catch(function(error){
-    //      Indicator.close();
-    //       console.log(error);
-    //   })
-    // },
+    getWorld:function(){
+      this.iswho = 0;
+      Indicator.open();
+      //获取世界榜
+      const $userid = localStorage.getItem("userid");//userid
+      this.$axios.get('/rank').then((res)=>{
+          if(res.data && res.data.length){
+            Indicator.close();
+            this.pailist =res.data;
+            const idarr = [];
+            for(let i=0;i<this.pailist.length;i++){
+              idarr.push(this.pailist[i].id);
+            }
+            if(idarr.indexOf($userid) != -1){
+              const myindex = idarr.indexOf($userid);
+              this.myGrade = Number(idarr.indexOf($userid))+1;
+              this.myStar = this.pailist[myindex].ups;
+              this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
+            }else{
+              this.myGrade ='-';
+              this.myStar = 0;
+            }
+          }else{
+            this.pailist = [];
+            this.myGrade ='-';
+            this.myStar = 0;
+          }
+      }).catch(function(error){
+         Indicator.close();
+          console.log(error);
+      })
+    },
     // getFriend:function(){
     //   this.iswho = 1;
     //   Indicator.open();
@@ -144,35 +148,13 @@ export default {
     // }
   },  
   mounted:function(){
-    
+    this.getWorld();
   },
   beforeCreate:function(){
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
     Indicator.open();
-    this.$axios.get('/rank').then((res)=>{
-        Indicator.close();
-        this.pailist =res.data;
-        const idarr = [];
-        console.log(res.data)
-        console.log(this.pailist.length)
-        for(let i=0;i<this.pailist.length;i++){
-          idarr.push(this.pailist[i].id);
-        }
-        if(idarr.indexOf($userid) != -1){
-          const myindex = idarr.indexOf($userid);
-          this.myGrade = Number(idarr.indexOf($userid))+1;
-          this.myStar = this.pailist[myindex].ups;
-          this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl:localStorage.getItem("headimg");
-        }else{
-            this.pailist = [];
-            this.myGrade ='-';
-            this.myStar = 0;
-        }
-    }).catch(function(error){
-        console.log(error);
-    });
   }
 }
 </script>
@@ -351,8 +333,9 @@ export default {
     .my_list_r>i:nth-of-type(1){
         color: #ffffff;margin:30rem/$x 0;display: inline-block;padding-left: 36rem/$x;
     }
-    .my_list_r>span:nth-of-type(1){
-        
-    }
+   .block{
+     width: 345rem/$x;
+     height: 280rem/$x;
+   }
 </style>
 
