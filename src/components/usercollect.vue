@@ -2,10 +2,10 @@
 	<div class="box">
 		<div class="typelist">
 			<ul class="type_bar">
-				<router-link class="active" tag="li" to="/usercollect/answer">
+				<router-link class="active" tag="li" to="/usercollect/answer" replace>
 					问题
 				</router-link>
-				<router-link tag="li" to="/usercollect/usercomp">
+				<router-link tag="li" to="/usercollect/usercomp" replace>
 					回答
 				</router-link>
 			</ul>

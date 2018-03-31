@@ -3,15 +3,15 @@
       <div class="top">
           <div class="top_img">
               <img src="../assets/images/worldlist.png" alt=
-              "" v-if="iswho == 0">
-              <img src="../assets/images/friendList.png" alt="" v-else>
+              "" >
+              <!-- <img src="../assets/images/friendList.png" alt="" v-else> -->
           </div>
-          <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
+          <!-- <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
             <b>切换好友榜</b>
           </div>
            <div class="top_btn" @click="this.getWorld" v-else>
             <b>切换世界榜</b>
-          </div>
+          </div> -->
 
       </div>
       <scroller class="list_wrap" v-if="pailist.length > 0">
@@ -23,13 +23,17 @@
                     <span class="indexname" v-else>{{index+1}}</span>
                     <img :src="item.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.avatarUrl)">
                     <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
-                    <span class="nickname">{{item.username}}</span>
+                    <span class="nickname">{{item.nickName}}</span>
                     <p class="upVotes_box">
                       <i class="iconfont icon-dianzan1"></i>
                       <span>{{item.ups}}</span>
                     </p>
             </li>
+            <div class="block">
+
+            </div>
         </ul>
+        
       </scroller>  
       <span class="showempty" v-else>暂无用户上榜</span>
       <div class="my_listbox">
@@ -100,79 +104,57 @@ export default {
           console.log(error);
       })
     },
-    getFriend:function(){
-      this.iswho = 1;
-      Indicator.open();
-      //获取好友榜
-      const $userid = localStorage.getItem("userid");//userid
-      const data ={search: {id:$userid} }
-      this.$axios.get('/friend',{params:data}).then((res)=>{
-         if (res.status === 200) {
-            Indicator.close();
-            if(res.data.allFriendIds){
-              const allFriendIds =JSON.stringify(res.data.allFriendIds);
-              const answer ={allFriendIds:allFriendIds};
-              this.$axios.get('/answerRank',{params:answer}).then((data)=>{
-                console.log(data);
-                this.pailist =data.data.createdBys;
-                const idarr = [];
-                for(let i=0;i<this.pailist.length;i++){
-                  idarr.push(this.pailist[i].id);
-                }
-                if(idarr.indexOf($userid) != -1){
-                  const myindex = idarr.indexOf($userid);
-                  this.myGrade = Number(idarr.indexOf($userid))+1;
-                  this.myStar = this.pailist[myindex].ups;
-                  this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
-                }else{
-                  this.myGrade ='-';
-                  this.myStar = 0;
-                }
-              }).catch((error)=>{
-                console.log(error);
-              })
-            }else{
-              this.pailist = [];
-              this.myGrade ='-';
-              this.myStar = 0;
-            }
-         }
-      }).catch(function(error){
-         Indicator.close();
-          console.log(error);
-      });
-    }
+    // getFriend:function(){
+    //   this.iswho = 1;
+    //   Indicator.open();
+    //   //获取好友榜
+    //   const $userid = localStorage.getItem("userid");//userid
+    //   const data ={search: {id:$userid} }
+    //   this.$axios.get('/friend',{params:data}).then((res)=>{
+    //      if (res.status === 200) {
+    //         Indicator.close();
+    //         if(res.data.allFriendIds){
+    //           const allFriendIds =JSON.stringify(res.data.allFriendIds);
+    //           const answer ={allFriendIds:allFriendIds};
+    //           this.$axios.get('/answerRank',{params:answer}).then((data)=>{
+    //             console.log(data);
+    //             this.pailist =data.data.createdBys;
+    //             const idarr = [];
+    //             for(let i=0;i<this.pailist.length;i++){
+    //               idarr.push(this.pailist[i].id);
+    //             }
+    //             if(idarr.indexOf($userid) != -1){
+    //               const myindex = idarr.indexOf($userid);
+    //               this.myGrade = Number(idarr.indexOf($userid))+1;
+    //               this.myStar = this.pailist[myindex].ups;
+    //               this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
+    //             }else{
+    //               this.myGrade ='-';
+    //               this.myStar = 0;
+    //             }
+    //           }).catch((error)=>{
+    //             console.log(error);
+    //           })
+    //         }else{
+    //           this.pailist = [];
+    //           this.myGrade ='-';
+    //           this.myStar = 0;
+    //         }
+    //      }
+    //   }).catch(function(error){
+    //      Indicator.close();
+    //       console.log(error);
+    //   });
+    // }
   },  
   mounted:function(){
-    
+    this.getWorld();
   },
-  created:function(){
+  beforeCreate:function(){
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
     Indicator.open();
-    this.$axios.get('/rank').then((res)=>{
-        Indicator.close();
-        this.pailist =res.data;
-        const idarr = [];
-        console.log(res.data)
-        console.log(this.pailist.length)
-        for(let i=0;i<this.pailist.length;i++){
-          idarr.push(this.pailist[i].id);
-        }
-        if(idarr.indexOf($userid) != -1){
-          const myindex = idarr.indexOf($userid);
-          this.myGrade = Number(idarr.indexOf($userid))+1;
-          this.myStar = this.pailist[myindex].ups;
-          this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl:localStorage.getItem("headimg");
-        }else{
-            this.pailist = [];
-            this.myGrade ='-';
-            this.myStar = 0;
-        }
-    }).catch(function(error){
-        console.log(error);
-    });
   }
 }
 </script>
@@ -237,6 +219,7 @@ export default {
     .top_img>img{
         width: 186rem/$x;
         height: 44rem/$x;
+        margin-top: 10rem/$x;
     }
     .top_btn{
       width: 75rem/$x;
@@ -309,9 +292,9 @@ export default {
         font-size: 14px;
         color: #333333;
         letter-spacing: 0.17px;
+        
     }
     .upVotes_box>i{color: #FDD545;}
-    
     .my_listbox{
       width:100%;
       padding:0 15rem/$x;
@@ -335,11 +318,12 @@ export default {
         width: 200rem/$x;float: left;text-align: left;
     }
     .my_list_l>i:nth-of-type(1){
-        margin-left: 10rem/$x;float: left;padding: 30rem/$x 0;
+        margin-left: 20rem/$x;float: left;padding: 30rem/$x 0;font-size: 18px;
+
     }
     .my_list_l>img:nth-of-type(1){
         width: 48rem/$x;height: 48rem/$x;float: left;background: #ffffff;border-radius: 50%;
-        float: left;margin: 10rem/$x 15rem/$x;margin-right: 12rem/$x;
+        float: left;margin: 10rem/$x 15rem/$x;margin-right: 12rem/$x;margin-left: 18rem/$x;
     }
     .my_list_l>span:nth-of-type(1){
          font-family: STHeitiSC-Medium;font-size: 14px;color: #333333;letter-spacing: 0.17px;
@@ -349,10 +333,17 @@ export default {
         width: 145rem/$x;float: right;
     }
     .my_list_r>i:nth-of-type(1){
-        color: #ffffff;margin:30rem/$x 0;display: inline-block;padding-left: 36rem/$x;
-    }
-    .my_list_r>span:nth-of-type(1){
+        color: #ffffff;margin:30rem/$x 0;display: inline-block;padding-left: 84rem/$x;
         
     }
+    .my_list_r>span:nth-of-type(1){
+            color: #333333;
+            letter-spacing: 0.17px;
+            font-weight: 500;
+    }
+   .block{
+     width: 345rem/$x;
+     height: 280rem/$x;
+   }
 </style>
 
