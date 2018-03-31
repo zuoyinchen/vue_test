@@ -29,7 +29,7 @@
                         <i class="s"></i>
                       </li>
                       <li>
-                          <i class="line_l"></i>
+                          <i v-if="item.status==2" class="line_l"></i>
                         <i class="iconfont icon-xianshimima"></i>
                         <span>{{item.readNum? item.readNum : 0}}</span>
                         <i class="s"></i>
@@ -285,7 +285,7 @@ ul {
   margin: 0 auto;
   border-radius: 100rem/$x;
   border: 1px solid #fdd545;
-  line-height: 35rem/$x;
+  line-height: 36rem/$x;
   margin-top: 17rem/$x;
   text-align: center;
   position: relative;
