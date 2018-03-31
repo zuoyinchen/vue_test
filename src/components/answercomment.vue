@@ -386,11 +386,12 @@ export default {
             this.list = res.data;
             console.log(this.list.createdBy.id);
             console.log(localStorage.getItem("userid"))
+            this.list.isMe = false;
             if(this.list.createdBy.id === localStorage.getItem("userid")){
               console.log("享");
               this.list.isMe = true;
             }
-            this.list.isMe = false;
+            
             console.log(this.list);
         }
       }).catch(error => {
