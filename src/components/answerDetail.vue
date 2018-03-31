@@ -51,13 +51,15 @@
                     <img v-else :src="item.createdBy.avatarUrl" alt="2">
                 </div>
                 <div class="ctn_r">
-                    <div>
+                    <div class="nickname_box">
                         <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
                         <span v-else-if="!Boolean(item.createdBy.nickName)">{{'匿名用户'}}</span>
                         <span v-else class="answer">{{item.createdBy.nickName}}</span>
                         <!-- <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i> -->
-                        <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                        <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                        <p class="star_box" @click="giveStar($event)" :data-id="item.id" :data-index="index">
+                          <i class="iconfont icon-shoucang2" v-if="item.isStar == true" ></i>
+                          <i class="iconfont icon-shoucang1" v-else ></i>
+                        </p>
                     </div>
                     <p>
                         {{item.body}}
@@ -68,9 +70,9 @@
                             <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer($event)" :data-id="item.id">删除</span>
                         </div>
                         <div class="clearfix">
-                            <div v-if="status == 1">
-                                <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                                <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
+                            <div v-if="status == 1" @click="giveLike($event)" :data-id="item.id" :data-index="index">
+                                <i class="iconfont icon-dianzan1" v-if="item.upVote == true" ></i>
+                                <i class="iconfont icon-dianzan" v-else ></i>
                                 <span class="upVote_num">{{item.upVotes.length}}</span>
                             </div>
                             <div v-else @click="endTip($event)">
@@ -564,8 +566,9 @@ export default {
 $x: 37.5;
 .block {
   width: 375rem/$x;
-  height: 50rem/$x;
+  height: 80rem/$x;
 }
+
 .theme_b_mark {
   float: right;
   line-height: 24rem/$x;
@@ -793,21 +796,37 @@ li {
   float: left;
   text-align: left;
   overflow: hidden;
-  margin-top: 15rem/$x;
 }
-
-.ctn_r > div:nth-of-type(1) > span {
+.nickname_box{
+  height:32rem/$x;
+  display: flex;
+}
+.nickname_box span{
   font-family: STHeitiSC-Medium;
   font-size: 16rem/$x;
+  padding-right: 10rem/$x;
   color: #333333;
   letter-spacing: 0.19px;
+  float: left;
+  display: block;
+  margin-top: 15rem/$x;
+  flex:1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow:ellipsis;
 }
-
-.ctn_r > div:nth-of-type(1) > i {
+.nickname_box p{
   float: right;
-  color: #fdd545;
+  height:100%;
   margin-right: 15rem/$x;
+  text-align: center;
+  line-height: 28rem/$x;
+}
+.nickname_box i {
+  color: #fdd545;
+  
   padding: 2rem/$x;
+  margin-top: 15rem/$x;
 }
 
 .ctn_r > div:nth-of-type(1) > i:nth-of-type(2) {
@@ -818,11 +837,13 @@ li {
 
 .ctn_r > p:nth-of-type(1) {
   width: 268rem/$x;
+  height:auto;
   font-family: STHeitiSC-Medium;
   font-size: 14px;
   color: #666666;
   letter-spacing: 0.17px;
   margin-top: 10rem/$x;
+  line-height: 18px;
 }
 
 .ctn_r > div:nth-of-type(2) {
@@ -840,6 +861,7 @@ li {
 
 .ctn_r > div:nth-of-type(2) > div:nth-of-type(2) {
   float: right;
+  height:28rem/$x;
 }
 
 .ctn_r > div:nth-of-type(2) > div:nth-of-type(2) > div {
@@ -847,6 +869,7 @@ li {
   margin-right: 15rem/$x;
   color: #bdbdbd;
   width: 36rem/$x;
+  height:100%;
 }
 
 .countend {
