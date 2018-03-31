@@ -4,17 +4,17 @@
           <div class="top_img">
               <img src="../assets/images/worldlist.png" alt=
               "" v-if="iswho == 0">
-              <img src="../assets/images/friendList.png" alt="" v-else>
+              <!-- <img src="../assets/images/friendList.png" alt="" v-else> -->
           </div>
-          <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
+          <!-- <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
             <b>切换好友榜</b>
           </div>
            <div class="top_btn" @click="this.getWorld" v-else>
             <b>切换世界榜</b>
-          </div>
+          </div> -->
 
       </div>
-      <scroller class="list_wrap" v-if="pailist.length > 0">
+      <scroller class="list_wrap" v-if="pailist > 0">
         <ul class="paihang_list">
             <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
                     <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
@@ -23,7 +23,7 @@
                     <span class="indexname" v-else>{{index+1}}</span>
                     <img :src="item.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.avatarUrl)">
                     <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
-                    <span class="nickname">{{item.username}}</span>
+                    <span class="nickname">{{item.nickName}}</span>
                     <p class="upVotes_box">
                       <i class="iconfont icon-dianzan1"></i>
                       <span>{{item.ups}}</span>
@@ -68,85 +68,85 @@ export default {
       }
   },
   methods:{
-    getWorld:function(){
-      this.iswho = 0;
-      Indicator.open();
-      //获取世界榜
-      const $userid = localStorage.getItem("userid");//userid
-      this.$axios.get('/rank').then((res)=>{
-          if(res.data && res.data.length){
-            Indicator.close();
-            this.pailist =res.data;
-            const idarr = [];
-            for(let i=0;i<this.pailist.length;i++){
-              idarr.push(this.pailist[i].id);
-            }
-            if(idarr.indexOf($userid) != -1){
-              const myindex = idarr.indexOf($userid);
-              this.myGrade = Number(idarr.indexOf($userid))+1;
-              this.myStar = this.pailist[myindex].ups;
-              this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
-            }else{
-              this.myGrade ='-';
-              this.myStar = 0;
-            }
-          }else{
-            this.pailist = [];
-            this.myGrade ='-';
-            this.myStar = 0;
-          }
-      }).catch(function(error){
-         Indicator.close();
-          console.log(error);
-      })
-    },
-    getFriend:function(){
-      this.iswho = 1;
-      Indicator.open();
-      //获取好友榜
-      const $userid = localStorage.getItem("userid");//userid
-      const data ={search: {id:$userid} }
-      this.$axios.get('/friend',{params:data}).then((res)=>{
-         if (res.status === 200) {
-            Indicator.close();
-            if(res.data.allFriendIds){
-              const allFriendIds =JSON.stringify(res.data.allFriendIds);
-              const answer ={allFriendIds:allFriendIds};
-              this.$axios.get('/answerRank',{params:answer}).then((data)=>{
-                console.log(data);
-                this.pailist =data.data.createdBys;
-                const idarr = [];
-                for(let i=0;i<this.pailist.length;i++){
-                  idarr.push(this.pailist[i].id);
-                }
-                if(idarr.indexOf($userid) != -1){
-                  const myindex = idarr.indexOf($userid);
-                  this.myGrade = Number(idarr.indexOf($userid))+1;
-                  this.myStar = this.pailist[myindex].ups;
-                  this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
-                }else{
-                  this.myGrade ='-';
-                  this.myStar = 0;
-                }
-              }).catch((error)=>{
-                console.log(error);
-              })
-            }else{
-              this.pailist = [];
-              this.myGrade ='-';
-              this.myStar = 0;
-            }
-         }
-      }).catch(function(error){
-         Indicator.close();
-          console.log(error);
-      });
-    }
+    // getWorld:function(){
+    //   this.iswho = 0;
+    //   Indicator.open();
+    //   //获取世界榜
+    //   const $userid = localStorage.getItem("userid");//userid
+    //   this.$axios.get('/rank').then((res)=>{
+    //       if(res.data && res.data.length){
+    //         Indicator.close();
+    //         this.pailist =res.data;
+    //         const idarr = [];
+    //         for(let i=0;i<this.pailist.length;i++){
+    //           idarr.push(this.pailist[i].id);
+    //         }
+    //         if(idarr.indexOf($userid) != -1){
+    //           const myindex = idarr.indexOf($userid);
+    //           this.myGrade = Number(idarr.indexOf($userid))+1;
+    //           this.myStar = this.pailist[myindex].ups;
+    //           this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
+    //         }else{
+    //           this.myGrade ='-';
+    //           this.myStar = 0;
+    //         }
+    //       }else{
+    //         this.pailist = [];
+    //         this.myGrade ='-';
+    //         this.myStar = 0;
+    //       }
+    //   }).catch(function(error){
+    //      Indicator.close();
+    //       console.log(error);
+    //   })
+    // },
+    // getFriend:function(){
+    //   this.iswho = 1;
+    //   Indicator.open();
+    //   //获取好友榜
+    //   const $userid = localStorage.getItem("userid");//userid
+    //   const data ={search: {id:$userid} }
+    //   this.$axios.get('/friend',{params:data}).then((res)=>{
+    //      if (res.status === 200) {
+    //         Indicator.close();
+    //         if(res.data.allFriendIds){
+    //           const allFriendIds =JSON.stringify(res.data.allFriendIds);
+    //           const answer ={allFriendIds:allFriendIds};
+    //           this.$axios.get('/answerRank',{params:answer}).then((data)=>{
+    //             console.log(data);
+    //             this.pailist =data.data.createdBys;
+    //             const idarr = [];
+    //             for(let i=0;i<this.pailist.length;i++){
+    //               idarr.push(this.pailist[i].id);
+    //             }
+    //             if(idarr.indexOf($userid) != -1){
+    //               const myindex = idarr.indexOf($userid);
+    //               this.myGrade = Number(idarr.indexOf($userid))+1;
+    //               this.myStar = this.pailist[myindex].ups;
+    //               this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
+    //             }else{
+    //               this.myGrade ='-';
+    //               this.myStar = 0;
+    //             }
+    //           }).catch((error)=>{
+    //             console.log(error);
+    //           })
+    //         }else{
+    //           this.pailist = [];
+    //           this.myGrade ='-';
+    //           this.myStar = 0;
+    //         }
+    //      }
+    //   }).catch(function(error){
+    //      Indicator.close();
+    //       console.log(error);
+    //   });
+    // }
   },  
   mounted:function(){
     
   },
-  created:function(){
+  beforeCreate:function(){
     //获取世界榜
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
