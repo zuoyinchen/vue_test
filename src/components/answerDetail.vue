@@ -228,7 +228,6 @@ export default {
       const data = {
         stars: resultarr
       };
-      Indicator.open();
       this.$axios
         .put("/answer/" + answerid, data)
         .then(res => {
@@ -278,7 +277,6 @@ export default {
       const data = {
         upVotes: resultarr
       };
-      Indicator.open();
       this.$axios
         .put("/answer/" + answerid, data)
         .then(res => {
