@@ -64,6 +64,9 @@
 				color:#333;
 				font-size:24px;
 			}
+			.defaultColor{
+				color: #FFB74D;
+			}
 		}
 		li.router-link-exact-active{
 			color:red;
@@ -71,8 +74,5 @@
 		li.router-link-exact-active i{
 			color:#FFB74D;
 		}
-	}
-	.defaultColor{
-		color: #FFB74D;
 	}
 </style>
