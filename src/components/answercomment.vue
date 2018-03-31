@@ -440,7 +440,7 @@ export default {
       console.log(this.answerid);
       const data = {
         body: this.message,
-        answer: this.answerid,
+        answer: this.$route.params.answerid,
         createdBy: localStorage.getItem("userid")
       };
       console.log(data);

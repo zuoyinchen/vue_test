@@ -155,6 +155,9 @@ export default {
     const $userid = localStorage.getItem("userid");//userid
     const data ={userid:$userid} 
     Indicator.open();
+  },
+  destroyed:function(){
+    Indicator.close();
   }
 }
 </script>
