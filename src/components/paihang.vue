@@ -219,6 +219,7 @@ export default {
     .top_img>img{
         width: 186rem/$x;
         height: 44rem/$x;
+        margin-top: 10rem/$x;
     }
     .top_btn{
       width: 75rem/$x;
@@ -291,9 +292,9 @@ export default {
         font-size: 14px;
         color: #333333;
         letter-spacing: 0.17px;
+        
     }
     .upVotes_box>i{color: #FDD545;}
-    
     .my_listbox{
       width:100%;
       padding:0 15rem/$x;
@@ -317,11 +318,12 @@ export default {
         width: 200rem/$x;float: left;text-align: left;
     }
     .my_list_l>i:nth-of-type(1){
-        margin-left: 10rem/$x;float: left;padding: 30rem/$x 0;
+        margin-left: 20rem/$x;float: left;padding: 30rem/$x 0;font-size: 18px;
+
     }
     .my_list_l>img:nth-of-type(1){
         width: 48rem/$x;height: 48rem/$x;float: left;background: #ffffff;border-radius: 50%;
-        float: left;margin: 10rem/$x 15rem/$x;margin-right: 12rem/$x;
+        float: left;margin: 10rem/$x 15rem/$x;margin-right: 12rem/$x;margin-left: 18rem/$x;
     }
     .my_list_l>span:nth-of-type(1){
          font-family: STHeitiSC-Medium;font-size: 14px;color: #333333;letter-spacing: 0.17px;
@@ -331,7 +333,13 @@ export default {
         width: 145rem/$x;float: right;
     }
     .my_list_r>i:nth-of-type(1){
-        color: #ffffff;margin:30rem/$x 0;display: inline-block;padding-left: 36rem/$x;
+        color: #ffffff;margin:30rem/$x 0;display: inline-block;padding-left: 84rem/$x;
+        
+    }
+    .my_list_r>span:nth-of-type(1){
+            color: #333333;
+            letter-spacing: 0.17px;
+            font-weight: 500;
     }
    .block{
      width: 345rem/$x;
