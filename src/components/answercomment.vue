@@ -237,7 +237,6 @@ export default {
           }
         })
         .catch((error, errorcode) => {
-          Toast("网络错误，不成功");
           console.log(error);
         });
     },
@@ -278,7 +277,6 @@ export default {
           }
         })
         .catch((error, errorcode) => {
-          Toast("网络错误，不成功");
           console.log(error);
         });
     },
@@ -396,7 +394,6 @@ export default {
         }
       }).catch(error => {
         Indicator.close();
-        Toast("网络错误请刷新");
         console.log(error);
       });
       //根据答案ID获取评论
@@ -518,7 +515,6 @@ export default {
       }
     }).catch(error => {
       Indicator.close();
-      Toast("网络错误请刷新");
       console.log(error);
     });
       //根据答案ID获取评论
