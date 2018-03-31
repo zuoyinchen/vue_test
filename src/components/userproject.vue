@@ -168,7 +168,7 @@
 		}
 		.box-list>li{
 			width:100%;
-		    height:105rem/$unit;
+		    height:auto;
 		    background: #FFFFFF;
 			box-shadow: 0 2px 6px 0 #DDDDDD;
 			border-radius: 10rem/$unit;
@@ -219,11 +219,6 @@
 				margin:15rem/$unit auto 20rem/$unit;
 				border-radius: 10rem/$unit;
 				text-align:left;
-				overflow:hidden;
-                text-overflow:ellipsis;
-                display:-webkit-box;
-                -webkit-line-clamp:2;
-                -webkit-box-orient:vertical;
 			}
 			.title-infor{
 				width:100%;
@@ -256,9 +251,6 @@
         height: 35rem/$unit;
         padding: 0;
         border-radius: 10rem/$unit;
-        position: absolute;
-        left:0;
-        bottom:0;
     }
     .box-list ul>li{
     	width: 115rem/$unit;
