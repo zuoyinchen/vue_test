@@ -68,7 +68,6 @@ new Vue({
   mounted:function(){
       console.log("nihao");
      let userobj = this.getQueryStringArgs();
-     userobj.id = '5abccf18a97f343e6a916e3c';
 
      if(userobj.id){
       console.log("jin");
