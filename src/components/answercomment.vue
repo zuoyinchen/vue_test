@@ -644,6 +644,7 @@ export default {
   created() {
     //获取页面高度
     var clientHeight = document.body.clientHeight;
+    console.log(clientHeight)
     //设置监听聚焦事件
     document.body.addEventListener(
       "focus",
