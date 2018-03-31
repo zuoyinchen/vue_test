@@ -4,12 +4,12 @@
   :on-infinite="infinite" ref="myscroller" v-if="prolist.length>0" class="myscroller">
           <ul>
             <li class="list-item" v-for="(item,index) in prolist " data-type="0" :key="index">
-                <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
+                <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEndL"  @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
                     <span class="status-bac status-bac-yellow" v-if="item.status== 1"></span>
                     <span class="status-bac" v-else></span>
                     <span class="status status_yell" v-if="item.status== 1">进行中</span>
                     <span class="status" v-else>已结束</span>
-                    <p class="title" @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.messageNum" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
+                    <p class="title">{{item.title}}</p>
                     <div class="title-infor">
                         <span>
                             <i class="iconfont icon-xianshimima"></i>
@@ -17,7 +17,7 @@
                         </span>
                         <span>
                             <i class="iconfont icon-pinglun"></i>
-                            <span class="componet-num">{{item.messageNum}}</span>
+                            <span class="componet-num">{{item.toAnswer.length}}</span>
                         </span>
                     </div>
                 </div>
@@ -108,7 +108,6 @@
                 let $title = e.currentTarget.dataset.title;//所删除问题的title
                 let $status = e.currentTarget.dataset.status;//所删除问题的status
                 const stars = this.prolist[index].stars;//拿到当前点击的收藏的stars
-                console.log(stars);
                 //拿到所有收藏的用户id
                 const starid = [];
                 for(let i = 0;i<stars.length;i++){
@@ -124,16 +123,18 @@
                     status:$status
                 };
                 console.log(data);
-                this.$http.put('/topic/'+$id,data).then(res=>{
+                Indicator.open();
+                this.$axios.put('/topic/'+$id,data).then(res=>{
                     if(res.status == 200){
                         this.restSlide();
                         this.prolist.splice(index,1);
+                        this.getIndexData("删除成功");
                     }
                 }).catch((error,errorcode)=>{
                     console.log('error');
                 });
             },
-            getIndexData:function(){
+            getIndexData:function(msg){
               this.noData='';
               const data = {
                 limit : this.page*this.size,
@@ -143,6 +144,9 @@
               this.$axios.get('/topics',{params:data}).then(res=>{
                 console.log(res);
                 Indicator.close();
+                if(msg){
+                    Toast(msg);
+                }
                 if(res.data&&res.data.length){
                     this.prolist = res.data;
                 }else{
