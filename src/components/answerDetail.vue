@@ -126,7 +126,6 @@
 // import wx from 'weixin-js-sdk'
 import "mint-ui/lib/style.css";
 import { MessageBox, Toast, Indicator } from "mint-ui";
-const $userid = localStorage.getItem("userid"); //用户id
 export default {
   name: "answerDetail",
   data() {
@@ -162,15 +161,15 @@ export default {
       const stars_ = [];
       if (this.stars && this.stars.length) {
         this.stars.forEach(item => {
-          if ($userid !== item.id) {
+          if (localStorage.getItem("userid") !== item.id) {
             stars_.push(item.id);
           }
         });
         if (stars_.length === this.stars.length) {
-          stars_.push($userid);
+          stars_.push(localStorage.getItem("userid"));
         } 
       } else {
-        stars_.push($userid);
+        stars_.push(localStorage.getItem("userid"));
       }
       const res = {
         status: Number(status),
@@ -189,7 +188,7 @@ export default {
         this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
           this.stars = res.data.stars;
           $.each(this.stars,function(i,v){
-            if(v.id == $userid){
+            if(v.id == localStorage.getItem("userid")){
               this.isMark = true;
             }
           })
@@ -207,7 +206,6 @@ export default {
       event.stopPropagation();
       const answerid = event.currentTarget.dataset.id;
       const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
-      const $userid = localStorage.getItem("userid");
       console.log(this.msg[$index].stars);
       const stars = this.msg[$index].stars;
       const starsid = [];
@@ -218,12 +216,12 @@ export default {
       console.log(this.msg[$index].isStar);
       if (this.msg[$index].isStar) {
         console.log("取消收藏");
-        starsid.splice(starsid.indexOf($userid), 1);
+        starsid.splice(starsid.indexOf(localStorage.getItem("userid")), 1);
         var resultarr = starsid;
         console.log(resultarr);
       } else {
         console.log("收藏");
-        starsid.push($userid);
+        starsid.push(localStorage.getItem("userid"));
         var resultarr = [...new Set(starsid)];
         console.log(resultarr);
       }
@@ -255,8 +253,6 @@ export default {
       const answerid = event.currentTarget.dataset.id;
       console.log("点赞id |" + answerid);
       const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
-      const $userid = localStorage.getItem("userid");
-      console.log("点赞用户 |" + $userid);
       console.log(this.msg[$index].upVotes);
       const upVotes = this.msg[$index].upVotes;
       const upVotesid = [];
@@ -265,15 +261,15 @@ export default {
         upVotesid.push(upVotes[i].id);
       }
       console.log(this.msg[$index].upVote);
-      console.log("当前用户点赞位置" + upVotesid.indexOf($userid));
+      console.log("当前用户点赞位置" + upVotesid.indexOf(localStorage.getItem("userid")));
       if (this.msg[$index].upVote) {
-        upVotesid.splice(upVotesid.indexOf($userid), 1);
+        upVotesid.splice(upVotesid.indexOf(localStorage.getItem("userid")), 1);
         var resultarr = upVotesid;
         $(".upVote_num")
           .eq($index)
           .text(resultarr.length);
       } else {
-        upVotesid.push($userid);
+        upVotesid.push(localStorage.getItem("userid"));
         var resultarr = [...new Set(upVotesid)];
         $(".upVote_num")
           .eq($index)
@@ -302,11 +298,11 @@ export default {
         });
     },
     slideDown: function(event) {
-      const index = event.currentTarget.dataset.index;
-      localStorage.setItem("comment_index", index);
       const answerid = event.currentTarget.dataset.id;
-      console.log("myanswerid", event.currentTarget.dataset.id);
-      this.$router.push("/answercomment");
+      const answeindex = Number(event.currentTarget.dataset.index) +1;
+      console.log(answeindex);
+      localStorage.setItem("answerid", answerid);
+      this.$router.push("/answercomment/"+answerid+'/'+answeindex);
     },
     timeReplace: function(str) {
       return str.replace("T", " ").slice(0, str.indexOf("."));
@@ -368,6 +364,7 @@ export default {
             })
             .catch((error, errorcode) => {
               Toast("网络错误，删除不成功");
+              Indicator.close();
               console.log(error);
             });
         },
@@ -384,7 +381,7 @@ export default {
       const topicid = this.topicid; //问题id
       const data = {
         search: JSON.stringify({ topic: topicid }),
-        userid: $userid
+        userid: localStorage.getItem("userid")
       };
       if (localStorage.getItem("isAnswer")) {
         if (
@@ -414,7 +411,7 @@ export default {
             $.each(this.msg, function(i, v) {
               v.isMe = false;
               if (v.createdBy) {
-                if (v.createdBy.id == $userid) {
+                if (v.createdBy.id == localStorage.getItem("userid")) {
                   grade = i;
                   v.isMe = true;
                   upvote = v.upVotes.length;
@@ -452,25 +449,14 @@ export default {
     this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
       this.stars = res.data.stars;
       this.stars.forEach(item => {
-        if ($userid === item.id) {
+        if (localStorage.getItem("userid") === item.id) {
           this.isMark = true;
         }
       });
     });
 
-    if (localStorage.getItem("isAnswer")) {
-      if (
-        localStorage.getItem("isAnswer") == "false" ||
-        localStorage.getItem("isAnswer") == "undefined"
-      ) {
-        console.log("没答题");
-        this.isAnswer = false;
-      } else {
-        console.log("答题");
-        this.isAnswer = true;
-      }
-    }
-
+    
+    console.log(this.isAnswer);
     this.readnum = Number(queryobj.readnum);
     this.topicid = queryobj.topicid;
 
@@ -480,7 +466,7 @@ export default {
       search: JSON.stringify({
         topic: topicid
       }),
-      userid: $userid
+      userid: localStorage.getItem("userid")
     };
     console.log(data);
 
@@ -495,7 +481,7 @@ export default {
           $.each(this.msg, function(i, v) {
             v.isMe = false;
             if (v.createdBy) {
-              if (v.createdBy.id == $userid) {
+              if (v.createdBy.id == localStorage.getItem("userid")) {
                 grade = i;
                 v.isMe = true;
                 upvote = v.upVotes.length;
@@ -507,6 +493,7 @@ export default {
           });
           this.users = this.msg;
           console.log(this.users);
+          console.log(localStorage.getItem("userid"));
           localStorage.setItem("answernum",this.users.length);
           this.answernum = this.users.length;
           this.mygrade = grade + 1;
@@ -556,6 +543,22 @@ export default {
   },
   beforeCreate: async function() {
     Indicator.open();
+    console.log("进来了");
+    console.log(localStorage.getItem("userid"));
+    console.log(localStorage.getItem("userid"));
+    console.log(localStorage.getItem("isAnswer") === "undefined");
+    if (localStorage.getItem("isAnswer")) {
+      if (
+        localStorage.getItem("isAnswer") === "false" ||
+        localStorage.getItem("isAnswer") === "undefined"
+      ) {
+        console.log("没答题");
+        this.isAnswer = false;
+      } else {
+        console.log("答题");
+        this.isAnswer = true;
+      }
+    }
   },
   destroyed:function(){
     Indicator.close();

@@ -41,45 +41,45 @@
           <p v-else class="has_answered">已抢答</p>
       </div>
       <ul class="ctn">
-          <li class="clearfix pin_list" v-for="(item,index) in list" :key="index">
+          <li class="clearfix pin_list" >
             <div class="answer_wrap">
               <div class="ctn_l">
-                  <i>{{answerindex+1}}</i>
-                  <img v-if="!Boolean(item.createdBy)" src="../assets/images/logo.png" alt="1">
-                  <img v-else-if="!Boolean(item.createdBy.avatarUrl)" src="../assets/images/logo.png" alt="1">
-                  <img v-else :src="item.createdBy.avatarUrl" alt="2">
+                  <i>{{answerindex}}</i>
+                  <img v-if="!Boolean(list.createdBy)" src="../assets/images/logo.png" alt="1">
+                  <img v-else-if="!Boolean(list.createdBy.avatarUrl)" src="../assets/images/logo.png" alt="1">
+                  <img v-else :src="list.createdBy.avatarUrl" alt="2">
               </div>
               <div class="ctn_r">
                   <div>
-                      <span v-if="!Boolean(item.createdBy)">{{'匿名用户'}}</span>
-                      <span v-else-if="!Boolean(item.createdBy.nickName)">{{'匿名用户'}}</span>
-                      <span v-else>{{item.createdBy.nickName}}</span>
+                      <span v-if="!Boolean(list.createdBy)">{{'匿名用户'}}</span>
+                      <span v-else-if="!Boolean(list.createdBy.nickName)">{{'匿名用户'}}</span>
+                      <span v-else>{{list.createdBy.nickName}}</span>
                       <!-- <i class="iconfont icon-fenxiang" @click="gotoShare($event)"></i> -->
-                      <i class="iconfont icon-shoucang2" v-if="item.isStar == true" @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
-                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="item.id" :data-index="index"></i>
+                      <i class="iconfont icon-shoucang2" v-if="list.isStar == true" @click="giveStar($event)" :data-id="list.id" ></i>
+                      <i class="iconfont icon-shoucang1" v-else @click="giveStar($event)" :data-id="list.id"></i>
                   </div>
                   <p>
-                      {{item.body}}
+                      {{list.body}}
                   </p>
                   <div class="clearfix">
                       <div>
-                          <span>{{new Date(item.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(item.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
-                          <span class="delete_pinglun" v-show="item.isMe" @click="deleteAnswer()" :data-id="item.id">删除</span>
+                          <span>{{new Date(list.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(list.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
+                          <span class="delete_pinglun" v-show="list.isMe" @click="deleteAnswer()" :data-id="list.id">删除</span>
                       </div>
                       <div class="clearfix">
                           <div v-if="status == 1">
-                              <i class="iconfont icon-dianzan1" v-if="item.upVote == true" @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="item.id" :data-index="index"></i>
-                              <span class="upVote_num">{{item.upVotes.length}}</span>
+                              <i class="iconfont icon-dianzan1" v-if="list.upVote == true" @click="giveLike($event)" :data-id="list.id"></i>
+                              <i class="iconfont icon-dianzan" v-else @click="giveLike($event)" :data-id="list.id" ></i>
+                              <span class="upVote_num">{{list.upVotes && list.upVotes.length || 0}}</span>
                           </div>
                           <div v-else @click="endTip($event)">
                               <i class="iconfont icon-dianzan"></i>
-                              <span class="upVote_num">{{item.upVotes.length}}</span>
+                              <span class="upVote_num">{{list.upVotes && list.upVotes.length || 0}}</span>
                           </div>
 
                           <div >
                               <i class="iconfont icon-pinglun"></i>
-                              <span class="comment_num">{{item.comments.length}}</span>
+                              <span class="comment_num">{{list.comments && list.comments.length || 0}}</span>
                           </div>
                       </div>
                   </div>
@@ -97,7 +97,7 @@
                           <span v-else>{{i.createdBy.nickName}}</span>
                       </div>
                       <div>
-                          <span v-show="i.isMe" class="delete_pinglun" @click="deletePinlun()" :data-id="i.id" :data-index="index">删除</span>
+                          <span v-show="i.isMe" class="delete_pinglun" @click="deletePinlun()" :data-id="i.id" >删除</span>
                           <span>{{new Date(i.createdAt).toLocaleDateString().replace(/\//g,"-")}} {{new Date(i.createdAt).toLocaleTimeString().replace(/[\u4E00-\u9FA5]/g,'')}}</span>
                       </div>
                   </div>
@@ -122,8 +122,6 @@
 // import wx from 'weixin-js-sdk'
 import "mint-ui/lib/style.css";
 import { MessageBox, Toast, Indicator } from "mint-ui";
-const $userid = localStorage.getItem("userid"); //用户id
-// const $userid = '5abcbe54587bde833d1bdffd';//用户id
 export default {
   name: "answercomment",
   data() {
@@ -158,15 +156,15 @@ export default {
       const stars_ = [];
       if (this.stars && this.stars.length) {
         this.stars.forEach(item => {
-          if ($userid !== item.id) {
+          if (localStorage.getItem("userid") !== item.id) {
             stars_.push(item.id);
           }
         });
         if (stars_.length === this.stars.length) {
-          stars_.push($userid);
+          stars_.push(localStorage.getItem("userid"));
         } 
       } else {
-        stars_.push($userid);
+        stars_.push(localStorage.getItem("userid"));
       }
       const res = {
         status: Number(status),
@@ -185,7 +183,7 @@ export default {
         this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
           this.stars = res.data.stars;
           $.each(this.stars,function(i,v){
-            if(v.id == $userid){
+            if(v.id == localStorage.getItem("userid")){
               this.isMark = true;
             }
           })
@@ -206,60 +204,58 @@ export default {
     },
     giveStar: function(event) {
       const answerid = event.currentTarget.dataset.id;
-      const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
-      const stars = this.list[$index].stars;
+      const stars = this.list.stars || [];
       const starsid = [];
       //循环当前评论收藏的信息，拿到此条评论的所有id
       for (let i = 0; i < stars.length; i++) {
         starsid.push(stars[i].id);
       }
-      if (this.list[$index].isStar) {
-        starsid.splice(starsid.indexOf($userid), 1);
+      if (this.list.isStar) {
+        starsid.splice(starsid.indexOf(localStorage.getItem("userid")), 1);
         var resultarr = starsid;
         console.log(resultarr);
       } else {
-        starsid.push($userid);
+        starsid.push(localStorage.getItem("userid"));
         var resultarr = [...new Set(starsid)];
         console.log(resultarr);
       }
       const data = {
         stars: resultarr
       };
-      Indicator.open();
       this.$axios
         .put("/answer/" + answerid, data)
         .then(res => {
           console.log(res);
           if (res.status == 200) {
-            if (this.list[$index].isStar) {
+            if (this.list.isStar) {
               this.upDatedata("取消收藏");
-              this.list[$index].isStar = false;
+              this.list.isStar = false;
             } else {
               this.upDatedata("收藏成功");
-              this.list[$index].isStar = true;
+              this.list.isStar = true;
             }
           }
         })
         .catch((error, errorcode) => {
+          Toast("网络错误，不成功");
           console.log(error);
         });
     },
     giveLike: function(event) {
       const answerid = event.currentTarget.dataset.id;
-      const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
-      const upVotes = this.list[$index].upVotes;
+      const upVotes = this.list.upVotes || [];
       const upVotesid = [];
       //循环当前评论收藏的信息，拿到此条评论的所有id
       for (let i = 0; i < upVotes.length; i++) {
         upVotesid.push(upVotes[i].id);
       }
-      if (this.list[$index].upVote) {
-        upVotesid.splice(upVotesid.indexOf($userid), 1);
+      if (this.list.upVote) {
+        upVotesid.splice(upVotesid.indexOf(localStorage.getItem("userid")), 1);
         console.log("取消点赞");
         var resultarr = upVotesid;
         console.log(resultarr);
       } else {
-        upVotesid.push($userid);
+        upVotesid.push(localStorage.getItem("userid"));
         console.log("点赞");
         var resultarr = [...new Set(upVotesid)];
         console.log(resultarr);
@@ -267,53 +263,28 @@ export default {
       const data = {
         upVotes: resultarr
       };
-      Indicator.open();
       this.$axios
         .put("/answer/" + answerid, data)
         .then(res => {
           console.log(res);
           if (res.status == 200) {
-            if (this.list[$index].upVote) {
-              this.list[$index].upVote = false;
+            if (this.list.upVote) {
+              this.list.upVote = false;
               this.upDatedata("取消点赞");
-              $(".upVote_num")
-                .eq($index)
-                .text(resultarr.length);
             } else {
               this.upDatedata("点赞成功");
               this.list[$index].upVote = true;
-              upVotesid.push($userid);
-              $(".upVote_num")
-                .eq($index)
-                .text(resultarr.length);
             }
           }
         })
         .catch((error, errorcode) => {
+          Toast("网络错误，不成功");
           console.log(error);
         });
     },
     timeReplace: function(str) {
       return str.replace("T", " ").slice(0, str.indexOf("."));
     },
-    // gotoShare:function(){
-    //   wx.onMenuShareAppMessage({
-    //     title: '这是个问题吗', // 分享标题
-    //     desc: '回答问题', // 分享描述
-    //     link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //     imgUrl: '../assets/images/logo.png', // 分享图标
-    //     type: '', // 分享类型,music、video或link，不填默认为link
-    //     dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-    //     success: function () {
-    //         // 用户确认分享后执行的回调函数
-    //         console.log("成功");
-    //     },
-    //     cancel: function () {
-    //       console.log("取消");
-    //     // 用户取消分享后执行的回调函数
-    //     }
-    //   });
-    // },
     gotoQuestion: function(event) {
       const topicid = event.currentTarget.dataset.tid; //问题id
       const readnum = event.currentTarget.dataset.rnum; //阅读数
@@ -358,7 +329,6 @@ export default {
     },
     deletePinlun: function() {
       const commentid = event.currentTarget.dataset.id;
-      const answerindex = event.currentTarget.dataset.index; //所评论的问题索引
       MessageBox.confirm("您确定要删除此评论?").then(
         action => {
           Indicator.open();
@@ -386,12 +356,13 @@ export default {
       );
     },
     upDatedata: function(title) {
+      Toast(title);
       this.message = "";
 
       if (localStorage.getItem("isAnswer")) {
         if (
-          localStorage.getItem("isAnswer") == "false" ||
-          localStorage.getItem("isAnswer") == "undefined"
+          localStorage.getItem("isAnswer") === "false" ||
+          localStorage.getItem("isAnswer") === "undefined"
         ) {
           console.log("没答题");
           this.isAnswer = false;
@@ -404,69 +375,58 @@ export default {
       const queryobj = JSON.parse(query);
       this.topicid = queryobj.topicid;
       const topicid = this.topicid; //问题id
-      const data = {
-        search: JSON.stringify({ topic: topicid }),
-        userid: $userid
-      };
-      this.$axios
-        .get("/answer", { params: data })
-        .then(res => {
-          const cindex = localStorage.getItem("comment_index");
-          this.answerindex = Number(cindex);
-          this.list = res.data.splice(cindex, 1);
-          //拿到所有答题者的id
-          $.each(this.list, function(i, v) {
-            v.isMe = false;
 
-            this.body = v.body;
-            if (v.createdBy) {
-              if (v.createdBy.id == $userid) {
-                //判断答题者的id中是否有自己
+      const answerid = this.$route.params.answerid; //回答id
+
+      //获取所要评论的答案
+      this.$axios.get("/answer/"+answerid,{params:{userid:localStorage.getItem("userid")}}).then(res => {
+        console.log(res);
+        this.list = res.data;
+        if(res.status == 200){
+            this.list = res.data;
+            console.log(this.list.createdBy.id);
+            console.log(localStorage.getItem("userid"))
+            this.list.isMe = false;
+            if(this.list.createdBy.id === localStorage.getItem("userid")){
+              console.log("享");
+              this.list.isMe = true;
+            }
+            
+            console.log(this.list);
+        }
+      }).catch(error => {
+        Indicator.close();
+        Toast("网络错误请刷新");
+        console.log(error);
+      });
+      //根据答案ID获取评论
+      var search_comment = {
+        search: {
+          answer: answerid
+        },
+        sort:{
+          createdAt:0
+        }
+      };
+      this.$axios.get("/comment", { params: search_comment }).then(res => {
+          if (res.status == 200) {
+            Indicator.close();
+            $.each(res.data, function(i, v) {
+              //循环评论判断评论者的ID 是否是自己
+              v.isMe = false;
+              if (v.createdBy.id == localStorage.getItem("userid")) {
                 v.isMe = true;
-                localStorage.getItem("isAnswer", true);
               }
-            }
-          });
-          this.clist = this.list;
-          this.answerid = this.list[0].id;
-          //根据答案ID获取评论
-          const search_comment = {
-            search: {
-              answer: this.list[0].id,
-              sort: {
-                createdAt: 0
-              }
-            }
-          };
-          this.$axios
-            .get("/comment", { params: search_comment })
-            .then(res => {
-              Indicator.close();
-              Toast(title);
-              console.log(res);
-              if (res.status == 200) {
-                this.comments = res.data;
-                $.each(res.data, function(i, v) {
-                  //循环评论判断评论者的ID 是否是自己
-                  v.isMe = false;
-                  if (v.createdBy.id == $userid) {
-                    v.isMe = true;
-                  }
-                });
-                Indicator.close();
-              }
-            })
-            .catch(error => {});
-        })
-        .catch(error => {
-          Indicator.close();
-          Toast({ message: "网络错误，操作不成功" });
-          console.log(error);
-        });
+            });
+            this.comments = res.data;
+            console.log(this.comments);
+           }
+      }).catch(error => {});
+      
     },
     //评论答案
     gotoComment: function(event) {
-      if (!$userid) {
+      if (!localStorage.getItem("userid")) {
         MessageBox.alert("您还未关注筋灵十三猜公众号，请先关注公众号").then(
           action => {}
         );
@@ -481,7 +441,7 @@ export default {
       const data = {
         body: this.message,
         answer: this.answerid,
-        createdBy: $userid
+        createdBy: localStorage.getItem("userid")
       };
       console.log(data);
       Indicator.open();
@@ -500,10 +460,12 @@ export default {
     }
   },
   mounted() {
+    const answerid = this.$route.params.answerid; //回答id
+    this.answerindex = this.$route.params.answerindex;
     if (localStorage.getItem("isAnswer")) {
       if (
-        localStorage.getItem("isAnswer") == "false" ||
-        localStorage.getItem("isAnswer") == "undefined"
+        localStorage.getItem("isAnswer") === "false" ||
+        localStorage.getItem("isAnswer") === "undefined"
       ) {
         console.log("没答题");
         this.isAnswer = false;
@@ -531,101 +493,58 @@ export default {
     this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
       this.stars = res.data.stars;
       this.stars.forEach(item => {
-        if ($userid === item.id) {
+        if (localStorage.getItem("userid") === item.id) {
           this.isMark = true;
         }
       });
     });
 
-    const topicid = this.topicid; //问题id
-    const data = {
-      search: JSON.stringify({ topic: topicid }),
-      userid: $userid
+    
+    //根据id获取所要评论的答案
+    this.$axios.get("/answer/"+answerid,{params:{userid:localStorage.getItem("userid")}}).then(res => {
+      console.log(res);
+      this.list = res.data;
+      if(res.status == 200){
+          this.list = res.data;
+          console.log(this.list.createdBy.id);
+          console.log(localStorage.getItem("userid"))
+          this.list.isMe = false;
+          if(this.list.createdBy.id === localStorage.getItem("userid")){
+            console.log("享");
+            this.list.isMe = true;
+          }
+          
+          console.log(this.list);
+      }
+    }).catch(error => {
+      Indicator.close();
+      Toast("网络错误请刷新");
+      console.log(error);
+    });
+      //根据答案ID获取评论
+    var search_comment = {
+      search: {
+        answer: answerid
+      },
+      sort:{
+        createdAt:0
+      }
     };
-    //获取所要评论的答案
-    this.$axios
-      .get("/answer", { params: data })
-      .then(res => {
-        console.log(localStorage.getItem("comment_index"));
-        const cindex = localStorage.getItem("comment_index");
-        this.answerindex = Number(cindex);
-        this.list = res.data.splice(cindex, 1);
-
-        var isAnswer;
-        //拿到所有答题者的id
-        $.each(this.list, function(i, v) {
+    console.log(search_comment);
+    this.$axios.get("/comment", { params: search_comment }).then(res => {
+      if (res.status == 200) {
+        Indicator.close();
+        $.each(res.data, function(i, v) {
+          //循环评论判断评论者的ID 是否是自己
           v.isMe = false;
-          this.answerid = v.id;
-          this.body = v.body;
-          if (v.createdBy) {
-            if (v.createdBy.id == $userid) {
-              //判断答题者的id中是否有自己
-              v.isMe = true;
-              localStorage.getItem("isAnswer", true);
-            }
+          if (v.createdBy.id == localStorage.getItem("userid")) {
+            v.isMe = true;
           }
         });
-        this.answerid = this.list[0].id;
-        console.log(this.isAnswer);
-        //根据答案ID获取评论
-        var search_comment = {
-          search: {
-            answer: this.list[0].id
-          }
-        };
-        console.log(search_comment);
-        this.$axios
-          .get("/comment", { params: search_comment })
-          .then(res => {
-            if (res.status == 200) {
-              Indicator.close();
-              $.each(res.data, function(i, v) {
-                //循环评论判断评论者的ID 是否是自己
-                v.isMe = false;
-                if (v.createdBy.id == $userid) {
-                  v.isMe = true;
-                }
-              });
-              this.comments = res.data;
-              console.log(this.comments);
-            }
-          })
-          .catch(error => {});
-      })
-      .catch(error => {
-        Indicator.close();
-        Toast("网络错误请刷新");
-        console.log(error);
-      });
-
-    //微信js-sdk
-    // this.$axios.get('/wechat_share',{params:{url:window.location.href}}).then(res=>{
-    //     console.log(res);
-    //     const appid = res.data.appId;
-    //     const nonceStr = res.data.nonceStr;
-    //     const signature = res.data.signature;
-    //     const timestamp = res.data.timestamp;
-
-    //     //配置微信js-sdk
-    //     wx.config({
-    //         debug: false, //
-    //         appId: appid, // 必填，公众号的唯一标识
-    //         timestamp: timestamp, // 必填，生成签名的时间戳
-    //         nonceStr: nonceStr, // 必填，生成签名的随机串
-    //         signature: signature,// 必填，签名
-    //         jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
-    //     });
-
-    //     wx.ready(function(){
-    //         console.log("成功");
-    //     });
-    //     wx.error(function(res){
-    //         console.log("失败");
-    //     });
-
-    // }).catch((error)=>{
-    //   console.log(error);
-    // })
+        this.comments = res.data;
+        console.log(this.comments);
+      }
+   }).catch(error => {});
   },
   beforeCreate: function() {
     Indicator.open();
@@ -640,25 +559,6 @@ export default {
       console.log("答题");
       this.isAnswer = true;
     }
-  },
-  created() {
-    //获取页面高度
-    var clientHeight = document.body.clientHeight;
-    //设置监听聚焦事件
-    document.body.addEventListener(
-      "focus",
-      function(e) {
-        var focusElem = document.getElementById("input");
-      },
-      true
-    );
-    //设置监听窗口变化时间
-    window.addEventListener("resize", function() {
-      if (focusElem && document.body.clientHeight < clientHeight) {
-        //使用scrollIntoView方法来控制输入框
-        focusElem.scrollIntoView(false);
-      }
-    });
   }
 };
 </script>

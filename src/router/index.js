@@ -52,7 +52,7 @@ export default new Router({
       }
     },
     {
-      path:'/answercomment',
+      path:'/answercomment/:answerid/:answerindex',
       name:'answercomment',
       component:answerComment
     },
