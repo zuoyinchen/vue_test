@@ -391,7 +391,7 @@ export default {
       if (localStorage.getItem("isAnswer")) {
         if (
           localStorage.getItem("isAnswer") == "false" ||
-          localStorage.getItem("isAnswer") == "undefinded"
+          localStorage.getItem("isAnswer") == "undefined"
         ) {
           console.log("没答题");
           this.isAnswer = false;
@@ -503,7 +503,7 @@ export default {
     if (localStorage.getItem("isAnswer")) {
       if (
         localStorage.getItem("isAnswer") == "false" ||
-        localStorage.getItem("isAnswer") == "undefinded"
+        localStorage.getItem("isAnswer") == "undefined"
       ) {
         console.log("没答题");
         this.isAnswer = false;
@@ -512,6 +512,7 @@ export default {
         this.isAnswer = true;
       }
     }
+    console.log(this.isAnswer);
     const query = localStorage.getItem("query"); //参数集合
     const queryobj = JSON.parse(query);
     this.title = queryobj.title;
@@ -628,9 +629,10 @@ export default {
   },
   beforeCreate: function() {
     Indicator.open();
+    console.log(this.isAnswer);
     if (
       localStorage.getItem("isAnswer") == "false" ||
-      localStorage.getItem("isAnswer") == "undefinded"
+      localStorage.getItem("isAnswer") == "undefined"
     ) {
       console.log("没答题");
       this.isAnswer = false;

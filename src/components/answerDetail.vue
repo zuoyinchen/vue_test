@@ -361,7 +361,7 @@ export default {
             .delete("/answer/" + answerid)
             .then(res => {
               localStorage.setItem("isAnswer", false);
-              this.upDatedata();
+              this.upDatedata("删除成功");
               Indicator.close();
             })
             .catch((error, errorcode) => {
@@ -387,7 +387,7 @@ export default {
       if (localStorage.getItem("isAnswer")) {
         if (
           localStorage.getItem("isAnswer") == "false" ||
-          localStorage.getItem("isAnswer") == "undefinded"
+          localStorage.getItem("isAnswer") == "undefined"
         ) {
           console.log("没答题");
           this.isAnswer = false;
@@ -401,7 +401,10 @@ export default {
       this.$axios
         .get("/answer", { params: data })
         .then(res => {
-          Toast(title);
+          if(title){
+            Toast(title);
+          }
+          
           if (res.data && res.data.length) {
             this.msg = res.data;
             var grade, upvote, comments, isAnswer;
@@ -456,7 +459,7 @@ export default {
     if (localStorage.getItem("isAnswer")) {
       if (
         localStorage.getItem("isAnswer") == "false" ||
-        localStorage.getItem("isAnswer") == "undefinded"
+        localStorage.getItem("isAnswer") == "undefined"
       ) {
         console.log("没答题");
         this.isAnswer = false;
