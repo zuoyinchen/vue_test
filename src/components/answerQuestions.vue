@@ -41,7 +41,7 @@
     },
     methods:{
         
-        submit:function(event){
+        submit:async function(event){
             console.log(event.currentTarget.dataset);
             const message = event.currentTarget.dataset.message;
             const userQuestion = localStorage.getItem("userQuestion");//参数集合
@@ -60,6 +60,7 @@
                 Toast("提交答案不能为空");
                 return false;
             }
+            Indicator.open();
             const newMsg = {
                 body:message,
                 topic:topicid,
@@ -67,7 +68,7 @@
             }
             console.log(newMsg)
 
-            this.$axios.post('/answer',newMsg).then(res=>{
+            await this.$axios.post('/answer',newMsg).then(res=>{
                 console.log(res);
                if (res.status === 200 || res.status === 201) {
                     
