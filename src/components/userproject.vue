@@ -27,7 +27,7 @@
 	                  	<i></i>
 	                  	<span>倒计时</span>
 	                  	<span>
-	                  		<countdown :time="item.time" class="countdown">
+	                  		<countdown :time="item.second" class="countdown">
 	                            <template slot-scope="props" >{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }} </template>
 	                        </countdown>
 	                  	</span>
