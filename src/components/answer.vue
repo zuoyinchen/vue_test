@@ -4,7 +4,7 @@
   :on-infinite="infinite" ref="myscroller" v-if="prolist.length>0" class="myscroller">
           <ul>
             <li class="list-item" v-for="(item,index) in prolist " data-type="0" :key="index">
-                <div class="list-box" @touchstart.capture="touchStart" @touchend.capture="touchEndL"  @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
+                <div class="list-box"  @touchstart.capture="touchStart" @touchend.capture="touchEndL" @click.stop="gotoDetail($event)"  @click="gotoDetail($event)" :data-title="item.title" :data-rnum="item.readNum" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
                     <span class="status-bac status-bac-yellow" v-if="item.status== 1"></span>
                     <span class="status-bac" v-else></span>
                     <span class="status status_yell" v-if="item.status== 1">进行中</span>
@@ -67,12 +67,12 @@ export default {
       let parentElement = e.currentTarget.parentElement;
       this.endX = e.changedTouches[0].clientX;
 
-      if (parentElement.dataset.type == 0 && this.startX - this.endX > 16) {
+      if (parentElement.dataset.type == 0 && this.startX - this.endX > 40) {
         this.restSlide();
         parentElement.dataset.type = 1;
       }
 
-      if (parentElement.dataset.type == 1 && this.startX - this.endX < -16) {
+      if (parentElement.dataset.type == 1 && this.startX - this.endX < -40) {
         this.restSlide();
         parentElement.dataset.type = 0;
       }
