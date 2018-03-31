@@ -555,6 +555,26 @@ export default {
       console.log("答题");
       this.isAnswer = true;
     }
+  },
+  created() {
+    //获取页面高度
+    var clientHeight = document.body.clientHeight;
+    
+    //设置监听聚焦事件
+    document.body.addEventListener(
+      "focus",
+      function(e) {
+        var focusElem = document.getElementById("input");
+      },
+      true
+    );
+    //设置监听窗口变化时间
+    window.addEventListener("resize", function() {
+      if (focusElem && document.body.clientHeight < clientHeight) {
+        //使用scrollIntoView方法来控制输入框
+        focusElem.scrollIntoView(false);
+      }
+    });
   }
 };
 </script>

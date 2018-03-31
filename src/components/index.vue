@@ -316,7 +316,7 @@ li {
 
 .btn > li {
   width: 345rem/$x;
-  height: 105rem/$x;
+  // height: 105rem/$x;
   border: 10rem/$x;
   box-shadow: 0 2px 6px 0 #dddddd;
   margin: 20rem/$x auto;
@@ -326,7 +326,7 @@ li {
 
 .btn_t1 {
   width: 345rem/$x;
-  height: 105rem/$x;
+  // height: 105rem/$x;
   position: relative;
   overflow: hidden;
   background: #fff;
@@ -381,7 +381,7 @@ li {
 .btn_t1 > p {
   font-size: 18rem/$x;
   color: #333333;
-  height: 60rem/$x;
+  // height: 60rem/$x;
   width: 256rem/$x;
   margin: 0 auto;
   margin-top: 10rem/$x;
@@ -389,9 +389,11 @@ li {
   font-weight: 500;
   line-height: 22rem/$x;
   letter-spacing: 0.39px;
+  margin-bottom: 18rem/$x;
 }
 
 .btn_t1 > ul {
+  // margin-top: 30rem/$x;
   width: 345rem/$x;
   height: 35rem/$x;
   padding: 0;
