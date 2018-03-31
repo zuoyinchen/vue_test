@@ -60,12 +60,12 @@
         </div>
       </ul>
     </scroller>
-    <router-link tag="div" to="/message" class="my_message ">
+    <!-- <router-link tag="div" to="/message" class="my_message ">
       <p>
         <i class="iconfont icon-xiaoxi"></i>
         <span></span>
       </p>
-    </router-link>
+    </router-link> -->
     <tabnav></tabnav> 
   </div>
 </template>

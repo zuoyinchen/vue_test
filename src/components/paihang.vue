@@ -16,7 +16,7 @@
       </div>
       <scroller class="list_wrap" v-if="pailist.length > 0">
         <ul class="paihang_list">
-            <li class="ctn clearfix" v-for="(item,index) in pailist">
+            <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
                     <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
                     <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
                     <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
@@ -146,6 +146,7 @@ export default {
 
     this.$axios.get('/rank').then((res)=>{
         this.pailist =res.data;
+        console.log(res,"res")
         const idarr = [];
         for(let i=0;i<this.pailist.length;i++){
           idarr.push(this.pailist[i].id);
