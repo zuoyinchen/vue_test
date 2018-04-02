@@ -24,7 +24,7 @@
               </div>
               <div class="ctn_r">
                   <i class="iconfont icon-dianzan1"></i>
-                  <span>{{item.upVotes.length}}</span>
+                  <span>{{item.upVoteLen}}</span>
               </div>
           </li>
           <div class="my_list clearfix">
