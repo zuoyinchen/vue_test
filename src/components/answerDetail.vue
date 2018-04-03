@@ -587,14 +587,18 @@ $x: 37.5;
   text-align: center;
   margin: 15px auto;
   width: 345rem/$x;
-  padding: 10rem/$x 0;
+  // padding: 10rem/$x 0;
+  height:44rem/$x;
   background: #fdd545;
   border-radius: 4px;
+  font-size: 14rem/$x;
+  font-weight: 500;
+  line-height: 44rem/$x;
 }
 .theme_b_sub .has_answered {
   height: 100%;
   border-radius: 4px;
-  background: #666666;
+  background: #DDDDDD;
   color: #fff;
 }
 .countdown {
