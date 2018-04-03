@@ -564,6 +564,8 @@ $x: 37.5;
 .box_wrap{
   box-sizing:border-box;
   padding-bottom: 60rem/$x;
+  z-index: 3;
+  background:#FFFEF7;
 }
 .error_tip {
   margin-top: 20rem/$x;
