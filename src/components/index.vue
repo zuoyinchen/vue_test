@@ -98,13 +98,12 @@ export default {
         })
         .then(res => {
           this.countdown = res.data.countDown;
-          console.log("time", this.countdown);
           this.msg = res.data.list || [];
           if (this.countdown == 0) {
             return;
           }
           const limit = this.page * this.size;
-          if (this.msg.length <= limit) {
+          if (this.msg.length < limit) {
             this.noData = "没有更多数据";
           }
         });
@@ -142,7 +141,7 @@ export default {
             this.countdown = res.data.countDown;
           });
         const limit = this.page * this.size;
-        if (this.msg.length <= limit) {
+        if (this.msg.length <limit) {
           this.noData = "没有更多数据";
         }
         done();
@@ -150,6 +149,8 @@ export default {
     },
     gotoDetail: async function(event) {
       localStorage.removeItem("isAnswer");
+      console.log($("._v-content").scrollTop());
+      // localStorage.setItem("scrolltop",this.$refs.myscroller.getPosition().top);
       const topicid = event.currentTarget.dataset.tid; //问题id
       let readnum = event.currentTarget.dataset.rnum; //阅读数
       const answernum = event.currentTarget.dataset.anum; //评论数
@@ -195,6 +196,10 @@ export default {
     if (localStorage.getItem("answernum")) {
       localStorage.removeItem("answernum");
     }
+  },
+  beforeRouteLeave(to, from, next) {
+     from.meta.keepAlive = false;
+     next();
   }
 };
 </script>

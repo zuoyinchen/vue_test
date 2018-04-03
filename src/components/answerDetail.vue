@@ -560,6 +560,14 @@ export default {
   },
   destroyed:function(){
     Indicator.close();
+  },
+  beforeRouteLeave(to, from, next) {
+     if (to.path == "/") {
+        to.meta.keepAlive = true;
+     } else {
+        to.meta.keepAlive = false;
+     }
+     next();
   }
 };
 </script>
