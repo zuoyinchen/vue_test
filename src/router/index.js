@@ -29,8 +29,10 @@ export default new Router({
       path: '/',
       name: 'index',
       component: index,
+      title: '主页',
       meta:{
-        keepAlive:false
+        pageTitle: '主页', 
+        keepAlive: true
       }
     },
     {
@@ -46,10 +48,7 @@ export default new Router({
     {
       path:'/answerDetail',
       name:'answerDetail',
-      component:answerDetail,
-      meta:{
-        keepAlive:false
-      }
+      component:answerDetail
     },
     {
       path:'/answercomment/:answerid/:answerindex',

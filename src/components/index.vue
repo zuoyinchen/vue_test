@@ -98,13 +98,13 @@ export default {
         })
         .then(res => {
           this.countdown = res.data.countDown;
-          console.log("time", this.countdown);
           this.msg = res.data.list || [];
+          this.$refs.myscroller.scrollTo(0,405,true);
           if (this.countdown == 0) {
             return;
           }
           const limit = this.page * this.size;
-          if (this.msg.length <= limit) {
+          if (this.msg.length < limit) {
             this.noData = "没有更多数据";
           }
         });
@@ -142,7 +142,7 @@ export default {
             this.countdown = res.data.countDown;
           });
         const limit = this.page * this.size;
-        if (this.msg.length <= limit) {
+        if (this.msg.length <limit) {
           this.noData = "没有更多数据";
         }
         done();
@@ -150,6 +150,8 @@ export default {
     },
     gotoDetail: async function(event) {
       localStorage.removeItem("isAnswer");
+      console.log($("._v-content").scrollTop());
+      // localStorage.setItem("scrolltop",this.$refs.myscroller.getPosition().top);
       const topicid = event.currentTarget.dataset.tid; //问题id
       let readnum = event.currentTarget.dataset.rnum; //阅读数
       const answernum = event.currentTarget.dataset.anum; //评论数
@@ -158,6 +160,9 @@ export default {
       const title = event.currentTarget.dataset.title; //问题标题
       const stars = JSON.parse(event.currentTarget.dataset.stars);
       console.log("gotoDetail", event.currentTarget.dataset);
+      let a = this.$refs.myscroller.getPosition();
+      console.log(a.top);
+      sessionStorage.setItem("backtop",a.top);
       const query = {
         topicid: topicid,
         readnum: readnum,
@@ -195,6 +200,10 @@ export default {
     if (localStorage.getItem("answernum")) {
       localStorage.removeItem("answernum");
     }
+  },
+  beforeRouteLeave(to, from, next) {
+     from.meta.keepAlive = false;
+     next();
   }
 };
 </script>
@@ -312,6 +321,7 @@ li {
 
 .btn {
   padding: 0;
+  color: #bdbdbd;
 }
 
 .btn > li {
@@ -348,7 +358,7 @@ li {
   top: 0;
   width: 0;
   height: 0;
-  border-top: 50rem/$x solid #666;
+  border-top: 50rem/$x solid #ccc;
   border-right: 50rem/$x solid transparent;
 }
 
