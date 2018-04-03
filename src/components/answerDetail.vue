@@ -562,8 +562,14 @@ export default {
     Indicator.close();
   },
   beforeRouteLeave(to, from, next) {
+    console.log(to);
+    console.log(from);
      if (to.path == "/") {
-        to.meta.keepAlive = true;
+        if(this.$route.params.scrolltop == 0){
+          to.meta.keepAlive = false;
+        }else{
+          to.meta.keepAlive = true;
+        }
      } else {
         to.meta.keepAlive = false;
      }

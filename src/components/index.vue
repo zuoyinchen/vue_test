@@ -20,7 +20,7 @@
                   <div class="end" v-else-if="item.status==2">
                       <p>已结束</p>
                   </div>
-                  <p id="a_title" @click="gotoDetail($event)" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
+                  <p id="a_title" @click="gotoDetail($event)":data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
                       <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
                         <i class="iconfont icon-paihangbang"></i>
@@ -34,7 +34,7 @@
                         <span>{{item.readNum? item.readNum : 0}}</span>
                         <i class="s"></i>
                       </li>
-                      <li @click="gotoDetail($event)":data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
+                      <li @click="gotoDetail($event)" :data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
                           <i class="line_l"></i>
                           <i class="line_r"></i>
                           <i class="iconfont icon-pinglun"></i>
@@ -99,7 +99,6 @@ export default {
         .then(res => {
           this.countdown = res.data.countDown;
           this.msg = res.data.list || [];
-          this.$refs.myscroller.scrollTo(0,405,true);
           if (this.countdown == 0) {
             return;
           }
@@ -150,8 +149,8 @@ export default {
     },
     gotoDetail: async function(event) {
       localStorage.removeItem("isAnswer");
-      console.log($("._v-content").scrollTop());
-      // localStorage.setItem("scrolltop",this.$refs.myscroller.getPosition().top);
+      //问题下标
+      const eindex = event.currentTarget.dataset.eindex;
       const topicid = event.currentTarget.dataset.tid; //问题id
       let readnum = event.currentTarget.dataset.rnum; //阅读数
       const answernum = event.currentTarget.dataset.anum; //评论数
@@ -159,10 +158,6 @@ export default {
       const time = event.currentTarget.dataset.time; //倒计时时间
       const title = event.currentTarget.dataset.title; //问题标题
       const stars = JSON.parse(event.currentTarget.dataset.stars);
-      console.log("gotoDetail", event.currentTarget.dataset);
-      let a = this.$refs.myscroller.getPosition();
-      console.log(a.top);
-      sessionStorage.setItem("backtop",a.top);
       const query = {
         topicid: topicid,
         readnum: readnum,
@@ -181,7 +176,10 @@ export default {
       await this.$axios.put(`/topic/${topicid}`, clickNum);
       query.readnum = readnum;
       localStorage.setItem("query", JSON.stringify(query));
-      this.$router.push("/answerDetail");
+      
+      const scrolltop = this.$refs.myscroller.getPosition().top;
+      console.log(scrolltop);
+      this.$router.push("/answerDetail/"+eindex+"/"+scrolltop);
     },
     goSiglepai: function(event) {
       const topicid = event.currentTarget.dataset.tid; //问题id
