@@ -66,15 +66,12 @@
                 topic:topicid,
                 createdBy:localStorage.getItem('userid')
             }
-            console.log(newMsg)
-
             await this.$axios.post('/answer',newMsg).then(res=>{
                 console.log(res);
                if (res.status === 200 || res.status === 201) {
-                    
+                    Indicator.close();
                     localStorage.setItem("isAnswer",true);
-                    
-                    this.$router.replace('/answerDetail');
+                    this.$router.back(-1);
                 }
                 console.log(newMsg)
             });

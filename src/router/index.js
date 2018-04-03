@@ -33,7 +33,18 @@ export default new Router({
       meta:{
         pageTitle: '主页', 
         keepAlive: true
-      }
+      },
+      children:[
+        {
+          path:'/answerDetail/:eindex/:scrolltop',
+          name:'answerDetail',
+          component:answerDetail
+        },{
+          path:'/answercomment/:answerid/:answerindex',
+          name:'answercomment',
+          component:answerComment
+        }
+      ]
     },
     {
       path:'/singlepai',
@@ -45,16 +56,16 @@ export default new Router({
       name:'paihang',
       component:paihang
     },
-    {
-      path:'/answerDetail/:eindex/:scrolltop',
-      name:'answerDetail',
-      component:answerDetail
-    },
-    {
-      path:'/answercomment/:answerid/:answerindex',
-      name:'answercomment',
-      component:answerComment
-    },
+    // {
+    //   path:'/answerDetail/:eindex/:scrolltop',
+    //   name:'answerDetail',
+    //   component:answerDetail
+    // },
+    // {
+    //   path:'/answercomment/:answerid/:answerindex',
+    //   name:'answercomment',
+    //   component:answerComment
+    // },
     {
       path:'/answerQuestions',
       name:'answerQuestions',
