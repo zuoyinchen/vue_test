@@ -610,6 +610,7 @@ $x: 37.5;
   background: #ffffff;
   box-shadow: 0 1px 5px 2px rgba(204, 204, 204, 0.25);
   display: flex;
+  overflow-x:hidden;
   .comment_input {
     flex: 1;
     font-family: STHeitiSC-Medium;
