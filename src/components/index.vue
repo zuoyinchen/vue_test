@@ -98,8 +98,8 @@ export default {
         })
         .then(res => {
           this.countdown = res.data.countDown;
-          console.log("time", this.countdown);
           this.msg = res.data.list || [];
+          this.$refs.myscroller.scrollTo(0,405,true);
           if (this.countdown == 0) {
             return;
           }
@@ -158,6 +158,9 @@ export default {
       const title = event.currentTarget.dataset.title; //问题标题
       const stars = JSON.parse(event.currentTarget.dataset.stars);
       console.log("gotoDetail", event.currentTarget.dataset);
+      let a = this.$refs.myscroller.getPosition();
+      console.log(a.top);
+      sessionStorage.setItem("backtop",a.top);
       const query = {
         topicid: topicid,
         readnum: readnum,
@@ -312,6 +315,7 @@ li {
 
 .btn {
   padding: 0;
+  color: #bdbdbd;
 }
 
 .btn > li {
@@ -348,7 +352,7 @@ li {
   top: 0;
   width: 0;
   height: 0;
-  border-top: 50rem/$x solid #666;
+  border-top: 50rem/$x solid #ccc;
   border-right: 50rem/$x solid transparent;
 }
 
