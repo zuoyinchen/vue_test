@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <scroller>
+    <scroller class="detail_box">
       <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
@@ -560,25 +560,16 @@ export default {
   },
   destroyed:function(){
     Indicator.close();
-  },
-  beforeRouteLeave(to, from, next) {
-    console.log(to);
-    console.log(from);
-     if (to.path == "/") {
-        if(this.$route.params.scrolltop == 0){
-          to.meta.keepAlive = false;
-        }else{
-          to.meta.keepAlive = true;
-        }
-     } else {
-        to.meta.keepAlive = false;
-     }
-     next();
   }
 };
 </script>
 <style lang="scss" scoped>
 $x: 37.5;
+
+.detail_box{
+  z-index: 3;
+  background:#FFFEF7;
+}
 .block {
   width: 375rem/$x;
   height: 80rem/$x;
@@ -1011,6 +1002,7 @@ li {
   left: 0;
   bottom: 20rem/$x;
   box-sizing: border-box;
+  z-index: 4;
 }
 .mylist {
   background: #fdd545;

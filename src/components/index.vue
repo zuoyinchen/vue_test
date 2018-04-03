@@ -4,12 +4,11 @@
       <div class="nav clearfix">
         <span class="counttest">下场开始时间</span>
         <span>
-                        <countdown :key="countdown" :time="countdown" class="countdown">
-                            <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
-</template>
-                </countdown>
-            </span>
-            <span>游戏规则</span>
+            <countdown :key="countdown" :time="countdown" class="countdown">
+                <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}</template>
+            </countdown>
+        </span>
+        <span>游戏规则</span>
       </div>
       <ul class="btn">
           <li v-for="(item,index) in msg" :key="index">
@@ -46,20 +45,19 @@
                           <span class="counttest">倒计时</span>
                           <span>
                               <countdown :time="item.second" class="countdown">
-<template slot-scope="props">
-   {{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
-</template>
+                                <template slot-scope="props">
+                                   {{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
+                                </template>
                               </countdown>
                           </span>
                       </li>
                   </ul>
               </div>
           </li>
-        <div class="block">
-
-        </div>
+          <div class="block"></div>
       </ul>
     </scroller>
+    <router-view></router-view> 
     <!-- <router-link tag="div" to="/message" class="my_message ">
       <p>
         <i class="iconfont icon-xiaoxi"></i>
@@ -199,9 +197,11 @@ export default {
       localStorage.removeItem("answernum");
     }
   },
-  beforeRouteLeave(to, from, next) {
-     from.meta.keepAlive = false;
-     next();
+  beforeRouteEnter(to,from,next){
+    next();
+    if(from.path == '/paihang'){
+      window.location.reload();
+    }
   }
 };
 </script>
@@ -210,6 +210,7 @@ export default {
 $x: 37.5;
 .box {
   overflow: hidden;
+  background:#FFFEF7;
 }
 
 .nav {
