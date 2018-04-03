@@ -147,7 +147,6 @@ export default {
   },
   methods: {
     starAnswer: async function(event) {
-      Indicator.open();
       // 收藏问题
       const { status, title } = this.$data;
       const query = localStorage.getItem("query"); //参数集合
@@ -188,8 +187,6 @@ export default {
             }
           })
         });
-      } else {
-        Toast("收藏失败");
       }
       console.log("isMark", this.isMark);
     },
@@ -316,7 +313,10 @@ export default {
               this.$router.replace("/answerDetail");
             })
             .catch((error, errorcode) => {
-              Toast("网络错误，删除不成功");
+              let instance = Toast("网络错误，删除不成功");
+              setTimeout(() => {
+                instance.close();
+              }, 1000);
               console.log(error);
             });
         },
@@ -333,15 +333,7 @@ export default {
           this.$axios
             .delete("/comment/" + commentid)
             .then(res => {
-              let comment_num = $(".pin_list")
-                .eq(answerindex)
-                .find(".comment_num")
-                .text();
-              comment_num -= 1;
-              $(".pin_list")
-                .eq(answerindex)
-                .find(".comment_num")
-                .text(comment_num);
+              Indicator.close();
               this.upDatedata("删除成功");
             })
             .catch((error, errorcode) => {
@@ -354,7 +346,12 @@ export default {
       );
     },
     upDatedata: function(title) {
-      Toast(title);
+      if(title){
+        let instance = Toast(title);
+        setTimeout(() => {
+          instance.close();
+        }, 1000);
+      }
       this.message = "";
 
       if (localStorage.getItem("isAnswer")) {
@@ -382,9 +379,6 @@ export default {
         this.list = res.data;
         if(res.status == 200){
             this.list = res.data;
-            console.log(this.list.createdBy.id);
-            console.log(localStorage.getItem("userid"))
-            this.list.isMe = false;
             if(this.list.createdBy.id === localStorage.getItem("userid")){
               console.log("享");
               this.list.isMe = true;
@@ -431,7 +425,10 @@ export default {
       }
       //提交答案不能为空
       if (!this.message) {
-        Toast("评论不能为空");
+        let instance =Toast("评论不能为空");
+        setTimeout(() => {
+          instance.close();
+        }, 1000);
         return false;
       }
       console.log(this.answerid);
@@ -452,7 +449,6 @@ export default {
         .catch(error => {
           Indicator.close();
           console.log(error);
-          Toast("操作不成功");
         });
     }
   },
@@ -754,6 +750,9 @@ $x: 37.5;
 .icon-dianzan1 {
   font-size: 12px;
   color: #bdbdbd;
+}
+.icon-dianzan1{
+  color:#FDD545;
 }
 ul,
 li {

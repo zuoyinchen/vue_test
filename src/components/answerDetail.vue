@@ -104,7 +104,7 @@
               <span>{{myupvote}}</span>
             </p>
         </div>
-        <div class="mylist" v-show="!isAnswer & status == 1">
+        <div class="mylist" v-show="!isAnswer & status == 1" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">
             <i class="iconfont icon-suoding"></i>
             <span>-</span>
             <span>我的排名</span>
@@ -133,7 +133,7 @@ export default {
       msg: [],
       users: [],
       status: "",
-      topicId: "",
+      topicid: "",
       time: 0,
       title: "",
       readnum: "",
@@ -152,7 +152,6 @@ export default {
   },
   methods: {
     starAnswer: async function(event) {
-      Indicator.open();
       // 收藏问题
       const { status, title } = this.$data;
       const query = localStorage.getItem("query"); //参数集合
@@ -193,8 +192,6 @@ export default {
             }
           })
         });
-      } else {
-        Toast("收藏失败");
       }
       console.log("isMark", this.isMark);
     },
@@ -399,7 +396,10 @@ export default {
         .get("/answer", { params: data })
         .then(res => {
           if(title){
-            Toast(title);
+            let instance = Toast(title);
+            setTimeout(() => {
+              instance.close();
+            }, 1000);
           }
           
           if (res.data && res.data.length) {
@@ -752,7 +752,9 @@ $x: 37.5;
   font-size: 12px;
   color: #bdbdbd;
 }
-
+.icon-dianzan1 {
+  color:#FDD545;
+}
 ul,
 li {
   list-style: none;
