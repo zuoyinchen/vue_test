@@ -1,20 +1,14 @@
 <template>
   <div class="box">
-      <div class="top">
+      
+      <scroller class="list_wrap" v-if="pailist.length > 0">
+        <!-- <div class="top">
           <div class="top_img">
               <img src="../assets/images/worldlist.png" alt=
               "" >
-              <!-- <img src="../assets/images/friendList.png" alt="" v-else> -->
           </div>
-          <!-- <div class="top_btn" @click="this.getFriend" v-if="iswho == 0">
-            <b>切换好友榜</b>
-          </div>
-           <div class="top_btn" @click="this.getWorld" v-else>
-            <b>切换世界榜</b>
-          </div> -->
-
-      </div>
-      <scroller class="list_wrap" v-if="pailist.length > 0">
+      </div> -->
+      <img src="../assets/images/top_bg.png" alt="">
         <ul class="paihang_list">
             <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
                     <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
@@ -190,6 +184,7 @@ export default {
       box-sizing:border-box;
       padding-top:130rem/$x;
       display: flex;
+      overflow:hidden;
     }
     .top{
         width: 120%;
@@ -237,10 +232,10 @@ export default {
     .top_btn>b{
       font-weight: 600;
     }
-    .list_wrap{
-      padding-top:130rem/$x;
-      box-sizing:border-box;
-    }
+    // .list_wrap{
+    //   padding-top:130rem/$x;
+    //   box-sizing:border-box;
+    // }
     .paihang_list{
       width:100%;
       flex:1;
@@ -346,7 +341,7 @@ export default {
     }
    .block{
      width: 345rem/$x;
-     height: 280rem/$x;
+     height: 140rem/$x;
    }
 </style>
 
