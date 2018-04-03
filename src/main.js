@@ -68,7 +68,7 @@ new Vue({
   mounted:function(){
       console.log("nihao");
      let userobj = this.getQueryStringArgs();
-     // userobj.id = '5abf4a90141cf9380f81ced8';
+     // userobj.id = '5ac195bae7b60f475ac6d66d';
 
 
      if(userobj.id){
