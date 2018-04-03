@@ -60,6 +60,7 @@
 				color: #333333;
 				letter-spacing: 0.12px;
 				padding-top: 3px;
+				text-align: center;
 			}
 			i{
 				width:100%;
