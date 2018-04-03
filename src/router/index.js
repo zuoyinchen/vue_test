@@ -46,7 +46,7 @@ export default new Router({
       component:paihang
     },
     {
-      path:'/answerDetail',
+      path:'/answerDetail/:eindex/:scrolltop',
       name:'answerDetail',
       component:answerDetail
     },

@@ -76,7 +76,7 @@ new Vue({
        localStorage.setItem('headimg',userobj.avatarUrl);//缓存用户头像
        localStorage.setItem('nickname',userobj.nickName);//缓存用户头像
      }
-    document.querySelector('body').addEventListener('touchmove',function (ev) {  
+    document.addEventListener('touchmove',function (ev) {  
         event.preventDefault();  
         
     })

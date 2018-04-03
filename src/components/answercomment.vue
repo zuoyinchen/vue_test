@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <scroller>
+    <scroller class="box_wrap">
       <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
@@ -111,7 +111,7 @@
       <div class="block"></div>
     </scroller>
       <div class="comment_box">
-        <input type="text" name="" class="comment_input" placeholder=" 请输入评论..." v-model="message" :focus="inputFocus()" ref="comment_input">
+        <input type="text" name="" class="comment_input" placeholder=" 请输入评论..." v-model="message" @focus="inputFocus()" @blur="inputBlur()" ref="comment_input">
         <button type="button" class="send_com" @click="gotoComment($event)" :data-message="message" >发布</button>
         
       </div>
@@ -122,6 +122,7 @@
 // import wx from 'weixin-js-sdk'
 import "mint-ui/lib/style.css";
 import { MessageBox, Toast, Indicator } from "mint-ui";
+var interval;
 export default {
   name: "answercomment",
   data() {
@@ -195,9 +196,13 @@ export default {
       MessageBox.alert("该场次已结束");
     },
     inputFocus: function() {
-      setTimeout(function() {
-        window.scrollTo(0, document.body.clientHeight);
-      }, 500);
+      interval = setInterval(function(){//设置一个计时器，时间设置与软键盘弹出所需时间相近
+        document.body.scrollTop = document.body.scrollHeight;//获取焦点后将浏览器内所有内容高度赋给浏览器滚动部分高度
+      },100);
+    },
+    inputBlur:function(){
+      clearInterval(interval);//清除计时器
+      document.body.scrollTop = document.body.scrollTop;//将软键盘唤起前的浏览器滚动部分高度重新赋给改变后的高度
     },
     giveStar: function(event) {
       const answerid = event.currentTarget.dataset.id;
@@ -551,31 +556,15 @@ export default {
       console.log("答题");
       this.isAnswer = true;
     }
-  },
-  created() {
-    //获取页面高度
-    var clientHeight = document.body.clientHeight;
-    
-    //设置监听聚焦事件
-    document.body.addEventListener(
-      "focus",
-      function(e) {
-        var focusElem = document.getElementById("input");
-      },
-      true
-    );
-    //设置监听窗口变化时间
-    window.addEventListener("resize", function() {
-      if (focusElem && document.body.clientHeight < clientHeight) {
-        //使用scrollIntoView方法来控制输入框
-        focusElem.scrollIntoView(false);
-      }
-    });
   }
 };
 </script>
 <style lang="scss" scoped>
 $x: 37.5;
+.box_wrap{
+  box-sizing:border-box;
+  padding-bottom: 60rem/$x;
+}
 .error_tip {
   margin-top: 20rem/$x;
 }
@@ -604,13 +593,14 @@ $x: 37.5;
   background: #fff;
   padding: 10rem/$x;
   box-sizing: border-box;
-  position: fixed;
+  position: absolute;
   left: 0;
   bottom: 0;
   background: #ffffff;
   box-shadow: 0 1px 5px 2px rgba(204, 204, 204, 0.25);
   display: flex;
   overflow-x:hidden;
+  z-index:99;
   .comment_input {
     flex: 1;
     font-family: STHeitiSC-Medium;
@@ -623,10 +613,6 @@ $x: 37.5;
     outline: none;
     caret-color: #fbce01;
   }
-  //   .comment_input:focus{
-  //       position: absolute;
-  //       bottom: 200rem/$x;
-  //   }
   .send_com {
     width: 65rem/$x;
     height: 36rem/$x;
