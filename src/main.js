@@ -40,7 +40,15 @@ new Vue({
   components: { App },
   template: '<App/>',
   methods:{
-      getQueryStringArgs:function(){
+      
+  },
+  mounted:function(){
+    console.log(localStorage.getItem('jwt'));
+    axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
+  },
+  beforeCreate:function(){
+      console.log("nihao");
+      function getQueryStringArgs(){
         var qs = (location.search.length > 0 ? location.search.substring(1) : ""),
             args = {},
             items = qs.length ? qs.split("&") : [],
@@ -64,19 +72,14 @@ new Vue({
 
         return args;
     }
-  },
-  beforeCreate:function(){
-      console.log("nihao");
-     let userobj = this.getQueryStringArgs();
+     let userobj = getQueryStringArgs();
      // userobj.id = '5ac195bae7b60f475ac6d66d';
-
-
      if(userobj.id){
        localStorage.setItem("userid",userobj.id);//缓存用户id
        localStorage.setItem('headimg',userobj.avatarUrl);//缓存用户头像
        localStorage.setItem('nickname',userobj.nickName);//缓存用户头像
-       // localStorage.setItem('jwt',userobj.jwt);//缓存用户头像
-       axios.defaults.headers.common['Authorization'] = 'Bearer '+userobj.jwt;
+       localStorage.setItem('jwt',userobj.jwt);//缓存用户头像
+       
      }
     document.addEventListener('touchmove',function (ev) {  
         event.preventDefault();  
