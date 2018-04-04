@@ -322,7 +322,7 @@ export default {
 
       localStorage.setItem("userQuestion", JSON.stringify(userQuestion));
 
-      this.$router.push("/answerQuestions");
+      this.$router.push("/answerQuestions/1");
     },
     // gotoShare:function(){
     //  wx.onMenuShareAppMessage({

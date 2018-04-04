@@ -71,9 +71,30 @@
                if (res.status === 200 || res.status === 201) {
                     Indicator.close();
                     localStorage.setItem("isAnswer",true);
-                    this.$router.back(-1);
+                    console.log(this.$route.params.frompage);
+                    if(this.$route.params.frompage == 1){
+                        this.$router.go(-1);
+                    }else{
+                        this.$router.go(-2);
+                    }
+                    
                 }
                 console.log(newMsg)
+            }).catch((error)=>{
+                if(error.response.data.code == 505){
+                    console.log("敏感");
+                    let instance = Toast('提交含有敏感词， 请检查提交文本');
+                    setTimeout(() => {
+                      instance.close();
+                    }, 1000);
+                    
+                }else{
+                    console.log("不敏感");
+                    let instance = Toast('网络错误，请刷新');
+                    setTimeout(() => {
+                      instance.close();
+                    }, 1000);
+                }
             });
         }
     },

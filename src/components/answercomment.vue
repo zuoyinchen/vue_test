@@ -303,7 +303,7 @@ export default {
       console.log(JSON.stringify(userQuestion));
 
       localStorage.setItem("userQuestion", JSON.stringify(userQuestion));
-      this.$router.push("/answerQuestions");
+      this.$router.push("/answerQuestions/2");
     },
     deleteAnswer: function() {
       const answerid = event.currentTarget.dataset.id;
@@ -315,7 +315,7 @@ export default {
             .then(res => {
               Indicator.close();
               localStorage.setItem("isAnswer", false);
-              this.$router.replace("/answerDetail");
+              this.$router.back(-1);
             })
             .catch((error, errorcode) => {
               let instance = Toast("网络错误，删除不成功");
@@ -422,6 +422,7 @@ export default {
     },
     //评论答案
     gotoComment: function(event) {
+      Indicator.open();
       if (!localStorage.getItem("userid")) {
         MessageBox.alert("您还未关注筋灵十三猜公众号，请先关注公众号").then(
           action => {}
@@ -443,7 +444,7 @@ export default {
         createdBy: localStorage.getItem("userid")
       };
       console.log(data);
-      Indicator.open();
+      
       this.$axios
         .post("/comment", data)
         .then(res => {
@@ -451,9 +452,22 @@ export default {
           this.upDatedata("发布成功");
           Indicator.close();
         })
-        .catch(error => {
+        .catch((error) => {
           Indicator.close();
-          console.log(error);
+          if(error.response.data.code == 505){
+            console.log("敏感");
+            let instance = Toast('提交含有敏感词， 请检查提交文本');
+            setTimeout(() => {
+              instance.close();
+            }, 1000);
+            
+          }else{
+            console.log("不敏感");
+            let instance = Toast('网络错误，请刷新');
+            setTimeout(() => {
+              instance.close();
+            }, 1000);
+          }
         });
     }
   },
@@ -578,15 +592,18 @@ $x: 37.5;
 .theme_b_sub > p {
   text-align: center;
   margin: 15px auto;
-  width: 345rem/$x;
-  padding: 10rem/$x 0;
+  width: 9.2rem;
+  height: 1.17333rem;
   background: #fdd545;
   border-radius: 4px;
+  font-size: 0.37333rem;
+  font-weight: 500;
+  line-height: 1.17333rem;
 }
 .theme_b_sub .has_answered {
   height: 100%;
   border-radius: 4px;
-  background: #666666;
+  background: #DDDDDD;
   color: #fff;
 }
 .comment_box {
