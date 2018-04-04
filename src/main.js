@@ -65,7 +65,7 @@ new Vue({
         return args;
     }
   },
-  mounted:function(){
+  beforeCreate:function(){
       console.log("nihao");
      let userobj = this.getQueryStringArgs();
      // userobj.id = '5ac195bae7b60f475ac6d66d';
@@ -75,6 +75,8 @@ new Vue({
        localStorage.setItem("userid",userobj.id);//缓存用户id
        localStorage.setItem('headimg',userobj.avatarUrl);//缓存用户头像
        localStorage.setItem('nickname',userobj.nickName);//缓存用户头像
+       // localStorage.setItem('jwt',userobj.jwt);//缓存用户头像
+       axios.defaults.headers.common['Authorization'] = 'Bearer '+userobj.jwt;
      }
     document.addEventListener('touchmove',function (ev) {  
         event.preventDefault();  
