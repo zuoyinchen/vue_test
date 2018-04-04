@@ -67,7 +67,7 @@ export default new Router({
     //   component:answerComment
     // },
     {
-      path:'/answerQuestions',
+      path:'/answerQuestions/:frompage',
       name:'answerQuestions',
       component:answerQuestions
     },
