@@ -87,7 +87,7 @@ export default {
       const data = {
         limit: this.page * this.size,
         sort: JSON.stringify({
-          time: 1
+          time: 0
         })
       };
       this.$axios
@@ -126,7 +126,7 @@ export default {
         const data = {
           limit: this.page * this.size,
           sort: JSON.stringify({
-            time: 1
+            time: 0
           })
         };
         this.$axios
