@@ -4,7 +4,8 @@
 			<router-link tag="li" to="/">
 				<i class="iconfont icon-pan_icon defaultColor" v-if="router"></i>
                 <i class="iconfont icon-pan_icon " v-else></i>
-				<span>首页</span>
+				<span class="defaultColor" v-if="router">首页</span>
+				<span  v-else>首页</span>
 			</router-link>
 			<router-link tag="li" to="/paihang">
 				<i class="iconfont icon-jiangbei"></i>
@@ -68,7 +69,9 @@
 				font-size:24px;
 				text-align: center;
 			}
-			
+			.defaultColor{
+				color: #FDD545;
+			}
 		}
 		li.router-link-exact-active{
 			color:red;
