@@ -34,7 +34,7 @@
                 const newmsg = {
                     message : feedmsg,
                 }
-                this.$axios.post('/feedback',newMsg).then(res=>{
+                this.$axios.post('/feedback',newmsg).then(res=>{
                     if (res.status === 200 || res.status === 201) {
                             Indicator.close();
                             let instance = Toast("提交成功");
