@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <h1 class="feed_title">用户反馈</h1>
+        <!-- <h1 class="feed_title">用户反馈</h1> -->
         <div class="feedback_box">
             <textarea name="" class="int" id="ctn" placeholder="请输入......"  v-model="message" minlength="6" maxlength="250"></textarea>
             <button type="button" class="int_sub" @click="submit($event)" :data-message="message">提交</button>
@@ -34,7 +34,7 @@
                 const newmsg = {
                     message : feedmsg,
                 }
-                this.$axios.post('/feedback',newMsg).then(res=>{
+                this.$axios.post('/feedback',newmsg).then(res=>{
                     if (res.status === 200 || res.status === 201) {
                             Indicator.close();
                             let instance = Toast("提交成功");
@@ -57,11 +57,6 @@
         margin: 0 auto;
         padding-top: 10rem/$unit;
         box-sizing: border-box;
-
-        .feed_title{
-            
-        }
-
         .feedback_box{
             width:100%;
             height:auto;
