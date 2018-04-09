@@ -43,13 +43,12 @@ export default new Router({
           path:'/answercomment/:answerid/:answerindex',
           name:'answercomment',
           component:answerComment
+        },{
+            path:'/singlepai',
+            name:'singlepai',
+            component: singlepai
         }
       ]
-    },
-    {
-      path:'/singlepai',
-      name:'singlepai',
-      component: singlepai
     },
     {
       path:'/paihang',
