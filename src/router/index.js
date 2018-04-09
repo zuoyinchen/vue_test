@@ -16,7 +16,7 @@ import answerQuestions from '@/components/answerQuestions'
 import Message from '@/components/message'
 import contactUs from '@/components/contactUs'
 import answerComment from '@/components/answercomment'
-
+import feedBack from '@/components/feedback'
 
 
 
@@ -56,16 +56,11 @@ export default new Router({
       name:'paihang',
       component:paihang
     },
-    // {
-    //   path:'/answerDetail/:eindex/:scrolltop',
-    //   name:'answerDetail',
-    //   component:answerDetail
-    // },
-    // {
-    //   path:'/answercomment/:answerid/:answerindex',
-    //   name:'answercomment',
-    //   component:answerComment
-    // },
+    {
+      path:'/feedback',
+      name:'feedback',
+      component:feedBack
+    },
     {
       path:'/answerQuestions/:frompage',
       name:'answerQuestions',

@@ -37,7 +37,7 @@
                           <i class="line_l"></i>
                           <i class="line_r"></i>
                           <i class="iconfont icon-pinglun"></i>
-                          <span>{{item.toAnswer.length}}</span>
+                          <span>{{item.messageNum?item.messageNum:0}}</span>
                           <i class="s"></i>
                       </li>   
                       <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
@@ -202,6 +202,34 @@ export default {
     if(from.path == '/paihang'){
       window.location.reload();
     }
+  },
+  beforeRouteUpdate(to,from,next){
+      console.log(this.msg);
+      console.log(to);
+      console.log(from);
+      console.log(from.name);
+    if(from.path != '/paihang'){
+          if( localStorage.getItem("query") && localStorage.getItem("query")!="undefined"){
+            const query = localStorage.getItem("query"); //问题参数集合
+            const queryobj = JSON.parse(query);
+            $.each(this.msg,function(i,v){
+                if(v.id==queryobj.topicid){
+                    v.readNum = queryobj.readnum;
+                }
+            });
+        }
+        if(localStorage.getItem("userQuestion") && localStorage.getItem("userQuestion")!="undefined"){
+                const aquery = localStorage.getItem("userQuestion"); //问题参数集合
+                const aqueryobj = JSON.parse(aquery);
+                 $.each(this.msg,function(i,v){
+                    if(v.id==queryobj.topicid){
+                        v.messageNum = queryobj.answernum;
+                    }
+                });
+        }
+        console.log(this.msg);
+    }
+     next();
   }
 };
 </script>
