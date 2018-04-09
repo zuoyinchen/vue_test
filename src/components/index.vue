@@ -202,8 +202,9 @@ export default {
     if(from.path == '/paihang'){
       window.location.reload();
     }
-  }
-//   beforeRouteUpdate(to,from,next){
+  },
+  beforeRouteUpdate(to,from,next){
+        next();
 //       console.log(this.msg);
 //       console.log(to);
 //       console.log(from);
@@ -230,7 +231,7 @@ export default {
 //         console.log(this.msg);
 //     }
 //      next();
-//   }
+  }
 };
 </script>
 
