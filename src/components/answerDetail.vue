@@ -4,7 +4,7 @@
       <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                <countdown :time="time" class="countdown">
+                <countdown :time="time" class="countdown" :key="time">
                     <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
                     </template>
                 </countdown>
@@ -443,11 +443,11 @@ export default {
     const query = localStorage.getItem("query"); //参数集合
     const queryobj = JSON.parse(query);
     this.title = queryobj.title;
-    this.time = Number(queryobj.time);
     this.status = queryobj.status;
 
     this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
       this.stars = res.data.stars;
+      this.time =res.data.second;
       this.stars.forEach(item => {
         if (localStorage.getItem("userid") === item.id) {
           this.isMark = true;

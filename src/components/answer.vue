@@ -230,7 +230,7 @@ export default {
       await this.$axios.put(`/topic/${topicid}`, clickNum);
       query.readnum = readnum;
       localStorage.setItem("query", JSON.stringify(query));
-      this.$router.push("/answerDetail");
+      this.$router.push("/answerDetail/1/0");
     }
   },
   mounted: function() {
