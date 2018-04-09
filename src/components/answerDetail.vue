@@ -426,6 +426,8 @@ export default {
             this.mycomment = comments;
             this.isAnswer = isAnswer;
             localStorage.setItem("isAnswer", isAnswer);
+            queryobj.answernum = this.answernum;
+            localStorage.setItem("query",JSON.stringify(queryobj));
           } else {
             this.users = res.data;
             console.log(this.users);
@@ -502,6 +504,8 @@ export default {
           this.myanswerid = myanswerid;
           console.log("哈哈");
           console.log(this.myanswerid);
+          queryobj.answernum = this.answernum;
+          localStorage.setItem("query",JSON.stringify(queryobj));
         }
       })
       .catch(error => {
