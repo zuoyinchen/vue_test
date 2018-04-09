@@ -24,7 +24,7 @@
                const feedmsg = event.currentTarget.dataset.message;
                //提交答案不能为空
                 if(!feedmsg){
-                    let instance = Toast("提交答案不能为空");
+                    let instance = Toast("提交内容不能为空");
                     setTimeout(() => {
                       instance.close();
                     }, 1000);
@@ -41,6 +41,7 @@
                             setTimeout(() => {
                             instance.close();
                             }, 1000);
+                            this.message = '';
                     }
                 }).catch((error)=>{
                     console.log(error);
