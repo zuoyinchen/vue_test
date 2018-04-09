@@ -10,7 +10,7 @@
           	<span class="answer_con">{{title}}</span>
           </p>
       	</div>
-      	<scroller>
+      	<scroller style="    z-index: 4; background: #fff;">
               <ul   class="paihang_list">
                   <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
                     <div class="ctn_l clearfix">
@@ -130,7 +130,7 @@
     }
     .box{
       height:100%;
-      background:#fff;
+      background: #FFFEF7;
       position: relative;
       box-sizing:border-box;
       padding:0 15rem/$x;
@@ -256,6 +256,7 @@
         left:0;
         box-sizing: border-box;
         padding:0 15rem/$x;
+        z-index:5;
     }
     .my_list{
         width:100%;
