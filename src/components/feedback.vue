@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <h1 class="feed_title">用户反馈</h1>
+        <!-- <h1 class="feed_title">用户反馈</h1> -->
         <div class="feedback_box">
             <textarea name="" class="int" id="ctn" placeholder="请输入......"  v-model="message" minlength="6" maxlength="250"></textarea>
             <button type="button" class="int_sub" @click="submit($event)" :data-message="message">提交</button>
@@ -57,11 +57,6 @@
         margin: 0 auto;
         padding-top: 10rem/$unit;
         box-sizing: border-box;
-
-        .feed_title{
-            
-        }
-
         .feedback_box{
             width:100%;
             height:auto;
