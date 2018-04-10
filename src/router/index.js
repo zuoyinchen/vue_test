@@ -16,7 +16,7 @@ import answerQuestions from '@/components/answerQuestions'
 import Message from '@/components/message'
 import contactUs from '@/components/contactUs'
 import answerComment from '@/components/answercomment'
-
+import feedBack from '@/components/feedback'
 
 
 Vue.use(Router)
@@ -42,31 +42,25 @@ export default new Router({
           path:'/answercomment/:answerid/:answerindex',
           name:'answercomment',
           component:answerComment
+        },{
+            path:'/singlepai',
+            name:'singlepai',
+            component: singlepai
         }
       ]
-    },
-    {
-      path:'/singlepai',
-      name:'singlepai',
-      component: singlepai
     },
     {
       path:'/paihang',
       name:'paihang',
       component:paihang
     },
-    // {
-    //   path:'/answerDetail/:eindex/:scrolltop',
-    //   name:'answerDetail',
-    //   component:answerDetail
-    // },
-    // {
-    //   path:'/answercomment/:answerid/:answerindex',
-    //   name:'answercomment',
-    //   component:answerComment
-    // },
     {
-      path:'/answerQuestions',
+      path:'/feedback',
+      name:'feedback',
+      component:feedBack
+    },
+    {
+      path:'/answerQuestions/:frompage',
       name:'answerQuestions',
       component:answerQuestions
     },
