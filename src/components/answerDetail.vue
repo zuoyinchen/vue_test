@@ -88,7 +88,7 @@
                 </div>
                 <div class="component_box" v-show="item.comments.length >0">
                     <p class="component_list" v-for="(comitem,cindex) in item.comments" :key="cindex" v-show="cindex<3">
-                        <span>{{comitem.username}}</span>   
+                        <span>{{comitem.username}}：</span>   
                         <span class="user_component">{{comitem.body}} </span>
                     </p>
                     <p class="all_list">共有{{item.comments.length}}条回复></p>
