@@ -46,7 +46,7 @@ new Vue({
   mounted:function(){
     axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
     //微信js-sdk
-        this.$axios.get('/wechat_share', { params: {url:'https://www.13cai.com.cn/api/v1/get_wxlogin'}}).then(res => {
+        this.$axios.get('/wechat_share', { params: {url: window.location.href}}).then(res => {
             console.log(res);
             const appid = res.data.appId;
             const nonceStr = res.data.nonceStr;
@@ -68,7 +68,7 @@ new Vue({
                 wx.onMenuShareAppMessage({
                     title: '这是个问题吗', // 分享标题
                     desc: '回答问题', // 分享描述
-                    link: 'https://www.13cai.com.cn/api/v1/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    link: `${window.location.href}?redirect=true`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: '../assets/images/logo.png', // 分享图标
                     type: '', // 分享类型,music、video或link，不填默认为link
                     dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
