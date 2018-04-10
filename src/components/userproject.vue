@@ -131,7 +131,7 @@
 	          }
 
 	          localStorage.setItem("query",JSON.stringify(query));
-	          this.$router.push('/answerDetail');
+	          this.$router.push('/answerDetail/1/0');
 	        },
 	        goSiglepai:function(event){
 	          const topicid = event.currentTarget.dataset.tid;//问题id

@@ -4,7 +4,7 @@
       <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
-                <countdown :time="time" class="countdown">
+                <countdown :time="time" class="countdown" :key="time">
                     <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
                     </template>
                 </countdown>
@@ -86,6 +86,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="component_box" v-show="item.comments.length >0">
+                    <p class="component_list" v-for="(comitem,cindex) in item.comments" :key="cindex" v-show="cindex<3">
+                        <span>{{comitem.username}}</span>   
+                        <span class="user_component">{{comitem.body}} </span>
+                    </p>
+                    <p class="all_list">共有{{item.comments.length}}条回复></p>
+                </div>
             </li>
         </ul>
         <div class="block"></div>
@@ -103,6 +110,7 @@
               <i class="iconfont icon-dianzan"></i>
               <span>{{myupvote}}</span>
             </p>
+            
         </div>
         <div class="mylist" v-show="!isAnswer & status == 1" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">
             <i class="iconfont icon-suoding"></i>
@@ -426,6 +434,8 @@ export default {
             this.mycomment = comments;
             this.isAnswer = isAnswer;
             localStorage.setItem("isAnswer", isAnswer);
+            queryobj.answernum = this.answernum;
+            localStorage.setItem("query",JSON.stringify(queryobj));
           } else {
             this.users = res.data;
             console.log(this.users);
@@ -441,11 +451,11 @@ export default {
     const query = localStorage.getItem("query"); //参数集合
     const queryobj = JSON.parse(query);
     this.title = queryobj.title;
-    this.time = Number(queryobj.time);
     this.status = queryobj.status;
 
     this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
       this.stars = res.data.stars;
+      this.time =res.data.second;
       this.stars.forEach(item => {
         if (localStorage.getItem("userid") === item.id) {
           this.isMark = true;
@@ -502,6 +512,8 @@ export default {
           this.myanswerid = myanswerid;
           console.log("哈哈");
           console.log(this.myanswerid);
+          queryobj.answernum = this.answernum;
+          localStorage.setItem("query",JSON.stringify(queryobj));
         }
       })
       .catch(error => {
@@ -565,7 +577,31 @@ export default {
 </script>
 <style lang="scss" scoped>
 $x: 37.5;
-
+.component_box{
+    width:100%;
+    background:white;
+    float: left;
+    background:#fafafa;
+    padding-top: 10rem/$x;
+     padding-bottom: 15rem/$x;
+    .component_list{
+        width:100%;
+        display: block;
+        float: left;
+        padding:0 15rem/$x;
+        margin-bottom: 6rem/$x;
+        box-sizing: border-box;
+        text-align: left;
+        line-height: 14rem/$x;
+        .user_component{
+            color:#666;
+        }
+    }
+    .all_list{
+        float: left;
+        padding:0 15rem/$x;
+    }
+}
 .detail_box{
   z-index: 3;
   background:#FFFEF7;

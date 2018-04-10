@@ -10,37 +10,45 @@
           	<span class="answer_con">{{title}}</span>
           </p>
       	</div>
-      	<ul class="paihang_list">
-          <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
-              <div class="ctn_l clearfix">
-                  <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
-                  <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
-                  <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
-                  <span class="indexname" v-else>{{index+1}}</span>
-                  <img :src="item.createdBy.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">
-                  <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
-                  <span class="nickname" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">{{item.createdBy.nickName}}</span>
-                  <span class="nickname" v-else>匿名用户</span>
-              </div>
-              <div class="ctn_r">
-                  <i class="iconfont icon-dianzan1"></i>
-                  <span>{{item.upVoteLen}}</span>
-              </div>
-          </li>
-          <div class="my_list clearfix">
-              <div class="my_list_l">
-                    <i>{{myGrade}}</i>
-                    <img :src="myavtalUrl" alt="a" v-if="Boolean(myavtalUrl)" >
-                    <img src="../assets/images/logo.png" alt="" v-else>
-                    <span>我的排名</span>
-              </div>
-              <div class="my_list_r">
-                  <i class="iconfont icon-dianzan1"></i>
-                  <span>{{myStar}}</span>
-              </div>
-          </div>
-          <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
-      </ul>
+      	<scroller style="    z-index: 4; background: #fff;">
+              <ul   class="paihang_list">
+                  <li class="ctn clearfix" v-for="(item,index) in pailist" :key="index">
+                    <div class="ctn_l clearfix">
+                        <img class="paiimg" src="../assets/images/gold-medal-1@3x.png" alt="" v-if="index == '0'">
+                        <img class="paiimg" src="../assets/images/silver-medal-1@3x.png" alt="" v-else-if="index == '1'">
+                        <img class="paiimg" src="../assets/images/bronze-medal-1@3x.png" alt="" v-else-if="index == '2'">
+                        <span class="indexname" v-else>{{index+1}}</span>
+                        <img :src="item.createdBy.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">
+                        <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
+                        <span class="nickname" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">{{item.createdBy.nickName}}</span>
+                        <span class="nickname" v-else>匿名用户</span>
+                        <div class="ctn_r">
+                            <i class="iconfont icon-dianzan1"></i>
+                            <span>{{item.upVoteLen}}</span>
+                        </div>
+                    </div>
+                    
+                </li>
+                <div class="block"></div>
+              </ul>
+          
+      </scroller>
+      <div class="mylist_box">
+             <div class="my_list clearfix">
+                <div class="my_list_l">
+                        <i>{{myGrade}}</i>
+                        <img :src="myavtalUrl" alt="a" v-if="Boolean(myavtalUrl)" >
+                        <img src="../assets/images/logo.png" alt="" v-else>
+                        <span>我的排名</span>
+                </div>
+                <div class="my_list_r">
+                    <i class="iconfont icon-dianzan1"></i>
+                    <span>{{myStar}}</span>
+                </div>
+            </div>
+            <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
+      </div>
+       
 	</div>
 </template>
 <script type="text/javascript">
@@ -99,6 +107,10 @@
 </script>
 <style lang="scss" scoped>
 	$x:37.5;
+     .block{
+     width: 345rem/$x;
+     height: 80rem/$x;
+   }
     .clearfix:after {
       content: "";
       display: block;
@@ -118,7 +130,7 @@
     }
     .box{
       height:100%;
-      background:#fff;
+      background: #FFFEF7;
       position: relative;
       box-sizing:border-box;
       padding:0 15rem/$x;
@@ -187,7 +199,9 @@
         width: 345rem/$x;margin: 0 auto;margin-top: 15rem/$x;
     }
     .ctn_l{
-        width: 200rem/$x;float: left;
+        width: 100%;
+        float: left;
+        display: flex;
     }
     .ctn_l .paiimg{
         width: 20rem/$x;
@@ -209,6 +223,11 @@
         color: #333333;
         letter-spacing: 0.17px;
         float: left;
+        text-align: left;
+        flex:1;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         padding: 17rem/$x 0;
     }
     .ctn_l .indexname{
@@ -223,21 +242,29 @@
       letter-spacing: 0.22px;
     }
     .ctn_r{
-        float: right;width: 145rem/$x;padding: 15rem/$x 0;text-indent: 50rem/$x;
+        float: right;
+        padding: 15rem/$x 0;
+        text-indent: 50rem/$x;
     }
     .ctn_r>i{color: #FDD545;}
-    
-    .my_list{
+    .mylist_box{
         width: 100%;
         height: 80rem/$x;
+        margin-top: 15rem/$x;
+        position: absolute;
+        bottom:15rem/$x;
+        left:0;
+        box-sizing: border-box;
+        padding:0 15rem/$x;
+        z-index:5;
+    }
+    .my_list{
+        width:100%;
+        height:100%;
         background: #FDD545;
         box-shadow: 0 2px 6px 0 #DDDDDD;
         border-radius: 10px;
         margin: 0 auto;
-        margin-top: 15rem/$x;
-        position: absolute;
-        bottom:59rem/$x;
-        left:0;
     }
     .my_list_l{
         width: 200rem/$x;float: left;text-align: left;

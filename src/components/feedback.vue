@@ -2,7 +2,7 @@
     <div class="box">
         <!-- <h1 class="feed_title">用户反馈</h1> -->
         <div class="feedback_box">
-            <textarea name="" class="int" id="ctn" placeholder="请输入......"  v-model="message" minlength="6" maxlength="250"></textarea>
+            <textarea name="" class="int" id="ctn" placeholder="请输入......"  v-model="message" minlength="6" maxlength="500" @keyup="change($event)"></textarea>
             <button type="button" class="int_sub" @click="submit($event)" :data-message="message">提交</button>
       </div>
     </div>
@@ -46,6 +46,14 @@
                 }).catch((error)=>{
                     console.log(error);
                 });
+            },
+            change:function(event){
+                localStorage.setItem("message",this.message);
+            }
+        },
+        mounted:function(){
+            if( localStorage.getItem("message")){
+                this.message = localStorage.getItem("message");
             }
         }
     }
