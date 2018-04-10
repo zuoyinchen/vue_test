@@ -441,7 +441,8 @@ export default {
       const data = {
         body: this.message,
         answer: this.$route.params.answerid,
-        createdBy: localStorage.getItem("userid")
+        createdBy: localStorage.getItem("userid"),
+        username: localStorage.getItem("nickname")
       };
       console.log(data);
       

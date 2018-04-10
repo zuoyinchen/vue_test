@@ -86,6 +86,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="component_box" v-show="item.comments.length >0">
+                    <p class="component_list" v-for="(comitem,cindex) in item.comments" :key="cindex" v-show="cindex<3">
+                        <span>{{comitem.username}}</span>   
+                        <span class="user_component">{{comitem.body}} </span>
+                    </p>
+                    <p class="all_list">共有{{item.comments.length}}条回复></p>
+                </div>
             </li>
         </ul>
         <div class="block"></div>
@@ -103,6 +110,7 @@
               <i class="iconfont icon-dianzan"></i>
               <span>{{myupvote}}</span>
             </p>
+            
         </div>
         <div class="mylist" v-show="!isAnswer & status == 1" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">
             <i class="iconfont icon-suoding"></i>
@@ -569,7 +577,31 @@ export default {
 </script>
 <style lang="scss" scoped>
 $x: 37.5;
-
+.component_box{
+    width:100%;
+    background:white;
+    float: left;
+    background:#fafafa;
+    padding-top: 10rem/$x;
+     padding-bottom: 15rem/$x;
+    .component_list{
+        width:100%;
+        display: block;
+        float: left;
+        padding:0 15rem/$x;
+        margin-bottom: 6rem/$x;
+        box-sizing: border-box;
+        text-align: left;
+        line-height: 14rem/$x;
+        .user_component{
+            color:#666;
+        }
+    }
+    .all_list{
+        float: left;
+        padding:0 15rem/$x;
+    }
+}
 .detail_box{
   z-index: 3;
   background:#FFFEF7;
