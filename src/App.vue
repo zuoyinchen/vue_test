@@ -8,6 +8,7 @@
 
 <script>
 import tabnav from '@/components/tabnav'
+
 export default {
   name: 'App',
   data(){

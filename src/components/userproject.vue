@@ -46,6 +46,7 @@
 <script type="text/javascript">
 	import 'mint-ui/lib/style.css'
     import { MessageBox,Toast,Indicator} from 'mint-ui';
+    import sharewechat from "../router/sharewechat";
 	const $userid = localStorage.getItem("userid");//userid
 	export default{
 		name: 'userproject',
@@ -145,7 +146,8 @@
 	        }
 		},
 		mounted:function(){
-			this.getInitialData();
+            this.getInitialData();
+            sharewechat(window.location.href);
 		},
 		beforeCreate:function(){
 			Indicator.open();

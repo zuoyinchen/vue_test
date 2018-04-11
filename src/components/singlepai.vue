@@ -54,6 +54,7 @@
 <script type="text/javascript">
   import "mint-ui/lib/style.css";
   import { MessageBox, Toast, Indicator } from "mint-ui";
+  import sharewechat from "../router/sharewechat";
   const $userid = localStorage.getItem("userid");//userid
 	export default {
 		name : 'singlepai',
@@ -69,14 +70,14 @@
 			}
 		},
 		mounted:function(){
-        const squery = localStorage.getItem("squery");//参数集合
-        const queryobj = JSON.parse(squery);
-        this.title = queryobj.title;
-        this.topicid = queryobj.topicid;
+            const squery = localStorage.getItem("squery");//参数集合
+            const queryobj = JSON.parse(squery);
+            this.title = queryobj.title;
+            this.topicid = queryobj.topicid;
 		    const data = {
 		    	topicid : this.topicid
 		    }
-        Indicator.open();
+            Indicator.open();
 		    this.$axios.get('/singleRank',{params:data}).then((res)=>{
             console.log(res.data);
             Indicator.close();
@@ -99,10 +100,16 @@
 		            this.myStar = 0;
 		        }
 		    }).catch(function(error){
-          Indicator.close();
+                Indicator.close();
 		        console.log(error);
-		    });
-		}
+            });
+            sharewechat(window.location.href);
+        },
+        beforeRouteLeave (to, from, next) {
+            next();
+            const url = window.location.host+to.path;
+            sharewechat(url);
+        }
 	}
 </script>
 <style lang="scss" scoped>

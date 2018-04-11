@@ -26,6 +26,7 @@
 <script>
  import 'mint-ui/lib/style.css'
  import { MessageBox,Toast,Indicator} from 'mint-ui';
+ import sharewechat from "../router/sharewechat";
  export default {
     name:'answerQuestions',
     data(){
@@ -108,6 +109,12 @@
         this.answernum = Number(userQuestionobj.answernum);
         this.topicid = userQuestionobj.topicid;
         console.log(this.title);
+        sharewechat(window.location.href,true);
+    },
+    beforeRouteLeave (to, from, next) {
+        next();
+        const url = window.location.host+to.path;
+        sharewechat(url);
     }
 }
 </script>

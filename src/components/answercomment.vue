@@ -122,6 +122,7 @@
 // import wx from 'weixin-js-sdk'
 import "mint-ui/lib/style.css";
 import { MessageBox, Toast, Indicator } from "mint-ui";
+import sharewechat from "../router/sharewechat";
 var interval;
 export default {
   name: "answercomment",
@@ -556,7 +557,8 @@ export default {
         this.comments = res.data;
         console.log(this.comments);
       }
-   }).catch(error => {});
+    }).catch(error => {});
+    sharewechat(window.location.href,true);
   },
   beforeCreate: function() {
     Indicator.open();

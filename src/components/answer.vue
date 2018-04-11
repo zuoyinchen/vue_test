@@ -37,6 +37,7 @@
 <script>
 import "mint-ui/lib/style.css";
 import { MessageBox, Toast, Indicator } from "mint-ui";
+import sharewechat from "../router/sharewechat";
 const $userid = localStorage.getItem("userid"); //userid
 export default {
   name: "test",
@@ -236,6 +237,7 @@ export default {
   mounted: function() {
     //获取收藏的问题
     this.getIndexData();
+    sharewechat(window.location.href);
   },
   beforeCreate: function() {
     Indicator.open();

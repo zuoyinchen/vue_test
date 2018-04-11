@@ -24,11 +24,13 @@
   </div>
 </template>
 <script>
+import sharewechat from "../router/sharewechat";
 export default {
   data(){
-      return{
-
-      }
+      return{}
+  },
+  mounted(){
+      sharewechat(window.location.href);
   }
 }
 </script>

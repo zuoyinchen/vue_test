@@ -130,10 +130,9 @@
 </template>
 
 <script>
-//引入微信js-sdk
-// import wx from 'weixin-js-sdk'
 import "mint-ui/lib/style.css";
 import { MessageBox, Toast, Indicator } from "mint-ui";
+import sharewechat from "../router/sharewechat";
 export default {
   name: "answerDetail",
   data() {
@@ -332,24 +331,6 @@ export default {
 
       this.$router.push("/answerQuestions/1");
     },
-    // gotoShare:function(){
-    //  wx.onMenuShareAppMessage({
-    //    title: '这是个问题吗', // 分享标题
-    //    desc: '回答问题', // 分享描述
-    //    link: 'https://www.13cai.com.cn/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-    //    imgUrl: '../assets/images/logo.png', // 分享图标
-    //    type: '', // 分享类型,music、video或link，不填默认为link
-    //    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-    //    success: function () {
-    //        // 用户确认分享后执行的回调函数
-    //        console.log("成功");
-    //    },
-    //    cancel: function () {
-    //      console.log("取消");
-    //    // 用户取消分享后执行的回调函数
-    //    }
-    //  });
-    // },
     deleteAnswer: function(event) {
       event.stopPropagation();
       const answerid = event.currentTarget.dataset.id;
@@ -515,48 +496,16 @@ export default {
           queryobj.answernum = this.answernum;
           localStorage.setItem("query",JSON.stringify(queryobj));
         }
-      })
-      .catch(error => {
+    }).catch(error => {
         Indicator.close();
         Toast({ message: "网络错误，请刷新" });
         console.log(error);
-      });
-
-    //微信js-sdk
-    // this.$axios.get('/wechat_share', { params: {url: window.location.href}}).then(res => {
-    //     console.log(res);
-    //     const appid = res.data.appId;
-    //     const nonceStr = res.data.nonceStr;
-    //     const signature = res.data.signature;
-    //     const timestamp = res.data.timestamp;
-
-    //     //配置微信js-sdk
-    //     wx.config({
-    //         debug: false, //
-    //         appId: appid, // 必填，公众号的唯一标识
-    //         timestamp: timestamp, // 必填，生成签名的时间戳
-    //         nonceStr: nonceStr, // 必填，生成签名的随机串
-    //         signature: signature, // 必填，签名
-    //         jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
-    //     });
-
-    //     wx.ready(function() {
-    //         console.log("成功");
-    //     });
-    //     wx.error(function(res) {
-    //         console.log("失败");
-    //     });
-
-    // }).catch((error) => {
-    //     console.log(error);
-    // })
+    });
+    sharewechat(window.location.href,true);
   },
   beforeCreate: async function() {
     Indicator.open();
     console.log("进来了");
-    console.log(localStorage.getItem("userid"));
-    console.log(localStorage.getItem("userid"));
-    console.log(localStorage.getItem("isAnswer") === "undefined");
     if (localStorage.getItem("isAnswer")) {
       if (
         localStorage.getItem("isAnswer") === "false" ||
@@ -572,6 +521,11 @@ export default {
   },
   destroyed:function(){
     Indicator.close();
+  },
+  beforeRouteLeave (to, from, next) {
+    next();
+    const url = window.location.host+to.path;
+    sharewechat(url);
   }
 };
 </script>

@@ -192,8 +192,9 @@ export default {
   },
   mounted() {
         this.getIndexData();
-         console.log("indexurl",window.location.href);
-         sharewechat(window.location.href);
+         
+         const url = window.location.host+'/index';
+         sharewechat(url);
         //  this.commonShare(window.location.href);
         //清除缓存
         if (localStorage.getItem("answernum")) {
@@ -201,8 +202,8 @@ export default {
         }
   },
   beforeRouteEnter(to,from,next){
-      console.log(window.location.href);
-        next();
+      console.log(to);
+      next();
   },
   beforeRouteUpdate(to,from,next){
         next();

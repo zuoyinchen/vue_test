@@ -1,7 +1,12 @@
 import axios from 'axios';
 import wx from 'weixin-js-sdk'
-const sharewechat = (url)=>{
-    console.log("sharewechat")
+const sharewechat = (url,text)=>{
+    let sharedesc;
+    if(text){
+        sharedesc = '我在“筋灵十三猜”发现了一个很有内涵的问题,你确定不来看看吗？';
+    }else{
+        sharedesc = '筋灵十三猜，一款靠谱的说人话、找答案、有内涵的趣味百科轻应用。在这里，你可以分享自己的观点、经验，并发现其他有趣的灵魂。还等什么？赶紧来玩吧!';
+    }
     //微信js-sdk
     axios.get('/wechat_share', { params: {url: url}}).then(res => {
         console.log(res);
@@ -12,7 +17,7 @@ const sharewechat = (url)=>{
 
         //配置微信js-sdk
         wx.config({
-            debug: true, //
+            debug: false, //
             appId: appid, // 必填，公众号的唯一标识
             timestamp: timestamp, // 必填，生成签名的时间戳
             nonceStr: nonceStr, // 必填，生成签名的随机串
@@ -24,9 +29,9 @@ const sharewechat = (url)=>{
             console.log("成功");
             wx.onMenuShareAppMessage({
                 title: '筋灵十三猜', // 分享标题
-                desc: '筋灵十三猜是一款竞猜的轻应用，问题和回答都很有趣，还在等什么，赶紧来加入吧', // 分享描述
+                desc: sharedesc, // 分享描述
                 link: `${url}?shareUrl=`+url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: 'http://pic2.16pic.com/00/12/07/16pic_1207885_b.jpg', // 分享图标
+                imgUrl: 'http://cdn.zg18.com/13cai_logo.png', // 分享图标
                 type: '', // 分享类型,music、video或link，不填默认为link
                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                 success: function () {
