@@ -193,9 +193,8 @@ export default {
   mounted() {
         this.getIndexData();
          
-         const url = window.location.host+'/index';
+         const url = window.location.href.split("?"[0]);
          sharewechat(url);
-        //  this.commonShare(window.location.href);
         //清除缓存
         if (localStorage.getItem("answernum")) {
                 localStorage.removeItem("answernum");

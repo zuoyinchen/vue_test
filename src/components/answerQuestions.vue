@@ -109,11 +109,11 @@
         this.answernum = Number(userQuestionobj.answernum);
         this.topicid = userQuestionobj.topicid;
         console.log(this.title);
-        sharewechat(window.location.href,true);
+        sharewechat(window.location.href.split("?"[0]),true);
     },
     beforeRouteLeave (to, from, next) {
         next();
-        const url = window.location.host+to.path;
+        const url = 'https://'+window.location.host+to.path;
         sharewechat(url);
     }
 }

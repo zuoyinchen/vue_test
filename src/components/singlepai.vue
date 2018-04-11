@@ -103,11 +103,11 @@
                 Indicator.close();
 		        console.log(error);
             });
-            sharewechat(window.location.href);
+            sharewechat(window.location.href.split("?"[0]));
         },
         beforeRouteLeave (to, from, next) {
             next();
-            const url = window.location.host+to.path;
+            const url = 'https://'+window.location.host+to.path;
             sharewechat(url);
         }
 	}

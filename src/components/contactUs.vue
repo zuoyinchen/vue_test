@@ -30,7 +30,7 @@ export default {
       return{}
   },
   mounted(){
-      sharewechat(window.location.href);
+      sharewechat(window.location.href.split("?"[0]));
   }
 }
 </script>

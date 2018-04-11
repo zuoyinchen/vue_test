@@ -38,7 +38,7 @@
 		},
 		mounted:function(){
                  console.log("userurl",window.location.href);
-                 sharewechat(window.location.href);
+                 sharewechat(window.location.href.split("?"[0]));
                 //  this.commonShare(window.location.href);
                 this.avtalUrl = localStorage.getItem("headimg");
                 this.nickname = localStorage.getItem("nickname")? localStorage.getItem("nickname") : '11';

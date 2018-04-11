@@ -144,7 +144,7 @@ export default {
   },  
   mounted:function(){
     this.getWorld();
-    sharewechat(window.location.href);
+    sharewechat(window.location.href.split("?"[0]));
   },
   beforeCreate:function(){
     //获取世界榜
