@@ -10,30 +10,24 @@ import tabnav from './components/tabnav'//全局tabnav
 import VueResource from 'vue-resource'
 import VueCountdown from '@xkeshi/vue-countdown'
 import wx from 'weixin-js-sdk'
-// import MintUI from 'mint-ui'
-// import 'mint-ui/lib/style.css'
 import {MessageBox} from 'mint-ui';
 
 Vue.component(MessageBox.name, MessageBox);
-
 Vue.component('countdown', VueCountdown);
+
+Vue.component("tabnav",tabnav);//全局注册tabnav组件；
 
 //引入加载更多组件
 import VueScroller from 'vue-scroller'
 Vue.use(VueScroller);
 Vue.use(VueResource);
 
-//将全局变量挂载到vue实例上
-
+Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
-// axios.defaults.baseURL = 'http://192.168.1.116:1337/api/v1';
 router.beforeEach((to, from, next) => {
-    console.log("href",router);
-    console.log("to",to);
-    console.log("from",from);
     const { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
     const nextpath = to.path;
-    axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
+    
     console.log("query",to.query);
     console.log("params",to.params);
     console.log(shareUrl);
@@ -45,13 +39,14 @@ router.beforeEach((to, from, next) => {
         localStorage.setItem('headimg',avatarUrl);//缓存用户头像
         localStorage.setItem('nickname',nickName);//缓存用户头像
         localStorage.setItem('jwt',jwt);//缓存用户头像
+        axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
         next(to.path);
     } else {
+        console.log(localStorage.getItem("jwt"));
         next()
     }
 });
-Vue.prototype.$axios = axios;
-Vue.component("tabnav",tabnav);//全局注册tabnav组件；
+
 /* eslint-disable no-new */
 Vue.config.productionTip = false
 new Vue({
