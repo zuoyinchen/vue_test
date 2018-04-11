@@ -27,7 +27,7 @@
 	</div>
 </template>
 <script type="text/javascript">
-	
+	import sharewechat from "../router/sharewechat";
 	export default{
 		name:'user',
 		data:function(){
@@ -37,6 +37,9 @@
 			}
 		},
 		mounted:function(){
+                 console.log("userurl",window.location.href);
+                 sharewechat(window.location.href);
+                //  this.commonShare(window.location.href);
                 this.avtalUrl = localStorage.getItem("headimg");
                 this.nickname = localStorage.getItem("nickname")? localStorage.getItem("nickname") : '11';
 		}

@@ -51,6 +51,7 @@
 </template>
 <script>
 import "mint-ui/lib/style.css";
+import sharewechat from "../router/sharewechat";
 import { MessageBox, Toast, Indicator } from "mint-ui";
 export default {
   name:'paihang',
@@ -143,6 +144,7 @@ export default {
   },  
   mounted:function(){
     this.getWorld();
+    sharewechat(window.location.href);
   },
   beforeCreate:function(){
     //获取世界榜

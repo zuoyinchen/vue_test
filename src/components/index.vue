@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import sharewechat from "../router/sharewechat";
 export default {
   name: "index",
   data() {
@@ -191,12 +192,16 @@ export default {
   },
   mounted() {
         this.getIndexData();
+         console.log("indexurl",window.location.href);
+         sharewechat(window.location.href);
+        //  this.commonShare(window.location.href);
         //清除缓存
         if (localStorage.getItem("answernum")) {
                 localStorage.removeItem("answernum");
         }
   },
   beforeRouteEnter(to,from,next){
+      console.log(window.location.href);
         next();
   },
   beforeRouteUpdate(to,from,next){
