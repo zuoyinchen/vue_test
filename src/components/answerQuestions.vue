@@ -109,7 +109,7 @@
         this.answernum = Number(userQuestionobj.answernum);
         this.topicid = userQuestionobj.topicid;
         console.log(this.title);
-        sharewechat(window.location.href.split("?"[0]),true);
+        sharewechat(window.location.href.split("?")[0],true);
     },
     beforeRouteLeave (to, from, next) {
         next();

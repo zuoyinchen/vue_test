@@ -501,7 +501,7 @@ export default {
         Toast({ message: "网络错误，请刷新" });
         console.log(error);
     });
-    sharewechat(window.location.href.split("?"[0]),true);
+    sharewechat(window.location.href.split("?")[0],true);
   },
   beforeCreate: async function() {
     Indicator.open();

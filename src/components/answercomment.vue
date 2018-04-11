@@ -558,7 +558,7 @@ export default {
         console.log(this.comments);
       }
     }).catch(error => {});
-    sharewechat(window.location.href.split("?"[0]),true);
+    sharewechat(window.location.href.split("?")[0],true);
   },
   beforeCreate: function() {
     Indicator.open();
