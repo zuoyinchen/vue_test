@@ -190,22 +190,14 @@ export default {
     }
   },
   mounted() {
-    const userobj = this.getQueryStringArgs();
-    if(userobj.redirect){
-        this.$router.redirect("www.13cai.com.cn/api/v1/get_wxlogin");
-    }else{
-         this.getIndexData();
+        this.getIndexData();
         //清除缓存
         if (localStorage.getItem("answernum")) {
-             localStorage.removeItem("answernum");
+                localStorage.removeItem("answernum");
         }
-    }
   },
   beforeRouteEnter(to,from,next){
-    next();
-    if(from.path == '/paihang'){
-      this.$router.redirect("/index");
-    }
+        next();
   },
   beforeRouteUpdate(to,from,next){
         next();

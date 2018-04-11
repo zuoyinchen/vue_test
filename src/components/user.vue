@@ -37,13 +37,8 @@
 			}
 		},
 		mounted:function(){
-            let userobj = this.getQueryStringArgs();
-            if(userobj.redirect){
-                this.$router.redirect("www.13cai.com.cn/api/v1/get_wxlogin");
-            }else{
                 this.avtalUrl = localStorage.getItem("headimg");
                 this.nickname = localStorage.getItem("nickname")? localStorage.getItem("nickname") : '11';
-            }
 		}
 	}
 </script>

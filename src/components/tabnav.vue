@@ -1,7 +1,7 @@
 <template>
 	<div class="nav-wrap" v-if="barshow">
 		<ul class="tabnav">
-			<router-link tag="li" to="/">
+			<router-link tag="li" to="/index">
 				<i class="iconfont icon-pan_icon defaultColor" v-if="router"></i>
                 <i class="iconfont icon-pan_icon " v-else></i>
 				<span class="defaultColor" v-if="router">首页</span>
@@ -25,7 +25,7 @@
 		 data(){
 		    return {
 		      barshow:true,
-		      router:this.$router.history.current.path === "/"
+		      router:this.$router.history.current.path === "/index"
 		    }
   		}
 	}
