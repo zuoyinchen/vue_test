@@ -100,14 +100,15 @@
         }
     },
     mounted() {
-        const userQuestion = localStorage.getItem("userQuestion"); //参数集合
-        const userQuestionobj = JSON.parse(userQuestion);
-        this.title = userQuestionobj.title;
-        this.time = Number(userQuestionobj.time);
-        this.status = userQuestionobj.status;
-        this.readnum = Number(userQuestionobj.readnum);
-        this.answernum = Number(userQuestionobj.answernum);
-        this.topicid = userQuestionobj.topicid;
+        this.topicid = this.$route.params.topicid;
+        this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
+            this.title = res.data.title;
+            this.time = res.data.second;
+            this.status = res.data.status;
+            this.readnum = res.data.readNum;
+            this.answernum = res.data.messageNum;
+        });
+        
         console.log(this.title);
         sharewechat(window.location.href.split("#")[0],true);
     },

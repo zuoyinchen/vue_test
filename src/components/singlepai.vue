@@ -72,8 +72,11 @@
 		mounted:function(){
             const squery = localStorage.getItem("squery");//参数集合
             const queryobj = JSON.parse(squery);
-            this.title = queryobj.title;
-            this.topicid = queryobj.topicid;
+            
+            this.topicid = this.$route.params.topicid;
+            this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
+                this.title = res.data.title;
+            });
 		    const data = {
 		    	topicid : this.topicid
 		    }

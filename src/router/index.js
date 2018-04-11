@@ -35,15 +35,15 @@ export default new Router({
       },
       children:[
         {
-          path:'/answerDetail/:eindex/:scrolltop',
+          path:'/answerDetail/:eindex/:scrolltop/:topicid',
           name:'answerDetail',
           component:answerDetail
         },{
-          path:'/answercomment/:answerid/:answerindex',
+          path:'/answercomment/:answerid/:answerindex/:topicid',
           name:'answercomment',
           component:answerComment
         },{
-            path:'/singlepai',
+            path:'/singlepai/:topicid',
             name:'singlepai',
             component: singlepai
         }
@@ -63,7 +63,7 @@ export default new Router({
       component:feedBack
     },
     {
-      path:'/answerQuestions/:frompage',
+      path:'/answerQuestions/:frompage/:topicid',
       name:'answerQuestions',
       component:answerQuestions
     },

@@ -76,7 +76,7 @@
 	                }
 		        }).catch((error)=>{
 		        	Indicator.close();
-	                Toast({message:"网络错误，请刷新",duration:-1});
+	                Toast({message:"网络错误，请刷新"});
                 	console.log(error);
                 });
 			},
@@ -132,7 +132,7 @@
 	          }
 
 	          localStorage.setItem("query",JSON.stringify(query));
-	          this.$router.push('/answerDetail/1/0');
+	          this.$router.push('/answerDetail/1/0/'+topicid);
 	        },
 	        goSiglepai:function(event){
 	          const topicid = event.currentTarget.dataset.tid;//问题id
@@ -142,7 +142,7 @@
 	            title : title
 	          }
 	          localStorage.setItem("squery",JSON.stringify(squery));
-	          this.$router.replace('/singlepai');
+	          this.$router.replace('/singlepai/'+topicid);
 	        }
 		},
 		mounted:function(){

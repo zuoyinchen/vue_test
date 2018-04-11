@@ -163,7 +163,7 @@ export default {
       const { status, title } = this.$data;
       const query = localStorage.getItem("query"); //参数集合
       const queryobj = JSON.parse(query);
-      this.topicid = queryobj.topicid;
+      this.topicid = this.$route.params.topicid;
       const stars_ = [];
       if (this.stars && this.stars.length) {
         this.stars.forEach(item => {
@@ -304,7 +304,7 @@ export default {
       const answeindex = Number(event.currentTarget.dataset.index) +1;
       console.log(answeindex);
       localStorage.setItem("answerid", answerid);
-      this.$router.push("/answercomment/"+answerid+'/'+answeindex);
+      this.$router.push("/answercomment/"+answerid+'/'+answeindex+'/'+this.topicid);
     },
     timeReplace: function(str) {
       return str.replace("T", " ").slice(0, str.indexOf("."));
@@ -312,24 +312,7 @@ export default {
     gotoQuestion: function(event) {
       const topicid = event.currentTarget.dataset.tid; //问题id
       const readnum = event.currentTarget.dataset.rnum; //阅读数
-      console.log(this.users.length);
-      const answernum = this.users.length; //评论数
-      const status = event.currentTarget.dataset.status; //状态
-      // const time = event.currentTarget.dataset.time;//倒计时时间
-      const title = event.currentTarget.dataset.title; //问题标题
-      const userQuestion = {
-        topicid: topicid,
-        readnum: readnum,
-        answernum: answernum,
-        status: status,
-        time: this.time,
-        title: title
-      };
-      console.log(JSON.stringify(userQuestion));
-
-      localStorage.setItem("userQuestion", JSON.stringify(userQuestion));
-
-      this.$router.push("/answerQuestions/1");
+      this.$router.push("/answerQuestions/1/"+topicid);
     },
     deleteAnswer: function(event) {
       event.stopPropagation();
@@ -429,28 +412,22 @@ export default {
     }
   },
   mounted: function() {
-    const query = localStorage.getItem("query"); //参数集合
-    const queryobj = JSON.parse(query);
-    this.title = queryobj.title;
-    this.status = queryobj.status;
-
-    this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
+    this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
       this.stars = res.data.stars;
       this.time =res.data.second;
+      this.title = res.data.title;
+      this.status = res.data.status;
+      this.readnum = res.data.readNum;
       this.stars.forEach(item => {
         if (localStorage.getItem("userid") === item.id) {
           this.isMark = true;
         }
       });
     });
-
-    
     console.log(this.isAnswer);
-    this.readnum = Number(queryobj.readnum);
-    this.topicid = queryobj.topicid;
-
+    
+    this.topicid = this.$route.params.topicid;
     const topicid = this.topicid; //问题id
-
     const data = {
       search: JSON.stringify({
         topic: topicid
@@ -458,7 +435,6 @@ export default {
       userid: localStorage.getItem("userid")
     };
     console.log(data);
-
     this.$axios
       .get("/answer", { params: data })
       .then(res => {
@@ -498,7 +474,6 @@ export default {
         }
     }).catch(error => {
         Indicator.close();
-        Toast({ message: "网络错误，请刷新" });
         console.log(error);
     });
     sharewechat(window.location.href.split("#")[0],true);

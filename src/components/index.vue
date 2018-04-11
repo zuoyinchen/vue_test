@@ -177,7 +177,7 @@ export default {
       
       const scrolltop = this.$refs.myscroller.getPosition().top;
       console.log(scrolltop);
-      this.$router.push("/answerDetail/"+eindex+"/"+scrolltop);
+      this.$router.push("/answerDetail/"+eindex+"/"+scrolltop+"/"+topicid);
     },
     goSiglepai: function(event) {
       const topicid = event.currentTarget.dataset.tid; //问题id
@@ -187,7 +187,7 @@ export default {
         title: title
       };
       localStorage.setItem("squery", JSON.stringify(squery));
-      this.$router.push("/singlepai");
+      this.$router.push("/singlepai/"+topicid);
     }
   },
   mounted() {

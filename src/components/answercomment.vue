@@ -153,7 +153,7 @@ export default {
       const { status, title } = this.$data;
       const query = localStorage.getItem("query"); //参数集合
       const queryobj = JSON.parse(query);
-      this.topicid = queryobj.topicid;
+      this.topicid = this.$route.params.topicid;
       const stars_ = [];
       if (this.stars && this.stars.length) {
         this.stars.forEach(item => {
