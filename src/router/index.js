@@ -26,7 +26,7 @@ export default new Router({
   mode:'history',
   routes: [
     {
-      path: '/',
+      path: '/index',
       name: 'index',
       component: index,
       title: '主页',
@@ -49,6 +49,9 @@ export default new Router({
             component: singlepai
         }
       ]
+    },{
+        path:"*",
+        redirect:"/index"
     },
     {
       path:'/paihang',

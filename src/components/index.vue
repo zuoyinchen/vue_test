@@ -69,7 +69,6 @@
 </template>
 
 <script>
-const $url = "https://www.13cai.com.cn/api/v1";
 export default {
   name: "index",
   data() {
@@ -191,16 +190,21 @@ export default {
     }
   },
   mounted() {
-    this.getIndexData();
-    //清除缓存
-    if (localStorage.getItem("answernum")) {
-      localStorage.removeItem("answernum");
+    const userobj = this.getQueryStringArgs();
+    if(userobj.redirect){
+        this.$router.redirect("www.13cai.com.cn/api/v1/get_wxlogin");
+    }else{
+         this.getIndexData();
+        //清除缓存
+        if (localStorage.getItem("answernum")) {
+             localStorage.removeItem("answernum");
+        }
     }
   },
   beforeRouteEnter(to,from,next){
     next();
     if(from.path == '/paihang'){
-      window.location.reload();
+      this.$router.redirect("/index");
     }
   },
   beforeRouteUpdate(to,from,next){
