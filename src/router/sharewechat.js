@@ -23,13 +23,7 @@ const sharewechat = {
             console.log('wechat_share_error', error);
         });
     },
-    shareReady:(url,sflag)=>{
-        let sharedesc;
-        if(sflag){
-            sharedesc = '我在“筋灵十三猜”发现了一个很有内涵的问题,你确定不来看看吗？';
-        }else{
-            sharedesc = '筋灵十三猜，一款靠谱的说人话、找答案、有内涵的趣味百科轻应用。在这里，你可以分享自己的观点、经验，并发现其他有趣的灵魂。还等什么？赶紧来玩吧!';
-        }
+    shareReady: (url, sflag) => {
         wx.ready(function() {
             console.log("wx.ready-url", url);
             wx.onMenuShareAppMessage({

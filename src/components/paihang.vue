@@ -144,6 +144,8 @@ export default {
   },  
   mounted:function(){
     this.getWorld();
+    const url = encodeURIComponent(window.location.href.split("#")[0]);
+    this.sharewechat(url,false);
   },
   beforeCreate:function(){
     //获取世界榜
