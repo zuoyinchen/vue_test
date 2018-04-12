@@ -149,7 +149,6 @@ export default {
     this.getWorld();
     const url = encodeURIComponent(window.location.href.split("#")[0]);
     // this.sharewechat(url,false);
-    alert(location.href.split("#")[0]);
   },
   beforeCreate: function() {
     //获取世界榜
