@@ -26,6 +26,7 @@ Vue.use(VueResource);
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
 router.beforeEach((to, from, next) => {
+    console.log('to', to)
     const { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
     const nextpath = to.path;
     let isIOS = function() {
@@ -47,9 +48,9 @@ router.beforeEach((to, from, next) => {
             if (to.path === '/index') {
                 sharewechat.shareConfig(url, sflag);
                 console.log("第一次");
-                next();
+                next(to.path);
             } else {
-                next();
+                next(to.path);
             }
         } else {
             sharewechat.shareConfig(url, sflag);
