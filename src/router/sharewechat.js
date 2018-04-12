@@ -2,6 +2,12 @@ import axios from 'axios';
 import wx from 'weixin-js-sdk'
 const sharewechat = {
     shareConfig:(url, sflag)=>{
+        let sharedesc;
+        if(sflag){
+            sharedesc = '我在“筋灵十三猜”发现了一个很有内涵的问题,你确定不来看看吗？';
+        }else{
+            sharedesc = '筋灵十三猜，一款靠谱的说人话、找答案、有内涵的趣味百科轻应用。在这里，你可以分享自己的观点、经验，并发现其他有趣的灵魂。还等什么？赶紧来玩吧!';
+        }
         //微信js-sdk
         axios.get('/wechat_share', { params: {url: url}}).then(res => {
             console.log('wechat_share', res.data);
@@ -18,12 +24,12 @@ const sharewechat = {
                 signature: signature, // 必填，签名
                 jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
             });   
-            sharewechat.shareReady(url, sflag);
+            sharewechat.shareReady(url, sharedesc);
         }).catch((error) => {
             console.log('wechat_share_error', error);
         });
     },
-    shareReady: (url, sflag) => {
+    shareReady: (url, sharedesc) => {
         wx.ready(function() {
             console.log("wx.ready-url", url);
             wx.onMenuShareAppMessage({

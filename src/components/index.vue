@@ -156,7 +156,7 @@ export default {
             this.countdown = res.data.countDown;
           });
         const limit = this.page * this.size;
-        if (this.msg.length <limit) {
+        if (this.msg.length < limit) {
           this.noData = "没有更多数据";
         }
         done();
@@ -191,10 +191,12 @@ export default {
       await this.$axios.put(`/topic/${topicid}`, clickNum);
       query.readnum = readnum;
       localStorage.setItem("query", JSON.stringify(query));
-      
+
       const scrolltop = this.$refs.myscroller.getPosition().top;
       console.log(scrolltop);
-      this.$router.push("/answerDetail/"+eindex+"/"+scrolltop+"/"+topicid);
+      this.$router.push(
+        "/answerDetail/" + eindex + "/" + scrolltop + "/" + topicid
+      );
     },
     goSiglepai: function(event) {
       const topicid = event.currentTarget.dataset.tid; //问题id
@@ -203,34 +205,36 @@ export default {
         topicid: topicid,
         title: title
       };
-      this.$router.push("/singlepai/"+topicid);
+      this.$router.push("/singlepai/" + topicid);
     }
   },
   mounted() {
-        this.getIndexData();
-        const url = encodeURIComponent(window.location.href.split("#")[0]);
-        this.sharewechat(url,false);
-
+    this.getIndexData();
+    const url = encodeURIComponent(window.location.href.split("#")[0]);
+    // this.sharewechat(url,false);
   },
-  beforeRouteEnter(to,from,next){
-      console.log(to);
-      next();
+  beforeRouteEnter(to, from, next) {
+    console.log(to);
+    next();
   },
-  beforeRouteUpdate(to,from,next){
-        next();
-        if(from.path != '/paihang'){
-            if( localStorage.getItem("query") && localStorage.getItem("query")!="undefined"){
-                const query = localStorage.getItem("query"); //问题参数集合
-                const queryobj = JSON.parse(query);
-                $.each(this.msg,function(i,v){
-                    if(v.id==queryobj.topicid){
-                        v.readNum = localStorage.getItem("readnum");
-                        v.messageNum = localStorage.getItem("answernum");
-                    }
-                });
-            }
-            console.log(this.msg);
-        }
+  beforeRouteUpdate(to, from, next) {
+    next();
+    if (from.path != "/paihang") {
+      if (
+        localStorage.getItem("query") &&
+        localStorage.getItem("query") != "undefined"
+      ) {
+        const query = localStorage.getItem("query"); //问题参数集合
+        const queryobj = JSON.parse(query);
+        $.each(this.msg, function(i, v) {
+          if (v.id == queryobj.topicid) {
+            v.readNum = localStorage.getItem("readnum");
+            v.messageNum = localStorage.getItem("answernum");
+          }
+        });
+      }
+      console.log(this.msg);
+    }
   }
 };
 </script>
@@ -239,7 +243,7 @@ export default {
 $x: 37.5;
 .box {
   overflow: hidden;
-  background:#FFFEF7;
+  background: #fffef7;
 }
 
 .nav {

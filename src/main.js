@@ -44,15 +44,16 @@ router.beforeEach((to, from, next) => {
         const { shareUrl } = to.query;
         window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
     } else if (id) {
-        if (isIOS()) {
-            // if (to.path === '/index') {
-                sharewechat.shareConfig(url);
-                console.log("第一次");
-            // }
-        } else {
-            sharewechat.shareConfig(url);
-            console.log("每次");
-        }
+        // if (isIOS()) {
+        //     // if (to.path === '/index') {
+        //         sharewechat.shareConfig(url);
+        //         console.log("第一次");
+        //     // }
+        // } else {
+            // sharewechat.shareConfig(url);
+        //     console.log("每次");
+        // }
+        sharewechat.shareConfig(url, sflag);
         localStorage.setItem("userid",id);//缓存用户id
         localStorage.setItem('headimg',avatarUrl);//缓存用户头像
         localStorage.setItem('nickname',nickName);//缓存用户头像
@@ -60,6 +61,7 @@ router.beforeEach((to, from, next) => {
         axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
         next(to.path);
     } else {
+        sharewechat.shareConfig(url, sflag);
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
         next()
     }
