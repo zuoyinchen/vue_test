@@ -213,10 +213,10 @@ export default {
     const url = encodeURIComponent(window.location.href.split("#")[0]);
     // this.sharewechat(url,false);
   },
-  beforeRouteEnter(to, from, next) {
-    console.log(to);
-    next();
-  },
+  //   beforeRouteEnter(to, from, next) {
+  //     console.log(to);
+  //     next();
+  //   },
   beforeRouteUpdate(to, from, next) {
     next();
     if (from.path != "/paihang") {

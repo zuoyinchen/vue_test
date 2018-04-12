@@ -39,12 +39,11 @@ router.beforeEach((to, from, next) => {
     if (to.name === '/answerDetail'|| to.name === '/answercomment' || to.name === '/answerQuestions') {
         sflag = true;
     }
-    // sharewechat.shareReady(url,sflag);
-    if (shareUrl) {
-        const { shareUrl } = to.query;
-        window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
-    } else if (id) {
-        if (isIOS()) {
+    if (isIOS()) {
+        console.log('ios', shareUrl, url);
+        if (shareUrl) {
+            window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
+        } else if (id) {
             if (to.path === '/index') {
                 sharewechat.shareConfig(url, sflag);
                 console.log("第一次");
@@ -54,18 +53,26 @@ router.beforeEach((to, from, next) => {
             }
         } else {
             sharewechat.shareConfig(url, sflag);
-            console.log("每次");
+            axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
+            next()
         }
-        localStorage.setItem("userid",id);//缓存用户id
-        localStorage.setItem('headimg',avatarUrl);//缓存用户头像
-        localStorage.setItem('nickname',nickName);//缓存用户头像
-        localStorage.setItem('jwt',jwt);//缓存用户头像
-        axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
-        next(to.path);
     } else {
-        sharewechat.shareConfig(url, sflag);
-        axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
-        next()
+        console.log('android', shareUrl, url);
+        if (shareUrl) {
+            window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
+        } else if (id) {
+            sharewechat.shareConfig(url, sflag);sharewechat.shareConfig(url, sflag);
+            localStorage.setItem("userid",id);//缓存用户id
+            localStorage.setItem('headimg',avatarUrl);//缓存用户头像
+            localStorage.setItem('nickname',nickName);//缓存用户头像
+            localStorage.setItem('jwt',jwt);//缓存用户头像
+            axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
+            next(to.path);
+        } else {
+            sharewechat.shareConfig(url, sflag);
+            axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
+            next()
+        }
     }
 });
 
