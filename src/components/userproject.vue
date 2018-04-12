@@ -147,7 +147,6 @@
 		},
 		mounted:function(){
             this.getInitialData();
-            sharewechat(window.location.href.split("#")[0]);
 		},
 		beforeCreate:function(){
 			Indicator.open();

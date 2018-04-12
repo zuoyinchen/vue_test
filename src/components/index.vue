@@ -12,23 +12,14 @@
       </div>
       <ul class="btn">
           <li v-for="(item,index) in msg" :key="index">
-              <div class="btn_t1">
-                  <div class="loading" v-if="item.status==1">
+              <div class="btn_t1" v-if="item.status==1">
+                  <div class="loading">
                       <p>进行中</p>
-                  </div>
-                  <div class="end" v-else-if="item.status==2">
-                      <p>已结束</p>
                   </div>
                   <p id="a_title" @click="gotoDetail($event)" :data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
-                      <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
-                        <i class="iconfont icon-paihangbang"></i>
-                        <i v-show="false" id="idTwo">{{item.id}}</i>
-                        <span>排行榜</span>
-                        <i class="s"></i>
-                      </li>
                       <li>
-                          <i v-if="item.status==2" class="line_l"></i>
+                          <i class="line_l"></i>
                           <i class="iconfont icon-xianshimima"></i>
                           <span>{{item.readNum? item.readNum : 0}}</span>
                           <i class="s"></i>
@@ -40,7 +31,7 @@
                           <span>{{item.messageNum?item.messageNum:0}}</span>
                           <i class="s"></i>
                       </li>   
-                      <li style="background:#fdd545;border-bottom-right-radius: 10px;" v-if="item.status==1">
+                      <li style="background:#fdd545;border-bottom-right-radius: 10px;">
                           <i></i>   
                           <span class="counttest">倒计时</span>
                           <span>
@@ -51,6 +42,33 @@
                               </countdown>
                           </span>
                       </li>
+                  </ul>
+              </div>
+              <div class="btn_t1" v-if="item.status==2">
+                  <div class="end">
+                      <p>已结束</p>
+                  </div>
+                  <p id="a_title" @click="gotoDetail($event)" :data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
+                  <ul class="clearfix">
+                      <li @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
+                        <i class="iconfont icon-paihangbang"></i>
+                        <i v-show="false" id="idTwo">{{item.id}}</i>
+                        <span>排行榜</span>
+                        <i class="s"></i>
+                      </li>
+                      <li>
+                          <i class="line_l"></i>
+                          <i class="iconfont icon-xianshimima"></i>
+                          <span>{{item.readNum? item.readNum : 0}}</span>
+                          <i class="s"></i>
+                      </li>
+                      <li @click="gotoDetail($event)" :data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
+                          <i class="line_l"></i>
+                          <i class="line_r"></i>
+                          <i class="iconfont icon-pinglun"></i>
+                          <span>{{item.messageNum?item.messageNum:0}}</span>
+                          <i class="s"></i>
+                      </li>   
                   </ul>
               </div>
           </li>
@@ -69,7 +87,6 @@
 </template>
 
 <script>
-import sharewechat from "../router/sharewechat";
 export default {
   name: "index",
   data() {
@@ -191,10 +208,6 @@ export default {
   },
   mounted() {
         this.getIndexData();
-        const url = window.location.href.split("#")[0];
-        console.log(url);
-        sharewechat(url);
-        
   },
   beforeRouteEnter(to,from,next){
       console.log(to);

@@ -1,30 +1,40 @@
 import axios from 'axios';
 import wx from 'weixin-js-sdk'
-const sharewechat = (url,text)=>{
-    let sharedesc;
-    if(text){
-        sharedesc = '我在“筋灵十三猜”发现了一个很有内涵的问题,你确定不来看看吗？';
-    }else{
-        sharedesc = '筋灵十三猜，一款靠谱的说人话、找答案、有内涵的趣味百科轻应用。在这里，你可以分享自己的观点、经验，并发现其他有趣的灵魂。还等什么？赶紧来玩吧!';
-    }
-    //微信js-sdk
-    axios.get('/wechat_share', { params: {url: url}}).then(res => {
-        console.log(res);
-        const appid = res.data.appId;
-        const nonceStr = res.data.nonceStr;
-        const signature = res.data.signature;
-        const timestamp = res.data.timestamp;
+const sharewechat = {
+    shareConfig:(url)=>{
+        //微信js-sdk
+        axios.get('/wechat_share', { params: {url: url}}).then(res => {
+            console.log(res);
+            const appid = res.data.appId;
+            const nonceStr = res.data.nonceStr;
+            const signature = res.data.signature;
+            const timestamp = res.data.timestamp;
 
-        //配置微信js-sdk
-        wx.config({
-            debug: false, //
-            appId: appid, // 必填，公众号的唯一标识
-            timestamp: timestamp, // 必填，生成签名的时间戳
-            nonceStr: nonceStr, // 必填，生成签名的随机串
-            signature: signature, // 必填，签名
-            jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+            console.log(appid);
+            console.log(nonceStr);
+            console.log(signature);
+            console.log(timestamp);
+            //配置微信js-sdk
+            wx.config({
+                debug: true, //
+                appId: appid, // 必填，公众号的唯一标识
+                timestamp: timestamp, // 必填，生成签名的时间戳
+                nonceStr: nonceStr, // 必填，生成签名的随机串
+                signature: signature, // 必填，签名
+                jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+            });   
+
+        }).catch((error) => {
+            console.log(error);
         });
-
+    },
+    shareReady:(url,sflag)=>{
+        let sharedesc;
+        if(sflag){
+            sharedesc = '我在“筋灵十三猜”发现了一个很有内涵的问题,你确定不来看看吗？';
+        }else{
+            sharedesc = '筋灵十三猜，一款靠谱的说人话、找答案、有内涵的趣味百科轻应用。在这里，你可以分享自己的观点、经验，并发现其他有趣的灵魂。还等什么？赶紧来玩吧!';
+        }
         wx.ready(function() {
             console.log("成功");
             wx.onMenuShareAppMessage({
@@ -47,9 +57,6 @@ const sharewechat = (url,text)=>{
         wx.error(function(res) {
             console.log("失败");
         });
-
-    }).catch((error) => {
-        console.log(error);
-    });
+    }
 }
 export default sharewechat;

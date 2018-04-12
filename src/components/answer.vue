@@ -236,7 +236,6 @@ export default {
   mounted: function() {
     //获取收藏的问题
     this.getIndexData();
-    sharewechat(window.location.href.split("#")[0]);
   },
   beforeCreate: function() {
     Indicator.open();

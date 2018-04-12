@@ -70,9 +70,6 @@
 			}
 		},
 		mounted:function(){
-            const squery = localStorage.getItem("squery");//参数集合
-            const queryobj = JSON.parse(squery);
-            
             this.topicid = this.$route.params.topicid;
             this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
                 this.title = res.data.title;

@@ -28,9 +28,6 @@ import sharewechat from "../router/sharewechat";
 export default {
   data(){
       return{}
-  },
-  mounted(){
-      sharewechat(window.location.href.split("#")[0]);
   }
 }
 </script>

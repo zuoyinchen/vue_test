@@ -108,12 +108,6 @@
         });
         
         console.log(this.title);
-        sharewechat(window.location.href.split("#")[0],true);
-    },
-    beforeRouteLeave (to, from, next) {
-        next();
-        const url = 'https://'+window.location.host+to.fullPath;
-        sharewechat(url);
     }
 }
 </script>

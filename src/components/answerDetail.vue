@@ -132,7 +132,6 @@
 <script>
 import "mint-ui/lib/style.css";
 import { MessageBox, Toast, Indicator } from "mint-ui";
-import sharewechat from "../router/sharewechat";
 export default {
   name: "answerDetail",
   data() {
@@ -307,7 +306,6 @@ export default {
       event.stopPropagation();
       const answerid = event.currentTarget.dataset.id;
       console.log(answerid);
-
       MessageBox.confirm("您确定要删除此回答?").then(
         action => {
           Indicator.open();
@@ -370,16 +368,16 @@ export default {
                 var grade, upvote, comments, isAnswer;
                 //拿到所有答题者的id
                 $.each(this.msg, function(i, v) {
-                v.isMe = false;
-                if (v.createdBy) {
-                    if (v.createdBy.id == localStorage.getItem("userid")) {
-                    grade = i;
-                    v.isMe = true;
-                    upvote = v.upVotes.length;
-                    comments = v.comments.length;
-                    isAnswer = true;
+                    v.isMe = false;
+                    if (v.createdBy) {
+                        if (v.createdBy.id == localStorage.getItem("userid")) {
+                        grade = i;
+                        v.isMe = true;
+                        upvote = v.upVotes.length;
+                        comments = v.comments.length;
+                        isAnswer = true;
+                        }
                     }
-                }
                 });
                 this.users = this.msg;
                 console.log(this.users);
@@ -389,13 +387,11 @@ export default {
                 this.mycomment = comments;
                 this.isAnswer = isAnswer;
                 localStorage.setItem("isAnswer", isAnswer);
-                
             } else {
                 this.users = res.data;
                 console.log(this.users);
             }
         }).catch(error => {
-          Toast({ message: "网络错误，操作不成功" });
           console.log(error);
         });
     }
@@ -408,7 +404,7 @@ export default {
       this.status = res.data.status;
       this.readnum = res.data.readNum;
       localStorage.setItem("readnum",this.readnum);
-      localStorage.setItem("answernum",res.data.messageNum);
+      localStorage.setItem("answernum",res.data.messageNum?res.data.messageNum:0);
       this.stars.forEach(item => {
         if (localStorage.getItem("userid") === item.id) {
           this.isMark = true;
@@ -457,7 +453,6 @@ export default {
         Indicator.close();
         console.log(error);
     });
-    sharewechat(window.location.href.split("#")[0],true);
   },
   beforeCreate: async function() {
     Indicator.open();
@@ -477,11 +472,6 @@ export default {
   },
   destroyed:function(){
     Indicator.close();
-  },
-  beforeRouteLeave (to, from, next) {
-    next();
-    const url = 'https://'+window.location.host+to.fullPath;
-    sharewechat(url);
   }
 };
 </script>
