@@ -212,6 +212,7 @@ export default {
     this.getIndexData();
     const url = encodeURIComponent(window.location.href.split("#")[0]);
     // this.sharewechat(url,false);
+    alert(location.href.split("#")[0]);
   },
   //   beforeRouteEnter(to, from, next) {
   //     console.log(to);
