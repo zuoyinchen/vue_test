@@ -37,8 +37,10 @@
 			}
 		},
 		mounted:function(){
-                this.avtalUrl = localStorage.getItem("headimg");
-                this.nickname = localStorage.getItem("nickname")? localStorage.getItem("nickname") : '11';
+            this.avtalUrl = localStorage.getItem("headimg");
+            this.nickname = localStorage.getItem("nickname")? localStorage.getItem("nickname") : '11';
+            const url = encodeURIComponent(window.location.href.split("#")[0]);
+            this.sharewechat(url,false);
 		}
 	}
 </script>

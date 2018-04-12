@@ -208,6 +208,9 @@ export default {
   },
   mounted() {
         this.getIndexData();
+        const url = encodeURIComponent(window.location.href.split("#")[0]);
+        this.sharewechat(url,false);
+
   },
   beforeRouteEnter(to,from,next){
       console.log(to);

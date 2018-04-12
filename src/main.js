@@ -12,7 +12,7 @@ import VueCountdown from '@xkeshi/vue-countdown'
 // import wx from 'weixin-js-sdk'
 import {MessageBox} from 'mint-ui';
 import sharewechat from "./router/sharewechat";
-
+Vue.prototype.sharewechat = sharewechat;
 Vue.component(MessageBox.name, MessageBox);
 Vue.component('countdown', VueCountdown);
 
@@ -26,30 +26,7 @@ Vue.use(VueResource);
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
 router.beforeEach((to, from, next) => {
-    const { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
-    const nextpath = to.path;
-    let isIOS = function() {
-        var isIphone = navigator.userAgent.includes('iPhone');
-        var isIpad = navigator.userAgent.includes('iPad');
-        return isIphone || isIpad;
-    };
-    const url = 'https://'+window.location.host+to.fullPath;
-    console.log("域名",window.location.host);
-    console.log("路径",to.fullPath);
-    let sflag = false;
-    if (to.name === '/answerDetail'|| to.name === '/answercomment' || to.name === '/answerQuestions') {
-        sflag = true;
-    }
-    if (isIOS()) {
-        if (to.path === '/index') {
-            sharewechat.shareConfig(url);
-            console.log("第一次");
-        }
-    } else {
-        sharewechat.shareConfig(url);
-        console.log("每次");
-    }
-    sharewechat.shareReady(url,sflag);
+    let { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
     if (shareUrl) {
         const { shareUrl } = to.query;
         window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
@@ -58,7 +35,7 @@ router.beforeEach((to, from, next) => {
         localStorage.setItem('headimg',avatarUrl);//缓存用户头像
         localStorage.setItem('nickname',nickName);//缓存用户头像
         localStorage.setItem('jwt',jwt);//缓存用户头像
-        axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
+        axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt') ;
         next(to.path);
     } else {
         next()
