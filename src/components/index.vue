@@ -19,7 +19,7 @@
                   <div class="end" v-else-if="item.status==2">
                       <p>已结束</p>
                   </div>
-                  <p id="a_title" @click="gotoDetail($event)":data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
+                  <p id="a_title" @click="gotoDetail($event)" :data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
                       <li v-if="item.status==2" @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
                         <i class="iconfont icon-paihangbang"></i>
@@ -29,9 +29,9 @@
                       </li>
                       <li>
                           <i v-if="item.status==2" class="line_l"></i>
-                        <i class="iconfont icon-xianshimima"></i>
-                        <span>{{item.readNum? item.readNum : 0}}</span>
-                        <i class="s"></i>
+                          <i class="iconfont icon-xianshimima"></i>
+                          <span>{{item.readNum? item.readNum : 0}}</span>
+                          <i class="s"></i>
                       </li>
                       <li @click="gotoDetail($event)" :data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">
                           <i class="line_l"></i>
@@ -186,20 +186,15 @@ export default {
         topicid: topicid,
         title: title
       };
-      localStorage.setItem("squery", JSON.stringify(squery));
       this.$router.push("/singlepai/"+topicid);
     }
   },
   mounted() {
         this.getIndexData();
-         
-         const url = window.location.href.split("#")[0];
-         console.log(url);
-         sharewechat(url);
-        //清除缓存
-        if (localStorage.getItem("answernum")) {
-            localStorage.removeItem("answernum");
-        }
+        const url = window.location.href.split("#")[0];
+        console.log(url);
+        sharewechat(url);
+        
   },
   beforeRouteEnter(to,from,next){
       console.log(to);
@@ -213,8 +208,8 @@ export default {
                 const queryobj = JSON.parse(query);
                 $.each(this.msg,function(i,v){
                     if(v.id==queryobj.topicid){
-                        v.readNum = queryobj.readnum;
-                        v.messageNum = queryobj.answernum;
+                        v.readNum = localStorage.getItem("readnum");
+                        v.messageNum = localStorage.getItem("answernum");
                     }
                 });
             }

@@ -161,8 +161,6 @@ export default {
     starAnswer: async function(event) {
       // 收藏问题
       const { status, title } = this.$data;
-      const query = localStorage.getItem("query"); //参数集合
-      const queryobj = JSON.parse(query);
       this.topicid = this.$route.params.topicid;
       const stars_ = [];
       if (this.stars && this.stars.length) {
@@ -191,16 +189,7 @@ export default {
           this.upDatedata("收藏成功");
           this.isMark = true;
         }
-        this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
-          this.stars = res.data.stars;
-          $.each(this.stars,function(i,v){
-            if(v.id == localStorage.getItem("userid")){
-              this.isMark = true;
-            }
-          })
-        });
       }
-      console.log("isMark", this.isMark);
     },
     endTip: function(event) {
       event.stopPropagation();
@@ -341,71 +330,71 @@ export default {
       );
     },
     upDatedata: function(title) {
-      const query = localStorage.getItem("query"); //参数集合
-      const queryobj = JSON.parse(query);
-      this.topicid = queryobj.topicid;
-
-      const topicid = this.topicid; //问题id
-      const data = {
-        search: JSON.stringify({ topic: topicid }),
-        userid: localStorage.getItem("userid")
-      };
-      if (localStorage.getItem("isAnswer")) {
-        if (
-          localStorage.getItem("isAnswer") == "false" ||
-          localStorage.getItem("isAnswer") == "undefined"
-        ) {
-          console.log("没答题");
-          this.isAnswer = false;
-        } else {
-          console.log("答题");
-          this.isAnswer = true;
-        }
-      }
-      Indicator.close();
-
-      this.$axios
-        .get("/answer", { params: data })
-        .then(res => {
-          if(title){
-            let instance = Toast(title);
-            setTimeout(() => {
-              instance.close();
-            }, 1000);
-          }
-          
-          if (res.data && res.data.length) {
-            this.msg = res.data;
-            var grade, upvote, comments, isAnswer;
-            //拿到所有答题者的id
-            $.each(this.msg, function(i, v) {
-              v.isMe = false;
-              if (v.createdBy) {
-                if (v.createdBy.id == localStorage.getItem("userid")) {
-                  grade = i;
-                  v.isMe = true;
-                  upvote = v.upVotes.length;
-                  comments = v.comments.length;
-                  isAnswer = true;
+        this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
+            this.stars = res.data.stars;
+            this.time =res.data.second;
+            this.title = res.data.title;
+            this.status = res.data.status;
+            this.readnum = res.data.readNum;
+            localStorage.setItem("answernum",res.data.messageNum);
+            localStorage.setItem("readnum",this.readnum);
+            this.stars.forEach(item => {
+                if (localStorage.getItem("userid") === item.id) {
+                this.isMark = true;
                 }
-              }
             });
-            this.users = this.msg;
-            console.log(this.users);
-            this.answernum = this.users.length;
-            this.mygrade = grade + 1;
-            this.myupvote = upvote;
-            this.mycomment = comments;
-            this.isAnswer = isAnswer;
-            localStorage.setItem("isAnswer", isAnswer);
-            queryobj.answernum = this.answernum;
-            localStorage.setItem("query",JSON.stringify(queryobj));
-          } else {
-            this.users = res.data;
-            console.log(this.users);
-          }
-        })
-        .catch(error => {
+        });
+        if (localStorage.getItem("isAnswer")) {
+            if (localStorage.getItem("isAnswer") == "false" ||localStorage.getItem("isAnswer") == "undefined") {
+                console.log("没答题");
+                this.isAnswer = false;
+            } else {
+                console.log("答题");
+                this.isAnswer = true;
+            }
+        }
+        Indicator.close();
+        const data = {
+            search: JSON.stringify({ topic: this.$route.params.topicid }),
+            userid: localStorage.getItem("userid")
+        };
+        this.$axios.get("/answer", { params: data }).then(res => {
+            if(title){
+                let instance = Toast(title);
+                setTimeout(() => {
+                    instance.close();
+                }, 1000);
+            }
+            if (res.data && res.data.length) {
+                this.msg = res.data;
+                var grade, upvote, comments, isAnswer;
+                //拿到所有答题者的id
+                $.each(this.msg, function(i, v) {
+                v.isMe = false;
+                if (v.createdBy) {
+                    if (v.createdBy.id == localStorage.getItem("userid")) {
+                    grade = i;
+                    v.isMe = true;
+                    upvote = v.upVotes.length;
+                    comments = v.comments.length;
+                    isAnswer = true;
+                    }
+                }
+                });
+                this.users = this.msg;
+                console.log(this.users);
+                this.answernum = this.users.length;
+                this.mygrade = grade + 1;
+                this.myupvote = upvote;
+                this.mycomment = comments;
+                this.isAnswer = isAnswer;
+                localStorage.setItem("isAnswer", isAnswer);
+                
+            } else {
+                this.users = res.data;
+                console.log(this.users);
+            }
+        }).catch(error => {
           Toast({ message: "网络错误，操作不成功" });
           console.log(error);
         });
@@ -418,26 +407,23 @@ export default {
       this.title = res.data.title;
       this.status = res.data.status;
       this.readnum = res.data.readNum;
+      localStorage.setItem("readnum",this.readnum);
+      localStorage.setItem("answernum",res.data.messageNum);
       this.stars.forEach(item => {
         if (localStorage.getItem("userid") === item.id) {
           this.isMark = true;
         }
       });
     });
-    console.log(this.isAnswer);
-    
     this.topicid = this.$route.params.topicid;
-    const topicid = this.topicid; //问题id
     const data = {
       search: JSON.stringify({
-        topic: topicid
+        topic: this.$route.params.topicid
       }),
       userid: localStorage.getItem("userid")
     };
     console.log(data);
-    this.$axios
-      .get("/answer", { params: data })
-      .then(res => {
+    this.$axios.get("/answer", { params: data }).then(res => {
         Indicator.close();
         if (res.data && res.data.length) {
           this.msg = res.data;
@@ -459,7 +445,6 @@ export default {
           this.users = this.msg;
           console.log(this.users);
           console.log(localStorage.getItem("userid"));
-          localStorage.setItem("answernum",this.users.length);
           this.answernum = this.users.length;
           this.mygrade = grade + 1;
           this.myupvote = upvote;
@@ -467,10 +452,6 @@ export default {
           this.isAnswer = isAnswer;
           localStorage.setItem("isAnswer", isAnswer);
           this.myanswerid = myanswerid;
-          console.log("哈哈");
-          console.log(this.myanswerid);
-          queryobj.answernum = this.answernum;
-          localStorage.setItem("query",JSON.stringify(queryobj));
         }
     }).catch(error => {
         Indicator.close();

@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
         const { shareUrl } = to.query;
         window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
     } else if (id) {
-        localStorage.setItem("userid",id);//缓存用户id
+        localStorage.setItem("userid",'5ac4a9ec3ebd878877e3eb91');//缓存用户id
         localStorage.setItem('headimg',avatarUrl);//缓存用户头像
         localStorage.setItem('nickname',nickName);//缓存用户头像
         localStorage.setItem('jwt',jwt);//缓存用户头像
@@ -39,6 +39,7 @@ router.beforeEach((to, from, next) => {
         next(to.path);
     } else {
         next()
+        axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
     }
 });
 
@@ -53,8 +54,7 @@ new Vue({
       
   },
   mounted:function(){
-    console.log("全局mounted");
-    axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
+    localStorage.setItem("userid",'5ac4a9ec3ebd878877e3eb91')
   },
   beforeCreate:function(){
     document.addEventListener('touchmove',function (ev) {  

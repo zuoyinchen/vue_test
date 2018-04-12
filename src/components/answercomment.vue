@@ -151,8 +151,6 @@ export default {
     starAnswer: async function(event) {
       // 收藏问题
       const { status, title } = this.$data;
-      const query = localStorage.getItem("query"); //参数集合
-      const queryobj = JSON.parse(query);
       this.topicid = this.$route.params.topicid;
       const stars_ = [];
       if (this.stars && this.stars.length) {
@@ -181,14 +179,7 @@ export default {
           this.upDatedata("收藏成功");
           this.isMark = true;
         }
-        this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
-          this.stars = res.data.stars;
-          $.each(this.stars,function(i,v){
-            if(v.id == localStorage.getItem("userid")){
-              this.isMark = true;
-            }
-          })
-        });
+        
       }
       console.log("isMark", this.isMark);
     },
@@ -265,9 +256,7 @@ export default {
       const data = {
         upVotes: resultarr
       };
-      this.$axios
-        .put("/answer/" + answerid, data)
-        .then(res => {
+        this.$axios.put("/answer/" + answerid, data).then(res => {
           console.log(res);
           if (res.status == 200) {
             if (this.list.upVote) {
@@ -278,33 +267,13 @@ export default {
               this.list[$index].upVote = true;
             }
           }
-        })
-        .catch((error, errorcode) => {
+        }).catch((error, errorcode) => {
           console.log(error);
         });
     },
-    timeReplace: function(str) {
-      return str.replace("T", " ").slice(0, str.indexOf("."));
-    },
     gotoQuestion: function(event) {
       const topicid = event.currentTarget.dataset.tid; //问题id
-      const readnum = event.currentTarget.dataset.rnum; //阅读数
-      const answernum = event.currentTarget.dataset.anum; //评论数
-      const status = event.currentTarget.dataset.status; //状态
-      // const time = event.currentTarget.dataset.time;//倒计时时间
-      const title = event.currentTarget.dataset.title; //问题标题
-      const userQuestion = {
-        topicid: topicid,
-        readnum: readnum,
-        answernum: answernum,
-        status: status,
-        time: this.time,
-        title: title
-      };
-      console.log(JSON.stringify(userQuestion));
-
-      localStorage.setItem("userQuestion", JSON.stringify(userQuestion));
-      this.$router.push("/answerQuestions/2");
+      this.$router.push("/answerQuestions/2/"+topicid);
     },
     deleteAnswer: function() {
       const answerid = event.currentTarget.dataset.id;
@@ -352,36 +321,42 @@ export default {
       );
     },
     upDatedata: function(title) {
-      if(title){
-        let instance = Toast(title);
-        setTimeout(() => {
-          instance.close();
-        }, 1000);
-      }
-      this.message = "";
-
-      if (localStorage.getItem("isAnswer")) {
-        if (
-          localStorage.getItem("isAnswer") === "false" ||
-          localStorage.getItem("isAnswer") === "undefined"
-        ) {
-          console.log("没答题");
-          this.isAnswer = false;
-        } else {
-          console.log("答题");
-          this.isAnswer = true;
+        if(title){
+            let instance = Toast(title);
+            setTimeout(() => {
+            instance.close();
+            }, 1000);
         }
-      }
-      const query = localStorage.getItem("query"); //参数集合
-      const queryobj = JSON.parse(query);
-      this.topicid = queryobj.topicid;
-      const topicid = this.topicid; //问题id
-
+        this.message = "";
+        this.topicid = this.$route.params.topicid;
+        this.$axios.get(`/topic/${this.topicid}`).then(res => {
+            this.title = res.data.title;
+            this.time = res.data.second;
+            this.status =res.data.status;
+            this.readnum = res.data.readNum;
+            this.answernum = res.data.messageNum;
+            this.stars = res.data.stars;
+            this.stars.forEach(item => {
+                if (localStorage.getItem("userid") === item.id) {
+                this.isMark = true;
+                }
+            });
+        });
+        if (localStorage.getItem("isAnswer")) {
+            if (
+            localStorage.getItem("isAnswer") === "false" ||
+            localStorage.getItem("isAnswer") === "undefined"
+            ) {
+            console.log("没答题");
+            this.isAnswer = false;
+            } else {
+            console.log("答题");
+            this.isAnswer = true;
+            }
+        }
       const answerid = this.$route.params.answerid; //回答id
-
       //获取所要评论的答案
       this.$axios.get("/answer/"+answerid,{params:{userid:localStorage.getItem("userid")}}).then(res => {
-        console.log(res);
         this.list = res.data;
         if(res.status == 200){
             this.list = res.data;
@@ -389,8 +364,6 @@ export default {
               console.log("享");
               this.list.isMe = true;
             }
-            
-            console.log(this.list);
         }
       }).catch(error => {
         Indicator.close();
@@ -488,31 +461,20 @@ export default {
         this.isAnswer = true;
       }
     }
-    console.log(this.isAnswer);
-    const query = localStorage.getItem("query"); //参数集合
-    const queryobj = JSON.parse(query);
-    this.title = queryobj.title;
-    this.time = Number(queryobj.time);
-    this.status = queryobj.status;
-    this.readnum = Number(queryobj.readnum);
-    if (localStorage.getItem("answernum")) {
-      this.answernum = localStorage.getItem("answernum");
-    } else {
-      localStorage.setItem("answernum", Number(queryobj.answernum));
-      this.answernum = localStorage.getItem("answernum");
-    }
-
-    this.topicid = queryobj.topicid;
-
-    this.$axios.get(`/topic/${queryobj.topicid}`).then(res => {
-      this.stars = res.data.stars;
-      this.stars.forEach(item => {
-        if (localStorage.getItem("userid") === item.id) {
-          this.isMark = true;
-        }
-      });
+    this.topicid = this.$route.params.topicid;
+    this.$axios.get(`/topic/${this.topicid}`).then(res => {
+        this.title = res.data.title;
+        this.time = res.data.second;
+        this.status =res.data.status;
+        this.readnum = res.data.readNum;
+        this.answernum = res.data.messageNum;
+        this.stars = res.data.stars;
+        this.stars.forEach(item => {
+            if (localStorage.getItem("userid") === item.id) {
+            this.isMark = true;
+            }
+        });
     });
-
     
     //根据id获取所要评论的答案
     this.$axios.get("/answer/"+answerid,{params:{userid:localStorage.getItem("userid")}}).then(res => {
