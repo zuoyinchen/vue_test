@@ -33,27 +33,26 @@ router.beforeEach((to, from, next) => {
         var isIpad = navigator.userAgent.includes('iPad');
         return isIphone || isIpad;
     };
-    const url = 'https://'+window.location.host+to.fullPath;
-    console.log("域名",window.location.host);
-    console.log("路径",to.fullPath);
+    const url = 'https://'+window.location.host+to.path;
+    console.log("路径", url, isIOS(), id, to.path, to.fullPath);
     let sflag = false;
     if (to.name === '/answerDetail'|| to.name === '/answercomment' || to.name === '/answerQuestions') {
         sflag = true;
     }
-    if (isIOS()) {
-        if (to.path === '/index') {
-            sharewechat.shareConfig(url);
-            console.log("第一次");
-        }
-    } else {
-        sharewechat.shareConfig(url);
-        console.log("每次");
-    }
-    sharewechat.shareReady(url,sflag);
+    // sharewechat.shareReady(url,sflag);
     if (shareUrl) {
         const { shareUrl } = to.query;
         window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
     } else if (id) {
+        if (isIOS()) {
+            // if (to.path === '/index') {
+                sharewechat.shareConfig(url);
+                console.log("第一次");
+            // }
+        } else {
+            sharewechat.shareConfig(url);
+            console.log("每次");
+        }
         localStorage.setItem("userid",id);//缓存用户id
         localStorage.setItem('headimg',avatarUrl);//缓存用户头像
         localStorage.setItem('nickname',nickName);//缓存用户头像
@@ -61,8 +60,8 @@ router.beforeEach((to, from, next) => {
         axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
         next(to.path);
     } else {
-        next()
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
+        next()
     }
 });
 
@@ -77,7 +76,7 @@ new Vue({
       
   },
   mounted:function(){
-    console.log("全局挂载");
+    console.log("全局挂载", localStorage.getItem('jwt'));
     axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
   },
   beforeCreate:function(){

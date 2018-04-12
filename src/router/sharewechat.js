@@ -1,19 +1,14 @@
 import axios from 'axios';
 import wx from 'weixin-js-sdk'
 const sharewechat = {
-    shareConfig:(url)=>{
+    shareConfig:(url, sflag)=>{
         //微信js-sdk
         axios.get('/wechat_share', { params: {url: url}}).then(res => {
-            console.log(res);
+            console.log('wechat_share', res.data);
             const appid = res.data.appId;
             const nonceStr = res.data.nonceStr;
             const signature = res.data.signature;
             const timestamp = res.data.timestamp;
-
-            console.log(appid);
-            console.log(nonceStr);
-            console.log(signature);
-            console.log(timestamp);
             //配置微信js-sdk
             wx.config({
                 debug: true, //
@@ -23,9 +18,9 @@ const sharewechat = {
                 signature: signature, // 必填，签名
                 jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
             });   
-
+            sharewechat.shareReady(url, sflag);
         }).catch((error) => {
-            console.log(error);
+            console.log('wechat_share_error', error);
         });
     },
     shareReady:(url,sflag)=>{
@@ -36,7 +31,7 @@ const sharewechat = {
             sharedesc = '筋灵十三猜，一款靠谱的说人话、找答案、有内涵的趣味百科轻应用。在这里，你可以分享自己的观点、经验，并发现其他有趣的灵魂。还等什么？赶紧来玩吧!';
         }
         wx.ready(function() {
-            console.log("成功");
+            console.log("wx.ready-url", url);
             wx.onMenuShareAppMessage({
                 title: '筋灵十三猜', // 分享标题
                 desc: sharedesc, // 分享描述
@@ -52,7 +47,7 @@ const sharewechat = {
                     console.log("取消");
                 // 用户取消分享后执行的回调函数
                 }
-                });
+            });
         });
         wx.error(function(res) {
             console.log("失败");
