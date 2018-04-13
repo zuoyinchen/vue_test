@@ -25,9 +25,8 @@ Vue.use(VueResource);
 
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
-router.afterEach((to, from, next) => {
+router.afterEach((to, from) => {
     const { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
-    const nextpath = to.path;
     console.log('to', to, from);
     let isIOS = function() {
         var isIphone = navigator.userAgent.includes('iPhone');
@@ -40,6 +39,8 @@ router.afterEach((to, from, next) => {
         sflag = true;
     }
     // sharewechat.shareReady(url,sflag);
+
+    let _url = window.location.origin + to.fullPath;
     if (shareUrl) {
         const { shareUrl } = to.query;
         window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
@@ -48,42 +49,27 @@ router.afterEach((to, from, next) => {
         localStorage.setItem('headimg',avatarUrl);//缓存用户头像
         localStorage.setItem('nickname',nickName);//缓存用户头像
         localStorage.setItem('jwt',jwt);//缓存用户头像
-        axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
-        // if (isIOS()) {
-            // const url = 'https://'+window.location.host+from.path;
-            // sharewechat.shareReady(url, sflag);
-            // console.log('isIOS', );
-            // if (to.path === '/') {
-            //     sharewechat.shareConfig(url);
-            //     next(to.path);
-            // } else {
-            //     next(to.path);
-            // }
-        let url = 'https://'+window.location.host+to.path;
+        axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt;
+
+        let url = 'https://'+window.location.host+from.path;
         sharewechat.shareReady(url, sflag);
-        if (isIOS()) {
-            let baseUrl = to.path;
-            //
-            if(window["__wxjs_is_wkwebview"]){
-                history.replaceState(null, null, baseUrl);
-            }else{
-                location.replace(baseUrl);
-            }
-            // url = 'https://www.13cai.com.cn/index';
-            sharewechat.shareConfig(url, sflag);
-            console.log("每次", url);
-            next(to.path);
-        } else {
-            url = 'https://'+window.location.host+to.path;
-            sharewechat.shareConfig(url, sflag);
-            console.log("每次", url);
-            next(to.path);
+        if (window.__wxjs_is_wkwebview !== true) {
+            sharewechat.shareConfig(_url)
+        }
+        if (window.__wxjs_is_wkwebview === true) {
+            alert('ios')
+            _url = window.location.href.split('#')[0]
+            sharewechat.shareConfig(encodeURIComponent(_url))
         }
     } else {
-        const url = 'https://'+window.location.host+to.path;
-        sharewechat.shareConfig(url, sflag);
+        if (window.__wxjs_is_wkwebview === true) {
+            _url = window.location.href.split('#')[0]
+            sharewechat.shareConfig(encodeURIComponent(_url))
+        } else {
+            sharewechat.shareConfig(_url);
+        }
+        sharewechat.shareReady(_url, sflag);
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
-        next();
     }
 });
 
