@@ -72,12 +72,12 @@ router.beforeEach((to, from, next) => {
             // url = 'https://www.13cai.com.cn/index';
             sharewechat.shareConfig(url, sflag);
             console.log("每次", url);
-            next();
+            next(to.path);
         } else {
             // url = 'https://'+window.location.host+to.path;
             sharewechat.shareConfig(url, sflag);
             console.log("每次", url);
-            next();
+            next(to.path);
         }
     } else {
         const url = 'https://'+window.location.host+to.path;
