@@ -25,7 +25,7 @@ Vue.use(VueResource);
 
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
-router.beforeEach((to, from, next) => {
+router.afterEach((to, from, next) => {
     const { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
     const nextpath = to.path;
     console.log('to', to, from);
@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
             // } else {
             //     next(to.path);
             // }
-        let url = location.href.split('#')[0];
+        let url = 'https://'+window.location.host+to.path;
         sharewechat.shareReady(url, sflag);
         if (isIOS()) {
             let baseUrl = to.path;
@@ -74,7 +74,7 @@ router.beforeEach((to, from, next) => {
             console.log("每次", url);
             next(to.path);
         } else {
-            // url = 'https://'+window.location.host+to.path;
+            url = 'https://'+window.location.host+to.path;
             sharewechat.shareConfig(url, sflag);
             console.log("每次", url);
             next(to.path);
