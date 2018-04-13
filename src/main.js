@@ -55,7 +55,6 @@ router.beforeEach((to, from, next) => {
         if (isIOS()) {
             if (to.path === '/index') {
                 sharewechat.shareConfig(url);
-                console.log("第一次");
                 next(to.path);
             } else {
                 next(to.path);
