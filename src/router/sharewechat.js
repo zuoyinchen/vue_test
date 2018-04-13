@@ -1,7 +1,7 @@
 import axios from 'axios';
 import wx from 'weixin-js-sdk'
 const sharewechat = {
-    shareConfig:(url)=>{
+    shareConfig:(url, sflag)=>{
         //微信js-sdk
         axios.get('/wechat_share', { params: {url: url}}).then(res => {
             console.log('wechat_share', res.data);
@@ -18,6 +18,7 @@ const sharewechat = {
                 signature: signature, // 必填，签名
                 jsApiList: ['onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
             });   
+            sharewechat.shareReady(url, sflag);
         }).catch((error) => {
             console.log('wechat_share_error', error);
         });
