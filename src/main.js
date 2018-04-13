@@ -49,24 +49,32 @@ router.beforeEach((to, from, next) => {
         localStorage.setItem('nickname',nickName);//缓存用户头像
         localStorage.setItem('jwt',jwt);//缓存用户头像
         axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
-        if (isIOS()) {
-            const url = 'https://'+window.location.host+from.path;
-            sharewechat.shareReady(url, sflag);
-            console.log('isIOS', );
-            if (to.path === '/') {
-                sharewechat.shareConfig(url);
-                next(to.path);
-            } else {
-                next(to.path);
+        // if (isIOS()) {
+            // const url = 'https://'+window.location.host+from.path;
+            // sharewechat.shareReady(url, sflag);
+            // console.log('isIOS', );
+            // if (to.path === '/') {
+            //     sharewechat.shareConfig(url);
+            //     next(to.path);
+            // } else {
+            //     next(to.path);
+            // }
+        if (isIOS() && location.pathname == "/") {
+            let baseUrl = to.path;
+            //
+            if(window["__wxjs_is_wkwebview"]){
+                history.replaceState(null, null, baseUrl);
+            }else{
+                location.replace(baseUrl);
             }
         } else {
-            const url = 'https://'+window.location.host+to.path;
+            const url = location.href.split('#')[0];
             sharewechat.shareConfig(url);
-            console.log("每次");
+            console.log("每次", url);
             next(to.path);
         }
     } else {
-        const url = 'https://'+window.location.host+to.path;
+        const url = location.href.split('#')[0];
         sharewechat.shareConfig(url);
         sharewechat.shareReady(url, sflag);
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
