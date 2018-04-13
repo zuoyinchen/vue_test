@@ -56,9 +56,9 @@ router.beforeEach((to, from, next) => {
             if (to.path === '/index') {
                 sharewechat.shareConfig(url);
                 console.log("第一次");
-                next();
+                next(to.path);
             } else {
-                next();
+                next(to.path);
             }
         } else {
             sharewechat.shareConfig(url);
