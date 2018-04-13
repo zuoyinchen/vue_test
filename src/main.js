@@ -60,7 +60,7 @@ router.beforeEach((to, from, next) => {
             //     next(to.path);
             // }
         let url = 'https://'+window.location.host+to.path;
-        if (isIOS() && location.pathname == "/index") {
+        if (isIOS()) {
             let baseUrl = to.path;
             //
             if(window["__wxjs_is_wkwebview"]){
@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
             }else{
                 location.replace(baseUrl);
             }
-            url = 'https://'+window.location.host+to.path;
+            url = 'https://www.13cai.com.cn/index';
             sharewechat.shareConfig(url, sflag);
             console.log("每次", url);
             next(to.path);
