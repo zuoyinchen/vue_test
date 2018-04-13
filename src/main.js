@@ -51,19 +51,20 @@ router.beforeEach((to, from, next) => {
         localStorage.setItem('nickname',nickName);//缓存用户头像
         localStorage.setItem('jwt',jwt);//缓存用户头像
         axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
-        sharewechat.shareReady(url,sflag);
+        sharewechat.shareReady(url, sflag);
         if (isIOS()) {
             if (to.path === '/index') {
                 sharewechat.shareConfig(url);
                 console.log("第一次");
-                next(to.path);
+                next();
+            } else {
+                next();
             }
         } else {
             sharewechat.shareConfig(url);
             console.log("每次");
             next(to.path);
-        }    
-        next(to.path);
+        }
     } else {
         console.log('else', url);
         sharewechat.shareConfig(url, sflag);
