@@ -60,7 +60,7 @@ router.beforeEach((to, from, next) => {
             //     next(to.path);
             // }
             console.log('location', location.pathname)
-        if (isIOS() && location.pathname == "/index") {
+        if (isIOS()) {
             let baseUrl = to.path;
             //
             if(window["__wxjs_is_wkwebview"]){
