@@ -11,7 +11,7 @@ const sharewechat = {
             const timestamp = res.data.timestamp;
             //配置微信js-sdk
             wx.config({
-                debug: false, //
+                debug: true, //
                 appId: appid, // 必填，公众号的唯一标识
                 timestamp: timestamp, // 必填，生成签名的时间戳
                 nonceStr: nonceStr, // 必填，生成签名的随机串
@@ -34,7 +34,7 @@ const sharewechat = {
             wx.onMenuShareAppMessage({
                 title: '筋灵十三猜', // 分享标题
                 desc: sharedesc, // 分享描述
-                link: `${url}?shareUrl=`+url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                link: 'https://www.13cai.com.cn/api/v1/get_wxlogin', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                 imgUrl: 'http://cdn.zg18.com/13cai_logo.png', // 分享图标
                 type: '', // 分享类型,music、video或link，不填默认为link
                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空

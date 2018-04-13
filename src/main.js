@@ -28,13 +28,12 @@ axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
 router.beforeEach((to, from, next) => {
     const { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
     const nextpath = to.path;
-    console.log('to', to);
+    console.log('to', to, from);
     let isIOS = function() {
         var isIphone = navigator.userAgent.includes('iPhone');
         var isIpad = navigator.userAgent.includes('iPad');
         return isIphone || isIpad;
     };
-    const url = 'https://'+window.location.host+to.path;
     // console.log("路径", url, isIOS(), id, to.path, shareUrl);
     let sflag = false;
     if (to.name === '/answerDetail'|| to.name === '/answercomment' || to.name === '/answerQuestions') {
@@ -45,27 +44,29 @@ router.beforeEach((to, from, next) => {
         const { shareUrl } = to.query;
         window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
     } else if (id) {
-        console.log('id', url);
         localStorage.setItem("userid",id);//缓存用户id
         localStorage.setItem('headimg',avatarUrl);//缓存用户头像
         localStorage.setItem('nickname',nickName);//缓存用户头像
         localStorage.setItem('jwt',jwt);//缓存用户头像
         axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt ;
-        sharewechat.shareReady(url, sflag);
         if (isIOS()) {
-            if (to.path === '/index') {
+            const url = 'https://'+window.location.host+from.path;
+            sharewechat.shareReady(url, sflag);
+            console.log('isIOS', );
+            if (to.path === '/') {
                 sharewechat.shareConfig(url);
                 next(to.path);
             } else {
                 next(to.path);
             }
         } else {
+            const url = 'https://'+window.location.host+to.path;
             sharewechat.shareConfig(url);
             console.log("每次");
             next(to.path);
         }
     } else {
-        console.log('else', url);
+        const url = 'https://'+window.location.host+to.path;
         sharewechat.shareConfig(url);
         sharewechat.shareReady(url, sflag);
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
