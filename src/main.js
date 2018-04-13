@@ -59,17 +59,25 @@ router.beforeEach((to, from, next) => {
             // } else {
             //     next(to.path);
             // }
-        let url = 'https://'+window.location.host+to.path;
+        let url = location.href.split('#')[0];
+        sharewechat.shareReady(url, sflag);
         if (isIOS()) {
-            url = 'https://www.13cai.com.cn/index';
+            let baseUrl = to.path;
+            //
+            if(window["__wxjs_is_wkwebview"]){
+                history.replaceState(null, null, baseUrl);
+            }else{
+                location.replace(baseUrl);
+            }
+            // url = 'https://www.13cai.com.cn/index';
             sharewechat.shareConfig(url, sflag);
             console.log("每次", url);
-            next(to.path);
+            next();
         } else {
-            url = 'https://'+window.location.host+to.path;
+            // url = 'https://'+window.location.host+to.path;
             sharewechat.shareConfig(url, sflag);
             console.log("每次", url);
-            next(to.path);
+            next();
         }
     } else {
         const url = 'https://'+window.location.host+to.path;
