@@ -59,7 +59,8 @@ router.beforeEach((to, from, next) => {
             // } else {
             //     next(to.path);
             // }
-        if (isIOS() && location.pathname == "/") {
+            console.log('location', location.pathname)
+        if (isIOS() && location.pathname == "/index") {
             let baseUrl = to.path;
             //
             if(window["__wxjs_is_wkwebview"]){
@@ -67,6 +68,9 @@ router.beforeEach((to, from, next) => {
             }else{
                 location.replace(baseUrl);
             }
+            const url = location.href.split('#')[0];
+            sharewechat.shareConfig(url);
+            sharewechat.shareReady(url, sflag);
         } else {
             const url = location.href.split('#')[0];
             sharewechat.shareConfig(url);
