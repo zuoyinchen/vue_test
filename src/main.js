@@ -67,7 +67,8 @@ router.beforeEach((to, from, next) => {
         }
     } else {
         console.log('else', url);
-        sharewechat.shareConfig(url, sflag);
+        sharewechat.shareConfig(url);
+        sharewechat.shareReady(url, sflag);
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
         next();
     }
