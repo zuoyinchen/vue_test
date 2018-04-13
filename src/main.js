@@ -40,7 +40,7 @@ router.beforeEach((to, from, next) => {
     }
     // sharewechat.shareReady(url,sflag);
 
-    let _url = window.location.origin + to.fullPath;
+    let _url = window.location.origin + to.path;
     if (shareUrl) {
         const { shareUrl } = to.query;
         window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?shareUrl="+shareUrl;
@@ -51,21 +51,21 @@ router.beforeEach((to, from, next) => {
         localStorage.setItem('jwt',jwt);//缓存用户头像
         axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt;
 
-        let url = 'https://'+window.location.host+from.path;
-        sharewechat.shareReady(url, sflag);
+        let url = 'https://'+window.location.host+to.path;
+        sharewechat.shareReady(_url, sflag);
         if (window.__wxjs_is_wkwebview !== true) {
             sharewechat.shareConfig(_url)
             next(to.path);
         }
         if (window.__wxjs_is_wkwebview === true) {
             alert('ios')
-            _url = window.location.origin + to.fullPath;
+            _url = window.location.origin + to.path;
             sharewechat.shareConfig(encodeURIComponent(_url))
             next(to.path);
         }
     } else {
         if (window.__wxjs_is_wkwebview === true) {
-            _url = window.location.origin + to.fullPath;
+            _url = window.location.origin + to.path;
             sharewechat.shareConfig(encodeURIComponent(_url))
         } else {
             sharewechat.shareConfig(_url);
