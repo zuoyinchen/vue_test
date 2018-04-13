@@ -25,7 +25,7 @@ Vue.use(VueResource);
 
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
-router.afterEach((to, from) => {
+router.beforeEach((to, from, next) => {
     const { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
     console.log('to', to, from);
     let isIOS = function() {
@@ -55,11 +55,13 @@ router.afterEach((to, from) => {
         sharewechat.shareReady(url, sflag);
         if (window.__wxjs_is_wkwebview !== true) {
             sharewechat.shareConfig(_url)
+            next(to.path);
         }
         if (window.__wxjs_is_wkwebview === true) {
             alert('ios')
             _url = window.location.href.split('#')[0]
             sharewechat.shareConfig(encodeURIComponent(_url))
+            next(to.path);
         }
     } else {
         if (window.__wxjs_is_wkwebview === true) {
@@ -70,6 +72,7 @@ router.afterEach((to, from) => {
         }
         sharewechat.shareReady(_url, sflag);
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
+        next();
     }
 });
 
