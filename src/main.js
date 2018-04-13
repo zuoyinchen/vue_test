@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
         }
         if (window.__wxjs_is_wkwebview === true) {
             alert('ios')
-            _url = window.location.href.split('#')[0]
+            _url = window.location.origin + to.fullPath;
             sharewechat.shareConfig(encodeURIComponent(_url))
             next(to.path);
         }
