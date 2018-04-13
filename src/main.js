@@ -60,16 +60,11 @@ router.beforeEach((to, from, next) => {
         if (window.__wxjs_is_wkwebview === true) {
             alert('ios')
             _url = window.location.origin + to.path;
-            sharewechat.shareConfig(encodeURIComponent(_url))
+            sharewechat.shareConfig(_url)
             next(to.path);
         }
     } else {
-        if (window.__wxjs_is_wkwebview === true) {
-            _url = window.location.origin + to.path;
-            sharewechat.shareConfig(encodeURIComponent(_url))
-        } else {
-            sharewechat.shareConfig(_url);
-        }
+        sharewechat.shareConfig(_url)
         sharewechat.shareReady(_url, sflag);
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
         next();
