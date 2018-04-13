@@ -11,7 +11,7 @@ const sharewechat = {
             const timestamp = res.data.timestamp;
             //配置微信js-sdk
             wx.config({
-                debug: false, //
+                debug: true, //
                 appId: appid, // 必填，公众号的唯一标识
                 timestamp: timestamp, // 必填，生成签名的时间戳
                 nonceStr: nonceStr, // 必填，生成签名的随机串

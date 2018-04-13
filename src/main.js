@@ -68,17 +68,14 @@ router.beforeEach((to, from, next) => {
             }else{
                 location.replace(baseUrl);
             }
-            const url = location.href.split('#')[0];
-            sharewechat.shareConfig(url);
-            sharewechat.shareReady(url, sflag);
-        } else {
-            const url = location.href.split('#')[0];
-            sharewechat.shareConfig(url);
-            console.log("每次", url);
-            next(to.path);
         }
+        const url = 'https://'+window.location.host+to.path;
+        sharewechat.shareConfig(url);
+        sharewechat.shareReady(url, sflag);
+        console.log("每次", url);
+        next(to.path);
     } else {
-        const url = location.href.split('#')[0];
+        const url = 'https://'+window.location.host+to.path;
         sharewechat.shareConfig(url);
         sharewechat.shareReady(url, sflag);
         axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('jwt');
