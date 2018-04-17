@@ -24,11 +24,10 @@
   </div>
 </template>
 <script>
+import sharewechat from "../router/sharewechat";
 export default {
   data(){
-      return{
-
-      }
+      return{}
   }
 }
 </script>

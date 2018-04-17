@@ -37,6 +37,7 @@
 <script>
 import "mint-ui/lib/style.css";
 import { MessageBox, Toast, Indicator } from "mint-ui";
+import sharewechat from "../router/sharewechat";
 const $userid = localStorage.getItem("userid"); //userid
 export default {
   name: "test",
@@ -159,7 +160,6 @@ export default {
         })
         .catch(error => {
           Indicator.close();
-          Toast({ message: "网络错误，请刷新", duration: -1 });
           console.log("error");
         });
     },
@@ -230,7 +230,7 @@ export default {
       await this.$axios.put(`/topic/${topicid}`, clickNum);
       query.readnum = readnum;
       localStorage.setItem("query", JSON.stringify(query));
-      this.$router.push("/answerDetail/1/0");
+      this.$router.push("/answerDetail/1/0/"+topicid);
     }
   },
   mounted: function() {
