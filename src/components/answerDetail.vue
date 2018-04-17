@@ -482,6 +482,7 @@ $x: 37.5;
     background:white;
     float: left;
     background:#fafafa;
+    font-size: 13px;
     padding-top: 10rem/$x;
      padding-bottom: 15rem/$x;
     .component_list{

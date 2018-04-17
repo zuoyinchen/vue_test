@@ -844,6 +844,7 @@ li {
 .slide_r {
   float: left;
   width: 283rem/$x;
+  font-size:13px;
 }
 .slide_rt {
   width: 283rem/$x;
