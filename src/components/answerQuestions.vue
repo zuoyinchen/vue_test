@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <div class="countdown" v-if="status==1">
+        <!-- <div class="countdown" v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
                                     <countdown :time="time" class="countdown" :key="time">
@@ -8,7 +8,7 @@
 </template>
                 </countdown>
           </span>
-      </div>
+      </div> -->
       <div class="btn">
           <p>{{title}}</p>
           <div class="clearfix">
@@ -26,6 +26,7 @@
 <script>
  import 'mint-ui/lib/style.css'
  import { MessageBox,Toast,Indicator} from 'mint-ui';
+ import sharewechat from "../router/sharewechat";
  export default {
     name:'answerQuestions',
     data(){
@@ -41,14 +42,11 @@
     },
     methods:{
         
-        submit:async function(event){
-            console.log(event.currentTarget.dataset);
+        submit:function(event){
             const message = event.currentTarget.dataset.message;
-            const userQuestion = localStorage.getItem("userQuestion");//参数集合
-            const userQuestionobj = JSON.parse(userQuestion);
-            const topicid= userQuestionobj.topicid;
+            const topicid= this.$route.params.topicid;
+            console.log(topicid);
             const createdBy = localStorage.getItem('userid');
-
             if(!createdBy){
                 MessageBox.alert('您还未关注筋灵十三猜公众号，关注后进入筋灵十三猜菜单即可答题').then(action=>{
 
@@ -66,7 +64,8 @@
                 topic:topicid,
                 createdBy:localStorage.getItem('userid')
             }
-            await this.$axios.post('/answer',newMsg).then(res=>{
+            console.log(newMsg)
+            this.$axios.post('/answer',newMsg).then(res=>{
                 console.log(res);
                if (res.status === 200 || res.status === 201) {
                     Indicator.close();
@@ -79,7 +78,7 @@
                     }
                     
                 }
-                console.log(newMsg)
+               
             }).catch((error)=>{
                 if(error.response.data.code == 505){
                     console.log("敏感");
@@ -99,14 +98,15 @@
         }
     },
     mounted() {
-        const userQuestion = localStorage.getItem("userQuestion"); //参数集合
-        const userQuestionobj = JSON.parse(userQuestion);
-        this.title = userQuestionobj.title;
-        this.time = Number(userQuestionobj.time);
-        this.status = userQuestionobj.status;
-        this.readnum = Number(userQuestionobj.readnum);
-        this.answernum = Number(userQuestionobj.answernum);
-        this.topicid = userQuestionobj.topicid;
+        this.topicid = this.$route.params.topicid;
+        this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
+            this.title = res.data.title;
+            this.time = res.data.second;
+            this.status = res.data.status;
+            this.readnum = res.data.readNum;
+            this.answernum = res.data.messageNum?res.data.messageNum:0;
+        });
+        
         console.log(this.title);
     }
 }

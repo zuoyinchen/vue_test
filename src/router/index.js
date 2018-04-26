@@ -20,12 +20,11 @@ import feedBack from '@/components/feedback'
 
 
 Vue.use(Router)
-
 export default new Router({
   mode:'history',
   routes: [
     {
-      path: '/',
+      path: '/index',
       name: 'index',
       component: index,
       title: '主页',
@@ -35,19 +34,22 @@ export default new Router({
       },
       children:[
         {
-          path:'/answerDetail/:eindex/:scrolltop',
+          path:'/answerDetail/:eindex/:scrolltop/:topicid',
           name:'answerDetail',
           component:answerDetail
         },{
-          path:'/answercomment/:answerid/:answerindex',
+          path:'/answercomment/:answerid/:answerindex/:topicid',
           name:'answercomment',
           component:answerComment
         },{
-            path:'/singlepai',
+            path:'/singlepai/:topicid',
             name:'singlepai',
             component: singlepai
         }
       ]
+    },{
+        path:"*",
+        redirect:"/index"
     },
     {
       path:'/paihang',
@@ -60,7 +62,7 @@ export default new Router({
       component:feedBack
     },
     {
-      path:'/answerQuestions/:frompage',
+      path:'/answerQuestions/:frompage/:topicid',
       name:'answerQuestions',
       component:answerQuestions
     },
@@ -100,3 +102,5 @@ export default new Router({
     }
   ]
 })
+
+

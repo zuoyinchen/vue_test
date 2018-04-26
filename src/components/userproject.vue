@@ -23,7 +23,7 @@
 	                  	<i class="iconfont icon-pinglun"></i>
 	                  	<span>{{item.messageNum?item.messageNum :0}}</span>
 	                  </li>
-	                  <li class="time" v-show="item.status==1">
+	                  <!-- <li class="time" v-show="item.status==1">
 	                  	<i></i>
 	                  	<span>倒计时</span>
 	                  	<span>
@@ -31,7 +31,7 @@
 	                            <template slot-scope="props" >{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }} </template>
 	                        </countdown>
 	                  	</span>
-	                  </li>
+	                  </li> -->
 	              </ul>
 				</li>
 			</ul>
@@ -46,6 +46,7 @@
 <script type="text/javascript">
 	import 'mint-ui/lib/style.css'
     import { MessageBox,Toast,Indicator} from 'mint-ui';
+    import sharewechat from "../router/sharewechat";
 	const $userid = localStorage.getItem("userid");//userid
 	export default{
 		name: 'userproject',
@@ -75,7 +76,7 @@
 	                }
 		        }).catch((error)=>{
 		        	Indicator.close();
-	                Toast({message:"网络错误，请刷新",duration:-1});
+	                Toast({message:"网络错误，请刷新"});
                 	console.log(error);
                 });
 			},
@@ -131,7 +132,7 @@
 	          }
 
 	          localStorage.setItem("query",JSON.stringify(query));
-	          this.$router.push('/answerDetail/1/0');
+	          this.$router.push('/answerDetail/1/0/'+topicid);
 	        },
 	        goSiglepai:function(event){
 	          const topicid = event.currentTarget.dataset.tid;//问题id
@@ -141,11 +142,11 @@
 	            title : title
 	          }
 	          localStorage.setItem("squery",JSON.stringify(squery));
-	          this.$router.replace('/singlepai');
+	          this.$router.replace('/singlepai/'+topicid);
 	        }
 		},
 		mounted:function(){
-			this.getInitialData();
+            this.getInitialData();
 		},
 		beforeCreate:function(){
 			Indicator.open();
