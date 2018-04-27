@@ -27,23 +27,26 @@ Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
 // axios.defaults.baseURL = 'http://localhost:1337/api/v1';
 router.beforeEach((to, from, next) => {
-    const { shareUrl,id, avatarUrl,nickName,jwt} = to.query;
-
+    const { id, avatarUrl,nickName,jwt} = to.query;
     
     if(localStorage.getItem('jwt')){
-        next(to.path);
+    
+        next();
     }else{
         if (jwt) {
+            console.log('jwt')
             localStorage.setItem("userid",id);//缓存用户id
             localStorage.setItem('headimg',avatarUrl);//缓存用户头像
             localStorage.setItem('nickname',nickName);//缓存用户头像
             localStorage.setItem('jwt',jwt);//缓存用户头像
             axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt;
-            
+            next();
         } else {
-            const { shareUrl } = to.query;
-            window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?redirect_url="+shareUrl;
+            console.log('redirect_url')
+            // next('/get_wxlogin?redirect_url='+to.path);
+            window.location.href="https://www.13cai.com.cn/api/v1/get_wxlogin?redirect_url="+to.path;
         }
+       
     }
 });
 
