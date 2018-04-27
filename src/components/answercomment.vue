@@ -148,7 +148,18 @@ export default {
     };
   },
   methods: {
+    toFocus:function(){
+      this.$axios.put("/api/v1/isflow").then(res=>{
+        if(res.subscribe==0){
+           MessageBox.alert('您还未关注筋灵十三猜公众号，关注后进入筋灵十三猜菜单即可答题').then(action=>{
+
+          });
+          return;
+        }
+      })
+    },
     starAnswer: async function(event) {
+      this.toFocus();
       // 收藏问题
       const { status, title } = this.$data;
       this.topicid = this.$route.params.topicid;
@@ -188,6 +199,7 @@ export default {
       MessageBox.alert("该场次已结束");
     },
     inputFocus: function() {
+      this.toFocus();
       interval = setInterval(function(){//设置一个计时器，时间设置与软键盘弹出所需时间相近
         document.body.scrollTop = document.body.scrollHeight;//获取焦点后将浏览器内所有内容高度赋给浏览器滚动部分高度
       },100);
@@ -197,6 +209,7 @@ export default {
       document.body.scrollTop = document.body.scrollTop;//将软键盘唤起前的浏览器滚动部分高度重新赋给改变后的高度
     },
     giveStar: function(event) {
+       this.toFocus();
       const answerid = event.currentTarget.dataset.id;
       const stars = this.list.stars || [];
       const starsid = [];
@@ -235,6 +248,7 @@ export default {
         });
     },
     giveLike: function(event) {
+     this.toFocus();
       const answerid = event.currentTarget.dataset.id;
       const upVotes = this.list.upVotes || [];
       const upVotesid = [];
@@ -272,6 +286,7 @@ export default {
         });
     },
     gotoQuestion: function(event) {
+      this.toFocus();
       const topicid = event.currentTarget.dataset.tid; //问题id
       this.$router.push("/answerQuestions/2/"+topicid);
     },

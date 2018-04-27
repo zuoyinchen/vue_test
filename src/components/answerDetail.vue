@@ -39,7 +39,7 @@
       </div>
         <div class="theme_b_sub" v-if="status==1">
             <p v-if="!isAnswer" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即回答</p>
-            <p v-else class="has_answered">已抢答</p>
+            <p v-else class="has_answered">已回答</p>
         </div>
         
         <ul class="ctn">
@@ -157,7 +157,19 @@ export default {
     };
   },
   methods: {
+    toFocus:function(){
+      this.$axios.put("/api/v1/isflow").then(res=>{
+        console.log(res)
+        if(res.subscribe==0){
+           MessageBox.alert('您还未关注筋灵十三猜公众号，关注后进入筋灵十三猜菜单即可答题').then(action=>{
+
+          });
+          return;
+        }
+      })
+    },
     starAnswer: async function(event) {
+      this.toFocus();
       // 收藏问题
       const { status, title } = this.$data;
       this.topicid = this.$route.params.topicid;
@@ -195,6 +207,7 @@ export default {
       MessageBox.alert("该场次已结束");
     },
     giveStar: function(event) {
+      this.toFocus()
       event.stopPropagation();
       const answerid = event.currentTarget.dataset.id;
       const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
@@ -239,6 +252,7 @@ export default {
         });
     },
     giveLike: function(event) {
+      this.toFocus();
       event.stopPropagation();
       console.log(event.currentTarget.dataset);
       const answerid = event.currentTarget.dataset.id;
@@ -298,6 +312,7 @@ export default {
       return str.replace("T", " ").slice(0, str.indexOf("."));
     },
     gotoQuestion: function(event) {
+      this.toFocus();
       const topicid = event.currentTarget.dataset.tid; //问题id
       const readnum = event.currentTarget.dataset.rnum; //阅读数
       this.$router.push("/answerQuestions/1/"+topicid);
