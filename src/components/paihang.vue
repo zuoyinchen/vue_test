@@ -76,6 +76,14 @@ export default {
           if (res.data && res.data.length) {
             Indicator.close();
             this.pailist = res.data;
+            console.log(res.data)
+            for(let i=0;i<res.data.length;i++){
+              if(res.data[0].ups==res.data[1].ups){
+                  // let t1 = res.data[0].
+              }else{
+                console.log("dadasd")
+              }
+            }
             const idarr = [];
             for (let i = 0; i < this.pailist.length; i++) {
               idarr.push(this.pailist[i].id);

@@ -23,7 +23,7 @@
 	                  	<i class="iconfont icon-pinglun"></i>
 	                  	<span>{{item.messageNum?item.messageNum :0}}</span>
 	                  </li>
-	                  <li class="time" v-show="item.status==1">
+	                  <!-- <li class="time" v-show="item.status==1">
 	                  	<i></i>
 	                  	<span>倒计时</span>
 	                  	<span>
@@ -31,7 +31,7 @@
 	                            <template slot-scope="props" >{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }} </template>
 	                        </countdown>
 	                  	</span>
-	                  </li>
+	                  </li> -->
 	              </ul>
 				</li>
 			</ul>

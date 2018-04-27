@@ -19,7 +19,6 @@ import answerComment from '@/components/answercomment'
 import feedBack from '@/components/feedback'
 
 
-
 Vue.use(Router)
 export default new Router({
   mode:'history',

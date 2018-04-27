@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <div class="countdown" v-if="status==1">
+        <!-- <div class="countdown" v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
                                     <countdown :time="time" class="countdown" :key="time">
@@ -8,7 +8,7 @@
 </template>
                 </countdown>
           </span>
-      </div>
+      </div> -->
       <div class="btn">
           <p>{{title}}</p>
           <div class="clearfix">

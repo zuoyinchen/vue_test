@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <scroller class="detail_box">
-      <div class="countdown"  v-if="status==1">
+      <!-- <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
                 <countdown :time="time" class="countdown" :key="time">
@@ -9,7 +9,7 @@
                     </template>
                 </countdown>
             </span>
-      </div>
+      </div> -->
       <div v-if="status== 2" class="countdown countend">
             <span class="counttest">已结束</span>
       </div>
@@ -38,7 +38,7 @@
           </div>
       </div>
         <div class="theme_b_sub" v-if="status==1">
-            <p v-if="!isAnswer" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即抢答</p>
+            <p v-if="!isAnswer" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即回答</p>
             <p v-else class="has_answered">已抢答</p>
         </div>
         
@@ -116,7 +116,7 @@
             <i class="iconfont icon-suoding"></i>
             <span>-</span>
             <span>我的排名</span>
-            <p class="go_answer">立即抢答</p>
+            <p class="go_answer">立即回答</p>
         </div>
         <div class="mylist" v-show="!isAnswer & status == 2">
             <i class="iconfont icon-suoding"></i>

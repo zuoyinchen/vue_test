@@ -1,14 +1,14 @@
 <template>
   <div class="box">
     <scroller class="box_wrap">
-      <div class="countdown"  v-if="status==1">
+      <!-- <div class="countdown"  v-if="status==1">
             <span class="counttest">倒计时</span>
             <span>
                 <countdown :time="time" class="countdown">
                     <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }} </template>
                 </countdown>
             </span>
-      </div>
+      </div> -->
       <div v-if="status== 2" class="countdown countend">
             <span class="counttest">已结束</span>
       </div>

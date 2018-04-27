@@ -18,6 +18,12 @@
                   </div>
                   <p id="a_title" @click="gotoDetail($event)" :data-eindex="index" :data-stars="JSON.stringify(item.stars)" :data-title="item.title" :data-rnum="item.readNum? item.readNum : 0" :data-anum="item.toAnswer.length" :data-status="item.status" :data-tid="item.id" :data-time="item.second">{{item.title}}</p>
                   <ul class="clearfix">
+                      <li @click="goSiglepai($event)" :data-tid="item.id" :data-title="item.title">
+                        <i class="iconfont icon-paihangbang"></i>
+                        <i v-show="false" id="idTwo">{{item.id}}</i>
+                        <span>排行榜</span>
+                        <i class="s"></i>
+                      </li>
                       <li>
                           <i class="line_l"></i>
                           <i class="iconfont icon-xianshimima"></i>
@@ -31,7 +37,7 @@
                           <span>{{item.messageNum?item.messageNum:0}}</span>
                           <i class="s"></i>
                       </li>   
-                      <li style="background:#fdd545;border-bottom-right-radius: 10px;">
+                      <!-- <li style="background:#fdd545;border-bottom-right-radius: 10px;">
                           <i></i>   
                           <span class="counttest">倒计时</span>
                           <span>
@@ -41,7 +47,8 @@
                                 </template>
                               </countdown>
                           </span>
-                      </li>
+                      </li> -->
+                      
                   </ul>
               </div>
               <div class="btn_t1" v-if="item.status==2">
