@@ -160,7 +160,8 @@ export default {
     toFocus:function(){
       let uniqueid=localStorage.getItem("uniqueid");
       this.$axios.get("/isflow"+'?uniqueid='+uniqueid).then(res=>{
-        if(res.subscribe==0){
+        let resJ = JSON.parse(res)
+        if(resJ.subscribe==0){
            MessageBox.alert('您还未关注筋灵十三猜公众号，关注后进入筋灵十三猜菜单即可答题').then(action=>{
 
           });
