@@ -27,8 +27,8 @@ Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
 // axios.defaults.baseURL = 'http://localhost:1337/api/v1';
 router.beforeEach((to, from, next) => {
-    const { id, avatarUrl,nickName,jwt} = to.query;
-    
+    const { id, avatarUrl,nickName,jwt,uniqueid } = to.query;
+    console.log(uniqueid)
     if(localStorage.getItem('jwt')){
     
         next();
@@ -39,6 +39,7 @@ router.beforeEach((to, from, next) => {
             localStorage.setItem('headimg',avatarUrl);//缓存用户头像
             localStorage.setItem('nickname',nickName);//缓存用户头像
             localStorage.setItem('jwt',jwt);//缓存用户头像
+            localStorage.setItem('uniqueid',uniqueid)
             axios.defaults.headers.common['Authorization'] = 'Bearer '+jwt;
             next();
         } else {
