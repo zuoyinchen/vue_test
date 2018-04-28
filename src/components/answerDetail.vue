@@ -296,6 +296,8 @@
   
       },
       giveLike: function(event) {
+        // event.stopPropagation();
+        console.log(answerid+"daodhjasdkjgasdahgsdha")
         let uniqueid = localStorage.getItem("uniqueid");
         const answerid = event.currentTarget.dataset.id;
         const $index = event.currentTarget.dataset.index;
@@ -307,7 +309,7 @@
             // })
             document.getElementById("md").className = "show";
           } else {
-            event.stopPropagation();
+            
             console.log(event.currentTarget.dataset);
             
             console.log("点赞id |" + answerid);
@@ -1142,10 +1144,10 @@
   }
  #qd{
    display: block;
-    width: 260rem/$x;
+    width: 300rem/$x;
     position: absolute;
     background: #ccc;
-    left: 15%;
+    left: 10%;
     top: 40%;
     z-index: 121;
     border-radius: 4px;

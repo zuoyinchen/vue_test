@@ -295,6 +295,7 @@
       giveLike: function(event) {
          event.stopPropagation();
         let uniqueid = localStorage.getItem("uniqueid");
+        // console.log(answerid+"dandmnalksd")
         const answerid = event.currentTarget.dataset.id;
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
@@ -1095,10 +1096,10 @@
   }
    #qd{
    display: block;
-    width: 260rem/$x;
+    width: 300rem/$x;
     position: absolute;
     background: #ccc;
-    left: 15%;
+    left: 10%;
     top: 40%;
     z-index: 121;
     border-radius: 4px;
