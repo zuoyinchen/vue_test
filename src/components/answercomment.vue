@@ -155,23 +155,13 @@
       };
     },
     methods: {
-       copyed:function(){
-        const input = document.createElement('input');
-              input.value = '筋灵十三猜'
-              input.id = '13cai';
-              input.hidden = true;
-              document.body.appendChild(input);
-              const cai = document.getElementById("13cai");
-              input.select(); // 选择对象
-              document.execCommand("Copy"); // 执行浏览器复制命令
-              this.upDatedata("已复制");
-      },
+       
       starAnswer: function(event) {
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              this.copyed();
+              
               return this.flag;
             })
           } else {
@@ -238,7 +228,7 @@
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
            if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              this.copyed();
+              
               return this.flag;
             })}else{
                 
@@ -290,7 +280,7 @@
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              this.copyed();
+              
               return this.flag;
             })
           }else{
@@ -333,8 +323,20 @@
        
       },
       gotoQuestion: function(event) {
+        let uniqueid = localStorage.getItem("uniqueid");
         const topicid = event.currentTarget.dataset.tid; //问题id
-        this.$router.push("/answerQuestions/2/" + topicid);
+        this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
+           if (res.data.subscribe == 0) {
+            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              
+              return this.flag;
+            })
+          }else{
+            this.$router.push("/answerQuestions/2/" + topicid);
+          }
+        })
+        
+        
       },
       deleteAnswer: function() {
         const answerid = event.currentTarget.dataset.id;
@@ -463,9 +465,17 @@
       },
       //评论答案
       gotoComment: function(event) {
-        Indicator.open();
+        let uniqueid = localStorage.getItem("uniqueid");
+        this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
+          if (res.data.subscribe == 0) {
+            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              
+              return this.flag;
+            })
+          }else{
+            Indicator.open();
         if (!localStorage.getItem("userid")) {
-          MessageBox.alert("您还未关注筋灵十三猜公众号，请先关注公众号").then(
+          MessageBox.alert("有趣、有钱、又有料，你还在犹豫神马？还不快关注？").then(
             action => {}
           );
           return false;
@@ -511,6 +521,9 @@
               }, 1000);
             }
           });
+          }
+        })
+        
       }
     },
     mounted() {

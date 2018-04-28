@@ -162,23 +162,11 @@
       };
     },
     methods: {
-      copyed:function(){
-        const input = document.createElement('input');
-              input.value = '筋灵十三猜'
-              input.id = '13cai';
-              input.hidden = true;
-              document.body.appendChild(input);
-              const cai = document.getElementById("13cai");
-              input.select(); // 选择对象
-              document.execCommand("Copy"); // 执行浏览器复制命令
-              this.upDatedata("已复制");
-      },
       starAnswer: function(event) {
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              this.copyed();
               return this.flag;
             })
           } else {
@@ -236,7 +224,7 @@
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              this.copyed();
+              
               return this.flag;
             })
           } else {
@@ -290,7 +278,7 @@
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              this.copyed();
+              
               return this.flag;
             })
           } else {
@@ -361,7 +349,7 @@
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              this.copyed();
+              
               return this.flag;
             })
           } else {

@@ -161,12 +161,15 @@
             .then(res => {
               this.countdown = res.data.countDown;
               this.msg = res.data.list || [];
+              console.log(this.msg);
               this.countdown = res.data.countDown;
+              const limit = this.page * this.size;
+                console.log(this.msg.length)
+              if (this.msg.length < limit) {
+                this.noData = "没有更多数据";
+              }
             });
-          const limit = this.page * this.size;
-          if (this.msg.length < limit) {
-            this.noData = "没有更多数据";
-          }
+          
           done();
         }, 3000);
       },
