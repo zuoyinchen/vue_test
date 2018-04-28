@@ -9,7 +9,8 @@
 </template>
             </countdown>
         </span>
-        <span>游戏规则</span>
+        <!-- <span @click=""></span> -->
+        <router-link tag="span" to="/gamerule">游戏规则</router-link>
       </div>
       <ul class="btn">
           <li v-for="(item,index) in msg" :key="index">
