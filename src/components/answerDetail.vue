@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     
-    <div id="md" @click="md_none($event)" class="show">
+    <div id="md" @click="md_none($event)" class="hide">
       <div>
       <img src="http://cdn.zg18.com/13_qscode.jpg" alt="" id="qd" class="" @click="qd_none($event)">
        <div class="bot_font">
@@ -1166,7 +1166,7 @@
    position: absolute;
    left: 10%;
    top: 63%;
-   padding: 20rem/$x 0 10rem/$x 0;
+   padding: 16rem/$x 0 10rem/$x 0;
    border-bottom-left-radius: 4px;
    border-bottom-right-radius:4px; 
    z-index: 131;
