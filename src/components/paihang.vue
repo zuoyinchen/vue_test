@@ -18,6 +18,8 @@
                     <img :src="item.avatarUrl" alt="" class="avtalimg" v-if="Boolean(item.avatarUrl)">
                     <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
                     <span class="nickname">{{item.nickName}}</span>
+                    <span class="paimoney" v-if="item.award!=0">奖金:¥{{item.award}}</span>
+                    <span class="paimoney" v-else>奖金:¥{{0}}</span>
                     <p class="upVotes_box">
                       <i class="iconfont icon-dianzan1"></i>
                       <span>{{item.ups}}</span>
@@ -77,6 +79,12 @@ export default {
             Indicator.close();
             this.pailist = res.data;
             console.log(res.data)
+            for(let i=0;i<res.data.length;i++){
+              if(!res.data[i].award){
+                res.data[i].award = 0;
+              }
+            }
+
             for(let i=0;i<res.data.length;i++){
               if(res.data[0].ups==res.data[1].ups){
                   // let t1 = res.data[0].
@@ -289,6 +297,10 @@ $x: 37.5;
   color: #333333;
   letter-spacing: 0.17px;
   float: left;
+  width: 150rem/$x;
+  white-space: nowrap;
+  text-overflow:ellipsis;overflow:hidden;
+  text-align: left;
 }
 .indexname {
   width: 20rem/$x;
@@ -378,5 +390,12 @@ $x: 37.5;
   width: 345rem/$x;
   height: 140rem/$x;
 }
+.paimoney{
+      z-index: 10;
+      position: absolute;
+      width: 100rem/$x;
+      left: 200rem/$x;
+      background: #fff;
+  }
 </style>
 

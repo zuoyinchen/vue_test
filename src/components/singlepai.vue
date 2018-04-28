@@ -22,6 +22,7 @@
                         <img src="../assets/images/logo.png" alt="" class="avtalimg" v-else>
                         <span class="nickname" v-if="Boolean(item.createdBy)&&Boolean(item.createdBy.avatarUrl)">{{item.createdBy.nickName}}</span>
                         <span class="nickname" v-else>匿名用户</span>
+                        <span class="paimoney" v-if="index == '0'">奖金:¥{{money}}</span>
                         <div class="ctn_r">
                             <i class="iconfont icon-dianzan1"></i>
                             <span>{{item.upVoteLen}}</span>
@@ -66,7 +67,8 @@
         myGrade:'-',
         topic_title:'',
         title:'',
-        topicid:''
+        topicid:'',
+        money:0
 			}
 		},
 		mounted:function(){
@@ -80,10 +82,18 @@
             Indicator.open();
 		    this.$axios.get('/singleRank',{params:data}).then((res)=>{
             console.log(res.data);
+            console.log("dajkdkabdhk")
             Indicator.close();
 		        if(res.data && res.data.length){
-		            this.pailist =res.data;
-                console.log(this.pailist);
+                    this.pailist =res.data;
+                    if(res.data.award){
+                        this.money = res.data.award;
+                        return this.money;
+                    }else{
+                        this.money = 13;
+                        return this.money;
+                    }
+                
 		            const idarr = [];
 			        for(let i=0;i<this.pailist.length;i++){
 			            idarr.push(this.pailist[i].createdBy.id);
@@ -103,12 +113,12 @@
                 Indicator.close();
 		        console.log(error);
             });
-            sharewechat(window.location.href.split("#")[0]);
+            // sharewechat(window.location.href.split("#")[0]);
         },
         beforeRouteLeave (to, from, next) {
             next();
             const url = 'https://'+window.location.host+to.fullPath;
-            sharewechat(url);
+            // sharewechat(url);
         }
 	}
 </script>
@@ -296,5 +306,7 @@
     .my_list_r>span:nth-of-type(1){
         
     }
-
+    .paimoney{
+        margin-top: 16px;
+    }
 </style>
