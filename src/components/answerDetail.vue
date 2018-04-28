@@ -1,9 +1,12 @@
 <template>
   <div class="box">
     
-    <div id="md" @click="md_none($event)" class="hide">
+    <div id="md" @click="md_none($event)" class="show">
       <div>
       <img src="http://cdn.zg18.com/13_qscode.jpg" alt="" id="qd" class="" @click="qd_none($event)">
+       <div class="bot_font">
+          关注筋灵十三猜才可以评论、点赞
+       </div>
        </div>
     </div>
     <scroller class="detail_box">
@@ -296,68 +299,62 @@
   
       },
       giveLike: function(event) {
-        // event.stopPropagation();
-        console.log(answerid+"daodhjasdkjgasdahgsdha")
-        let uniqueid = localStorage.getItem("uniqueid");
-        const answerid = event.currentTarget.dataset.id;
-        const $index = event.currentTarget.dataset.index;
-        this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
-          if (res.data.subscribe == 0) {
-            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              
-            //   return this.flag;
-            // })
-            document.getElementById("md").className = "show";
-          } else {
-            
-            console.log(event.currentTarget.dataset);
-            
-            console.log("点赞id |" + answerid);
-             //所点击收藏的评论索引
-            console.log(this.msg[$index].upVotes);
-            const upVotes = this.msg[$index].upVotes;
-            const upVotesid = [];
-            //循环当前评论收藏的信息，拿到此条评论的所有id
-            for (let i = 0; i < upVotes.length; i++) {
-              upVotesid.push(upVotes[i].id);
-            }
-            console.log(this.msg[$index].upVote);
-            console.log("当前用户点赞位置" + upVotesid.indexOf(localStorage.getItem("userid")));
+      event.stopPropagation();
+      const answerid = event.currentTarget.dataset.id;
+      const $index = event.currentTarget.dataset.index; 
+      const upVotes = this.msg[$index].upVotes;
+      const upVotesid = [];
+      let uniqueid = localStorage.getItem("uniqueid");
+      this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
+        if(res.data.subscribe == 0){
+          document.getElementById("md").className = "show";
+        }else{
+          //循环当前评论收藏的信息，拿到此条评论的所有id
+      for (let i = 0; i < upVotes.length; i++) {
+        upVotesid.push(upVotes[i].id);
+      }
+      console.log(this.msg[$index].upVote);
+      console.log("当前用户点赞位置" + upVotesid.indexOf(localStorage.getItem("userid")));
+      if (this.msg[$index].upVote) {
+        upVotesid.splice(upVotesid.indexOf(localStorage.getItem("userid")), 1);
+        var resultarr = upVotesid;
+        $(".upVote_num")
+          .eq($index)
+          .text(resultarr.length);
+      } else {
+        upVotesid.push(localStorage.getItem("userid"));
+        var resultarr = [...new Set(upVotesid)];
+        $(".upVote_num")
+          .eq($index)
+          .text(resultarr.length);
+      }
+      const data = {
+        upVotes: resultarr
+      };
+      this.$axios
+        .put("/answer/" + answerid, data)
+        .then(res => {
+          console.log(res);
+          if (res.status == 200) {
             if (this.msg[$index].upVote) {
-              upVotesid.splice(upVotesid.indexOf(localStorage.getItem("userid")), 1);
-              var resultarr = upVotesid;
-              $(".upVote_num")
-                .eq($index)
-                .text(resultarr.length);
+              this.msg[$index].upVote = false;
+              this.upDatedata("取消点赞");
             } else {
-              upVotesid.push(localStorage.getItem("userid"));
-              var resultarr = [...new Set(upVotesid)];
-              $(".upVote_num")
-                .eq($index)
-                .text(resultarr.length);
+              this.msg[$index].upVote = true;
+              this.upDatedata("点赞成功");
             }
-            const data = {
-              upVotes: resultarr
-            };
-            this.$axios
-              .put("/answer/" + answerid, data)
-              .then(res => {
-                console.log(res);
-                if (res.status == 200) {
-                  if (this.msg[$index].upVote) {
-                    this.msg[$index].upVote = false;
-                    this.upDatedata("取消点赞");
-                  } else {
-                    this.msg[$index].upVote = true;
-                    this.upDatedata("点赞成功");
-                  }
-                }
-              })
-              .catch((error, errorcode) => {
-                console.log(error);
-              });
           }
         })
+        .catch((error, errorcode) => {
+          console.log(error);
+        });
+        }
+      })
+
+     
+    
+      
+
       },
       slideDown: function(event) {
         const answerid = event.currentTarget.dataset.id;
@@ -1160,6 +1157,19 @@
    left: 0;
    top: 0;
    z-index: 111;;
+ }
+ .bot_font{
+   width: 300rem/$x;
+   height: 30rem$x;
+   color: #666;
+   background: #fff;
+   position: absolute;
+   left: 10%;
+   top: 63%;
+   padding: 10rem/$x 0;
+   border-bottom-left-radius: 4px;
+   border-bottom-right-radius:4px; 
+
  }
 </style>
 
