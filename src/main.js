@@ -29,7 +29,7 @@ axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
 
 router.beforeEach((to, from, next) => {
     const { id, avatarUrl,nickName,jwt,uniqueid } = to.query;
-    if(localStorage.getItem('jwt')){
+    if(localStorage.getItem('jwt') && localStorage.getItem('uniqueid')){
     
         next();
     }else{
