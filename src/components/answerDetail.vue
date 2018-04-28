@@ -1,5 +1,11 @@
 <template>
   <div class="box">
+    
+    <div id="md" @click="md_none($event)" class="hide">
+      <div>
+      <img src="http://cdn.zg18.com/WechatIMG24.jpeg" alt="" id="qd" class="" @click="qd_none($event)">
+       </div>
+    </div>
     <scroller class="detail_box">
       <!-- <div class="countdown"  v-if="status==1">
                 <span class="counttest">倒计时</span>
@@ -10,6 +16,9 @@
                 </countdown>
             </span>
       </div> -->
+      <!-- <div id="md"> -->
+          
+      <!-- </div> -->
       <div v-if="status== 2" class="countdown countend">
             <span class="counttest">已结束</span>
       </div>
@@ -162,14 +171,28 @@
       };
     },
     methods: {
+      qd_none:function(event){
+        event.stopPropagation();
+        console.log(event.currentTarget)
+        document.getElementById.className = "show";
+      }
+      ,
+      md_none:function(event){
+        // event.stopPropagation();
+        console.log(event.currentTarget)
+        document.getElementById("md").className = "hide";
+      },
       starAnswer: function(event) {
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-              return this.flag;
-            })
-          } else {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            //   document.getElementById("qd").className = show;
+            //   return this.flag;
+            // // })
+            document.getElementById("md").className = "show";
+          } 
+          else {
             const {
               status,
               title
@@ -223,10 +246,11 @@
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
               
-              return this.flag;
-            })
+            //   return this.flag;
+            // })
+            document.getElementById("md").className = "show";
           } else {
             console.log(this.msg[$index].stars);
             const stars = this.msg[$index].stars;
@@ -277,10 +301,11 @@
         const $index = event.currentTarget.dataset.index;
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
               
-              return this.flag;
-            })
+            //   return this.flag;
+            // })
+            document.getElementById("md").className = "show";
           } else {
             event.stopPropagation();
             console.log(event.currentTarget.dataset);
@@ -348,10 +373,11 @@
         const readnum = event.currentTarget.dataset.rnum; //阅读数
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
               
-              return this.flag;
-            })
+            //   return this.flag;
+            // })
+            document.getElementById("md").className = "show";
           } else {
             
             this.$router.push("/answerQuestions/1/" + topicid);
@@ -1114,5 +1140,24 @@
   .icon_pin>span:nth-of-type(1) {
     padding-left: 8rem/$x;
   }
+ #qd{
+   display: block;
+    width: 260rem/$x;
+    position: absolute;
+    background: #ccc;
+    left: 15%;
+    top: 40%;
+    z-index: 121;
+    border-radius: 4px;
+ }
+ #md{
+   width: 10rem;
+   height: 100%;
+   background:rgba(0,0,0,0.4);
+   position: absolute;
+   left: 0;
+   top: 0;
+   z-index: 111;;
+ }
 </style>
 

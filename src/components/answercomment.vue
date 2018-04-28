@@ -1,5 +1,10 @@
 <template>
   <div class="box">
+    <div id="md" @click="md_none($event)" class="hide">
+      <div>
+      <img src="http://cdn.zg18.com/WechatIMG24.jpeg" alt="" id="qd" class="" @click="qd_none($event)">
+       </div>
+    </div>
     <scroller class="box_wrap">
       <!-- <div class="countdown"  v-if="status==1">
               <span class="counttest">倒计时</span>
@@ -155,15 +160,26 @@
       };
     },
     methods: {
-       
+       qd_none:function(event){
+        event.stopPropagation();
+        console.log(event.currentTarget)
+        document.getElementById.className = "show";
+      }
+      ,
+      md_none:function(event){
+        // event.stopPropagation();
+        console.log(event.currentTarget)
+        document.getElementById("md").className = "hide";
+      },
       starAnswer: function(event) {
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
               
-              return this.flag;
-            })
+            //   return this.flag;
+            // })
+            document.getElementById("md").className = "show";
           } else {
             const {
               status,
@@ -227,10 +243,13 @@
         const answerid = event.currentTarget.dataset.id;
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
            if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
               
-              return this.flag;
-            })}else{
+            //   return this.flag;
+            // })
+            document.getElementById("md").className = "show";
+            }
+            else{
                 
                 
         const stars = this.list.stars || [];
@@ -279,10 +298,11 @@
         const answerid = event.currentTarget.dataset.id;
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
               
-              return this.flag;
-            })
+            //   return this.flag;
+            // })
+            document.getElementById("md").className = "show";
           }else{
         const upVotes = this.list.upVotes || [];
         const upVotesid = [];
@@ -327,10 +347,11 @@
         const topicid = event.currentTarget.dataset.tid; //问题id
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
            if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
               
-              return this.flag;
-            })
+            //   return this.flag;
+            // })
+            document.getElementById("md").className = "show";
           }else{
             this.$router.push("/answerQuestions/2/" + topicid);
           }
@@ -468,10 +489,11 @@
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
-            MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
               
-              return this.flag;
-            })
+            //   return this.flag;
+            // })
+            document.getElementById("md").className = "show";
           }else{
             Indicator.open();
         if (!localStorage.getItem("userid")) {
@@ -1071,4 +1093,23 @@
   .icon_pin>span:nth-of-type(1) {
     padding-left: 8rem/$x;
   }
+   #qd{
+   display: block;
+    width: 260rem/$x;
+    position: absolute;
+    background: #ccc;
+    left: 15%;
+    top: 40%;
+    z-index: 121;
+    border-radius: 4px;
+ }
+ #md{
+   width: 10rem;
+   height: 100%;
+   background:rgba(0,0,0,0.4);
+   position: absolute;
+   left: 0;
+   top: 0;
+   z-index: 111;;
+ }
 </style>
