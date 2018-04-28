@@ -4,7 +4,7 @@
       <div>
       <img src="http://cdn.zg18.com/13_qscode.jpg" alt="" id="qd" class="" @click="qd_none($event)">
        <div class="bot_font">
-          关注筋灵十三猜才可以评论、点赞
+          关注筋灵十三猜领取红包
        </div>
        </div>
     </div>
@@ -1116,17 +1116,17 @@
    top: 0;
    z-index: 111;;
  }
- .bot_font{
+.bot_font{
    width: 300rem/$x;
-   height: 30rem$x;
+  //  height: 30rem$x;
    color: #666;
    background: #fff;
    position: absolute;
    left: 10%;
    top: 63%;
-   padding: 10rem/$x 0;
+   padding: 20rem/$x 0 10rem/$x 0;
    border-bottom-left-radius: 4px;
    border-bottom-right-radius:4px; 
-
+   z-index: 131;
  }
 </style>
