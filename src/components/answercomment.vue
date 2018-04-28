@@ -41,7 +41,7 @@
           <p v-if="!isAnswer" @click="gotoQuestion($event)" :data-title="title" :data-rnum="readnum" :data-anum="answernum" :data-status="status" :data-tid="topicid" :data-time="time">立即回答</p>
           <p v-else class="has_answered">已回答</p>
       </div>
-      <ul class="ctn">
+<ul class="ctn">
           <li class="clearfix pin_list" >
             <div class="answer_wrap">
               <div class="ctn_l">
@@ -86,7 +86,7 @@
                   </div>
               </div>
             </div>
-            <div class="slide clearfix" v-for="i in comments" :key="i.id">
+ <div class="slide clearfix" v-for="i in comments" :key="i.id">
               <div class="slide_l">
                   <img v-if="Boolean(i.createdBy.avatarUrl)" :src="i.createdBy.avatarUrl" alt="">
                   <img v-else src="../assets/images/logo.png" alt="">
@@ -151,15 +151,27 @@
         isAnswer: false,
         stars: [],
         isMark: false,
-        flag: false
+        flag:false      
       };
     },
     methods: {
+       copyed:function(){
+        const input = document.createElement('input');
+              input.value = '筋灵十三猜'
+              input.id = '13cai';
+              input.hidden = true;
+              document.body.appendChild(input);
+              const cai = document.getElementById("13cai");
+              input.select(); // 选择对象
+              document.execCommand("Copy"); // 执行浏览器复制命令
+              this.upDatedata("已复制");
+      },
       starAnswer: function(event) {
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              this.copyed();
               return this.flag;
             })
           } else {
@@ -219,116 +231,106 @@
         document.body.scrollTop = document.body.scrollTop; //将软键盘唤起前的浏览器滚动部分高度重新赋给改变后的高度
       },
       giveStar: function(event) {
+
+        console.log(event.currentTarget)
         let uniqueid = localStorage.getItem("uniqueid");
+        const answerid = event.currentTarget.dataset.id;
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
-          if (res.data.subscribe == 0) {
+           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              this.copyed();
               return this.flag;
-            })
-          } else {
-            event.stopPropagation();
-            const answerid = event.currentTarget.dataset.id;
-            const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
-            console.log(this.msg[$index].stars);
-            const stars = this.msg[$index].stars;
-            const starsid = [];
-            //循环当前评论收藏的信息，拿到此条评论的所有id
-            for (let i = 0; i < stars.length; i++) {
-              starsid.push(stars[i].id);
+            })}else{
+                
+                
+        const stars = this.list.stars || [];
+        const starsid = [];
+        //循环当前评论收藏的信息，拿到此条评论的所有id
+        for (let i = 0; i < stars.length; i++) {
+          starsid.push(stars[i].id);
+        }
+        if (this.list.isStar) {
+          starsid.splice(starsid.indexOf(localStorage.getItem("userid")), 1);
+          var resultarr = starsid;
+          console.log(resultarr);
+        } else {
+          starsid.push(localStorage.getItem("userid"));
+          var resultarr = [...new Set(starsid)];
+          console.log(resultarr);
+        }
+        const data = {
+          stars: resultarr
+        };
+        this.$axios
+          .put("/answer/" + answerid, data)
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              if (this.list.isStar) {
+                this.upDatedata("取消收藏");
+                this.list.isStar = false;
+              } else {
+                this.upDatedata("收藏成功");
+                this.list.isStar = true;
+              }
             }
-            console.log(this.msg[$index].isStar);
-            if (this.msg[$index].isStar) {
-              console.log("取消收藏");
-              starsid.splice(starsid.indexOf(localStorage.getItem("userid")), 1);
-              var resultarr = starsid;
-              console.log(resultarr);
-            } else {
-              console.log("收藏");
-              starsid.push(localStorage.getItem("userid"));
-              var resultarr = [...new Set(starsid)];
-              console.log(resultarr);
+          })
+          .catch((error, errorcode) => {
+            console.log(error);
+          });
             }
-            const data = {
-              stars: resultarr
-            };
-            this.$axios
-              .put("/answer/" + answerid, data)
-              .then(res => {
-                console.log(res);
-                if (res.status == 200) {
-                  if (this.msg[$index].isStar) {
-                    this.msg[$index].isStar = false;
-                    this.upDatedata("取消收藏");
-                  } else {
-                    this.msg[$index].isStar = true;
-                    this.upDatedata("收藏成功");
-                  }
-                }
-              })
-              .catch(error => {
-                console.log(error);
-              });
-          }
         })
-  
+        
+        
       },
       giveLike: function(event) {
+         event.stopPropagation();
         let uniqueid = localStorage.getItem("uniqueid");
+        const answerid = event.currentTarget.dataset.id;
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              this.copyed();
               return this.flag;
             })
-          } else {
-            event.stopPropagation();
-            console.log(event.currentTarget.dataset);
-            const answerid = event.currentTarget.dataset.id;
-            console.log("点赞id |" + answerid);
-            const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
-            console.log(this.msg[$index].upVotes);
-            const upVotes = this.msg[$index].upVotes;
-            const upVotesid = [];
-            //循环当前评论收藏的信息，拿到此条评论的所有id
-            for (let i = 0; i < upVotes.length; i++) {
-              upVotesid.push(upVotes[i].id);
-            }
-            console.log(this.msg[$index].upVote);
-            console.log("当前用户点赞位置" + upVotesid.indexOf(localStorage.getItem("userid")));
-            if (this.msg[$index].upVote) {
-              upVotesid.splice(upVotesid.indexOf(localStorage.getItem("userid")), 1);
-              var resultarr = upVotesid;
-              $(".upVote_num")
-                .eq($index)
-                .text(resultarr.length);
+          }else{
+        const upVotes = this.list.upVotes || [];
+        const upVotesid = [];
+        //循环当前评论收藏的信息，拿到此条评论的所有id
+        for (let i = 0; i < upVotes.length; i++) {
+          upVotesid.push(upVotes[i].id);
+        }
+        if (this.list.upVote) {
+          upVotesid.splice(upVotesid.indexOf(localStorage.getItem("userid")), 1);
+          console.log("取消点赞");
+          var resultarr = upVotesid;
+          console.log(resultarr);
+        } else {
+          upVotesid.push(localStorage.getItem("userid"));
+          console.log("点赞");
+          var resultarr = [...new Set(upVotesid)];
+          console.log(resultarr);
+        }
+        const data = {
+          upVotes: resultarr
+        };
+        this.$axios.put("/answer/" + answerid, data).then(res => {
+          console.log(res);
+          if (res.status == 200) {
+            if (this.list.upVote) {
+              this.list.upVote = false;
+              this.upDatedata("取消点赞");
             } else {
-              upVotesid.push(localStorage.getItem("userid"));
-              var resultarr = [...new Set(upVotesid)];
-              $(".upVote_num")
-                .eq($index)
-                .text(resultarr.length);
+              this.upDatedata("点赞成功");
+              this.list[$index].upVote = true;
             }
-            const data = {
-              upVotes: resultarr
-            };
-            this.$axios
-              .put("/answer/" + answerid, data)
-              .then(res => {
-                console.log(res);
-                if (res.status == 200) {
-                  if (this.msg[$index].upVote) {
-                    this.msg[$index].upVote = false;
-                    this.upDatedata("取消点赞");
-                  } else {
-                    this.msg[$index].upVote = true;
-                    this.upDatedata("点赞成功");
-                  }
-                }
-              })
-              .catch((error, errorcode) => {
-                console.log(error);
-              });
+          }
+        }).catch((error, errorcode) => {
+          console.log(error);
+        });
           }
         })
+       
       },
       gotoQuestion: function(event) {
         const topicid = event.currentTarget.dataset.tid; //问题id
@@ -461,7 +463,6 @@
       },
       //评论答案
       gotoComment: function(event) {
-  
         Indicator.open();
         if (!localStorage.getItem("userid")) {
           MessageBox.alert("您还未关注筋灵十三猜公众号，请先关注公众号").then(
@@ -469,7 +470,7 @@
           );
           return false;
         }
-        提交答案不能为空
+        //提交答案不能为空
         if (!this.message) {
           let instance = Toast("评论不能为空");
           setTimeout(() => {
@@ -511,8 +512,6 @@
             }
           });
       }
-  
-  
     },
     mounted() {
       const answerid = this.$route.params.answerid; //回答id

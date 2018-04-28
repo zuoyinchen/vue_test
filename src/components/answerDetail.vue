@@ -162,11 +162,23 @@
       };
     },
     methods: {
+      copyed:function(){
+        const input = document.createElement('input');
+              input.value = '筋灵十三猜'
+              input.id = '13cai';
+              input.hidden = true;
+              document.body.appendChild(input);
+              const cai = document.getElementById("13cai");
+              input.select(); // 选择对象
+              document.execCommand("Copy"); // 执行浏览器复制命令
+              this.upDatedata("已复制");
+      },
       starAnswer: function(event) {
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              this.copyed();
               return this.flag;
             })
           } else {
@@ -217,16 +229,17 @@
         MessageBox.alert("该场次已结束");
       },
       giveStar: function(event) {
+        event.stopPropagation();
+        const answerid = event.currentTarget.dataset.id;
+        const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              this.copyed();
               return this.flag;
             })
           } else {
-            event.stopPropagation();
-            const answerid = event.currentTarget.dataset.id;
-            const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
             console.log(this.msg[$index].stars);
             const stars = this.msg[$index].stars;
             const starsid = [];
@@ -272,17 +285,20 @@
       },
       giveLike: function(event) {
         let uniqueid = localStorage.getItem("uniqueid");
+        const answerid = event.currentTarget.dataset.id;
+        const $index = event.currentTarget.dataset.index;
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              this.copyed();
               return this.flag;
             })
           } else {
             event.stopPropagation();
             console.log(event.currentTarget.dataset);
-            const answerid = event.currentTarget.dataset.id;
+            
             console.log("点赞id |" + answerid);
-            const $index = event.currentTarget.dataset.index; //所点击收藏的评论索引
+             //所点击收藏的评论索引
             console.log(this.msg[$index].upVotes);
             const upVotes = this.msg[$index].upVotes;
             const upVotesid = [];
@@ -340,14 +356,16 @@
       },
       gotoQuestion: function(event) {
         let uniqueid = localStorage.getItem("uniqueid");
+        const topicid = event.currentTarget.dataset.tid; //问题id
+        const readnum = event.currentTarget.dataset.rnum; //阅读数
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
             MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+              this.copyed();
               return this.flag;
             })
           } else {
-            const topicid = event.currentTarget.dataset.tid; //问题id
-            const readnum = event.currentTarget.dataset.rnum; //阅读数
+            
             this.$router.push("/answerQuestions/1/" + topicid);
           }
         })

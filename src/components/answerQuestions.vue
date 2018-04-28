@@ -52,7 +52,7 @@
                 console.log(topicid);
                 const createdBy = localStorage.getItem('userid');
                 if (!createdBy) {
-                    MessageBox.alert('您还未关注筋灵十三猜公众号，关注后进入筋灵十三猜菜单即可答题').then(action => {
+                    MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
     
                     });
                     return false;
