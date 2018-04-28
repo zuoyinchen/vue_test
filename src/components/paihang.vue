@@ -20,6 +20,7 @@
                     <span class="nickname">{{item.nickName}}</span>
                     <span class="paimoney" v-if="item.award!=0">奖金:¥{{item.award}}</span>
                     <span class="paimoney" v-else>奖金:¥{{0}}</span>
+                    <span class="paimoney" v-if="item.ups==0">奖金:¥{{0}}</span>
                     <p class="upVotes_box">
                       <i class="iconfont icon-dianzan1"></i>
                       <span>{{item.ups}}</span>
