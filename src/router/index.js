@@ -17,6 +17,7 @@ import Message from '@/components/message'
 import contactUs from '@/components/contactUs'
 import answerComment from '@/components/answercomment'
 import feedBack from '@/components/feedback'
+import gamerule from '@/components/gamerule'
 
 
 Vue.use(Router)
@@ -99,6 +100,11 @@ export default new Router({
       path:'/contactUs',
       name:'contactUs',
       component:contactUs
+    },
+    {
+       path:'/gamerule',
+       name: '/gamerule',
+       component:gamerule
     }
   ]
 })
