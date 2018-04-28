@@ -2,7 +2,7 @@
   <div class="box">
     <div id="md" @click="md_none($event)" class="hide">
       <div>
-      <img src="http://cdn.zg18.com/WechatIMG24.jpeg" alt="" id="qd" class="" @click="qd_none($event)">
+      <img src="http://cdn.zg18.com/13_qscode.jpg" alt="" id="qd" class="" @click="qd_none($event)">
        </div>
     </div>
     <scroller class="box_wrap">
