@@ -222,7 +222,7 @@
       // this.sharewechat(url,false);
       console.log(url)
       // setTimeout(() => {
-        location.href = location.href.replace(location.href,"https://www.13cai.com.cn/index");
+        // location.href = location.href.replace(location.href,"https://www.13cai.com.cn/index");
         // window.onpopstate = ()=>{
         // history.pushState("", title, "http://localhost:8080/index.html");
         // history.replaceState("", "xuasnhfuew", "http://localhost:8080/index.html");
