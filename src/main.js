@@ -26,9 +26,9 @@ Vue.use(VueResource);
 Vue.prototype.$axios = axios;
 axios.defaults.baseURL = 'https://www.13cai.com.cn/api/v1';
 // axios.defaults.baseURL = 'http://localhost:1337/api/v1';
+
 router.beforeEach((to, from, next) => {
     const { id, avatarUrl,nickName,jwt,uniqueid } = to.query;
-    console.log(uniqueid)
     if(localStorage.getItem('jwt')){
     
         next();
