@@ -47,7 +47,7 @@
                     <span>{{myStar}}</span>
                 </div>
             </div>
-            <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span>
+            <!-- <span class="showempty" v-show="pailist.length < 1">暂无用户上榜</span> -->
       </div>
        
 	</div>
@@ -70,10 +70,12 @@
         topicid:'',
         money:0
 			}
-		},
-		mounted:function(){
-            this.topicid = this.$route.params.topicid;
-            this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
+        },
+        methods:{
+            getSingePai:function(){
+                Indicator.open();
+                this.topicid = this.$route.params.topicid;
+                this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
                 this.title = res.data.title;
             });
 		    const data = {
@@ -83,7 +85,7 @@
 		    this.$axios.get('/singleRank',{params:data}).then((res)=>{
             console.log(res.data);
             console.log("dajkdkabdhk")
-            Indicator.close();
+            // Indicator.close();
 		        if(res.data && res.data.length){
                     this.pailist =res.data;
                     if(res.data.award){
@@ -113,13 +115,19 @@
                 Indicator.close();
 		        console.log(error);
             });
-            // sharewechat(window.location.href.split("#")[0]);
+            }
+        },
+		mounted:function(){
+            Indicator.open();
+            this.getSingePai()
         },
         beforeRouteLeave (to, from, next) {
             next();
             const url = 'https://'+window.location.host+to.fullPath;
-            // sharewechat(url);
-        }
+        },
+        beforeCreate: function() {
+        Indicator.open();
+  },
 	}
 </script>
 <style lang="scss" scoped>

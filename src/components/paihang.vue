@@ -119,48 +119,6 @@ export default {
           console.log(error);
         });
     }
-    // getFriend:function(){
-    //   this.iswho = 1;
-    //   Indicator.open();
-    //   //获取好友榜
-    //   const $userid = localStorage.getItem("userid");//userid
-    //   const data ={search: {id:$userid} }
-    //   this.$axios.get('/friend',{params:data}).then((res)=>{
-    //      if (res.status === 200) {
-    //         Indicator.close();
-    //         if(res.data.allFriendIds){
-    //           const allFriendIds =JSON.stringify(res.data.allFriendIds);
-    //           const answer ={allFriendIds:allFriendIds};
-    //           this.$axios.get('/answerRank',{params:answer}).then((data)=>{
-    //             console.log(data);
-    //             this.pailist =data.data.createdBys;
-    //             const idarr = [];
-    //             for(let i=0;i<this.pailist.length;i++){
-    //               idarr.push(this.pailist[i].id);
-    //             }
-    //             if(idarr.indexOf($userid) != -1){
-    //               const myindex = idarr.indexOf($userid);
-    //               this.myGrade = Number(idarr.indexOf($userid))+1;
-    //               this.myStar = this.pailist[myindex].ups;
-    //               this.myavtalUrl = this.pailist[myindex].avatarUrl? this.pailist[myindex].avatarUrl :localStorage.getItem("headimg");
-    //             }else{
-    //               this.myGrade ='-';
-    //               this.myStar = 0;
-    //             }
-    //           }).catch((error)=>{
-    //             console.log(error);
-    //           })
-    //         }else{
-    //           this.pailist = [];
-    //           this.myGrade ='-';
-    //           this.myStar = 0;
-    //         }
-    //      }
-    //   }).catch(function(error){
-    //      Indicator.close();
-    //       console.log(error);
-    //   });
-    // }
   },
   mounted: function() {
     this.getWorld();
