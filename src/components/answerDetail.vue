@@ -189,10 +189,6 @@
         let uniqueid = localStorage.getItem("uniqueid");
         this.$axios.get("/isflow" + '?uniqueid=' + uniqueid).then(res => {
           if (res.data.subscribe == 0) {
-            // MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
-            //   document.getElementById("qd").className = show;
-            //   return this.flag;
-            // // })
             document.getElementById("md").className = "show";
           } 
           else {

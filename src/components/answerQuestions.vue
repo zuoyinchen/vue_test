@@ -51,12 +51,12 @@
                 const topicid = this.$route.params.topicid;
                 console.log(topicid);
                 const createdBy = localStorage.getItem('userid');
-                if (!createdBy) {
-                    MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+                // if (!createdBy) {
+                //     MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
     
-                    });
-                    return false;
-                }
+                //     });
+                //     return false;
+                // }
                 //提交答案不能为空
                 if (!message) {
                     Toast("提交答案不能为空");
@@ -88,14 +88,13 @@
                         console.log("敏感");
                         let instance = Toast('提交含有敏感词， 请检查提交文本');
                         setTimeout(() => {
-                            instance.close();
+                            Indicator.close();
                         }, 1000);
-    
                     } else {
                         console.log("不敏感");
                         let instance = Toast('网络错误，请刷新');
                         setTimeout(() => {
-                            instance.close();
+                            Indicator.close();
                         }, 1000);
                     }
                 });
