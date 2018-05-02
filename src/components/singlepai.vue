@@ -73,7 +73,7 @@
         },
         methods:{
             getSingePai:function(){
-                Indicator.open();
+                // Indicator.open();
                 this.topicid = this.$route.params.topicid;
                 this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
                 this.title = res.data.title;
@@ -83,9 +83,7 @@
 		    }
             Indicator.open();
 		    this.$axios.get('/singleRank',{params:data}).then((res)=>{
-            console.log(res.data);
-            console.log("dajkdkabdhk")
-            // Indicator.close();
+            Indicator.close();
 		        if(res.data && res.data.length){
                     this.pailist =res.data;
                     if(res.data.award){
@@ -118,16 +116,18 @@
             }
         },
 		mounted:function(){
-            Indicator.open();
             this.getSingePai()
+        },
+        beforeCreate:function(){
+            Indicator.open();
         },
         beforeRouteLeave (to, from, next) {
             next();
             const url = 'https://'+window.location.host+to.fullPath;
         },
-        beforeCreate: function() {
-        Indicator.open();
-  },
+        destroyed: function() {
+            Indicator.close();
+        }
 	}
 </script>
 <style lang="scss" scoped>

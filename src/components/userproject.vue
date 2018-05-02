@@ -71,6 +71,7 @@
 	                Indicator.close();
 	                if(res.data&&res.data.length){
 	                    this.prolist = res.data;
+						console.log(this.prolist.data)
 	                }else{
 	                    this.isShow = true;
 	                }
