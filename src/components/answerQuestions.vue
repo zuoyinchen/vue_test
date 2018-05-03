@@ -1,10 +1,10 @@
 <template>
     <div class="box">
         <!-- <div class="countdown" v-if="status==1">
-            <span class="counttest">倒计时</span>
-            <span>
-                                    <countdown :time="time" class="countdown" :key="time">
-                                            <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
+                <span class="counttest">倒计时</span>
+                <span>
+                                        <countdown :time="time" class="countdown" :key="time">
+                                                <template slot-scope="props" >{{props.hours}}:{{ props.minutes }}:{{ props.seconds }}
 </template>
                 </countdown>
           </span>
@@ -24,108 +24,113 @@
 </template>
 
 <script>
- import 'mint-ui/lib/style.css'
- import { MessageBox,Toast,Indicator} from 'mint-ui';
- import sharewechat from "../router/sharewechat";
- export default {
-    name:'answerQuestions',
-    data(){
-        return {
-            status:'',
-            topicid:'',
-            time:0,
-            title:'',
-            readnum:'',
-            answernum:'',
-            message:''
-        }
-    },
-    methods:{
-        
-        submit:function(event){
-            const message = event.currentTarget.dataset.message;
-            const topicid= this.$route.params.topicid;
-            console.log(topicid);
-            const createdBy = localStorage.getItem('userid');
-            if(!createdBy){
-                MessageBox.alert('您还未关注筋灵十三猜公众号，关注后进入筋灵十三猜菜单即可答题').then(action=>{
-
-                });
-                return false;
+    import 'mint-ui/lib/style.css'
+    import {
+        MessageBox,
+        Toast,
+        Indicator
+    } from 'mint-ui';
+    import sharewechat from "../router/sharewechat";
+    export default {
+        name: 'answerQuestions',
+        data() {
+            return {
+                status: '',
+                topicid: '',
+                time: 0,
+                title: '',
+                readnum: '',
+                answernum: '',
+                message: ''
             }
-            //提交答案不能为空
-            if(!message){
-                Toast("提交答案不能为空");
-                return false;
-            }
-            Indicator.open();
-            const newMsg = {
-                body:message,
-                topic:topicid,
-                createdBy:localStorage.getItem('userid')
-            }
-            console.log(newMsg)
-            this.$axios.post('/answer',newMsg).then(res=>{
-                console.log(res);
-               if (res.status === 200 || res.status === 201) {
-                    Indicator.close();
-                    localStorage.setItem("isAnswer",true);
-                    console.log(this.$route.params.frompage);
-                    if(this.$route.params.frompage == 1){
-                        this.$router.go(-1);
-                    }else{
-                        this.$router.go(-2);
+        },
+        methods: {
+    
+            submit: function(event) {
+                const message = event.currentTarget.dataset.message;
+                const topicid = this.$route.params.topicid;
+                console.log(topicid);
+                const createdBy = localStorage.getItem('userid');
+                // if (!createdBy) {
+                //     MessageBox.alert('有趣、有钱、又有料，你还在犹豫神马？还不快关注？').then(action => {
+    
+                //     });
+                //     return false;
+                // }
+                //提交答案不能为空
+                if (!message) {
+                    Toast("提交答案不能为空");
+                    return false;
+                }
+                Indicator.open();
+                const newMsg = {
+                    body: message,
+                    topic: topicid,
+                    createdBy: localStorage.getItem('userid')
+                }
+                console.log(newMsg)
+                this.$axios.post('/answer', newMsg).then(res => {
+                    console.log(res);
+                    if (res.status === 200 || res.status === 201) {
+                        Indicator.close();
+                        localStorage.setItem("isAnswer", true);
+                        console.log(this.$route.params.frompage);
+                        if (this.$route.params.frompage == 1) {
+                            this.$router.go(-1);
+                        } else {
+                            this.$router.go(-2);
+                        }
+    
                     }
-                    
-                }
-               
-            }).catch((error)=>{
-                if(error.response.data.code == 505){
-                    console.log("敏感");
-                    let instance = Toast('提交含有敏感词， 请检查提交文本');
-                    setTimeout(() => {
-                      instance.close();
-                    }, 1000);
-                    
-                }else{
-                    console.log("不敏感");
-                    let instance = Toast('网络错误，请刷新');
-                    setTimeout(() => {
-                      instance.close();
-                    }, 1000);
-                }
+    
+                }).catch((error) => {
+                    if (error.response.data.code == 505) {
+                        console.log("敏感");
+                        let instance = Toast('提交含有敏感词， 请检查提交文本');
+                        setTimeout(() => {
+                            Indicator.close();
+                        }, 1000);
+                    } else {
+                        console.log("不敏感");
+                        let instance = Toast('网络错误，请刷新');
+                        setTimeout(() => {
+                            Indicator.close();
+                        }, 1000);
+                    }
+                });
+            }
+        },
+        mounted() {
+            this.topicid = this.$route.params.topicid;
+            this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
+                this.title = res.data.title;
+                this.time = res.data.second;
+                this.status = res.data.status;
+                this.readnum = res.data.readNum;
+                this.answernum = res.data.messageNum ? res.data.messageNum : 0;
             });
+    
+            console.log(this.title);
         }
-    },
-    mounted() {
-        this.topicid = this.$route.params.topicid;
-        this.$axios.get(`/topic/${this.$route.params.topicid}`).then(res => {
-            this.title = res.data.title;
-            this.time = res.data.second;
-            this.status = res.data.status;
-            this.readnum = res.data.readNum;
-            this.answernum = res.data.messageNum?res.data.messageNum:0;
-        });
-        
-        console.log(this.title);
     }
-}
 </script>
 
 <style lang="scss" scoped>
     $x:37.5;
-    .countdown{
-      font-family: STHeitiSC-Medium;
-      font-size: 13px;
-      color: #333333;
-      letter-spacing: -0.39px;
+    .countdown {
+        font-family: STHeitiSC-Medium;
+        font-size: 13px;
+        color: #333333;
+        letter-spacing: -0.39px;
     }
-    .counttest{
-      font-family: STHeitiSC-Medium;
-      font-size: 13px;
-      color: #333333;
-      letter-spacing: -0.39px;
+    
+    .counttest {
+        font-family: STHeitiSC-Medium;
+        font-size: 13px;
+        color: #333333;
+        letter-spacing: -0.39px;
     }
+    
     .clearfix:after {
         content: "";
         display: block;
@@ -150,7 +155,7 @@
         border-radius: 100rem/$x;
         background: #fdd545;
         line-height: 30rem/$x;
-        margin-top:10rem/$x;
+        margin-top: 10rem/$x;
     }
     
     .countdown>span:nth-of-type(1) {
@@ -211,7 +216,7 @@
         width: 345rem/$x;
         height: 240rem/$x;
         margin-top: 20rem/$x;
-        padding:10rem/$x;
+        padding: 10rem/$x;
         border: none;
         background: #FFFFFF;
         box-shadow: 0 2px 6px 0 #DDDDDD;
@@ -221,11 +226,12 @@
         text-indent: 5rem/$x;
         line-height: 24rem/$x;
     }
-    .int_sub{
+    
+    .int_sub {
         width: 345rem/$x;
         height: 42rem/$x;
         margin-top: 20rem/$x;
-        border:none;
+        border: none;
         background: #FDD545;
         border-radius: 4px;
         font-family: STHeitiSC-Medium;
@@ -234,28 +240,31 @@
         line-height: 42rem/$x;
         margin-bottom: 40rem/$x;
     }
+    
     input,
     select,
     textarea {
         -webkit-appearance: none;
         appearance: none;
     }
-    .icon_eye{
-       
-    }
-    .icon_eye>i:nth-of-type(1){
+    
+    .icon_eye {}
+    
+    .icon_eye>i:nth-of-type(1) {
         font-size: 14px;
     }
-    .icon_eye>span:nth-of-type(1){
+    
+    .icon_eye>span:nth-of-type(1) {
         padding-left: 8rem/$x;
     }
-    .icon_pin{
-        
-    }
-    .icon_pin>i:nth-of-type(1){
+    
+    .icon_pin {}
+    
+    .icon_pin>i:nth-of-type(1) {
         font-size: 12px;
     }
-    .icon_pin>span:nth-of-type(1){
+    
+    .icon_pin>span:nth-of-type(1) {
         padding-left: 8rem/$x;
     }
 </style>
